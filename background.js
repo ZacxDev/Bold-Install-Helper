@@ -3,12 +3,10 @@ chrome.browserAction.onClicked.addListener(function(tab) {
       //  chrome.tabs.executeScript({file: "script.js"}, function(result) {
       //  });
     });
-chrome.tabs.sendMessage(tab.id, "zdev-tab-url:" + getTab());
 });
 
-function getTab()
-{
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-    return url = tabs[0].url;
-});
-}
+// $( document ).ready(function() {
+// console.log('siufh');
+//   $('.popup-coppy-format').click(function() {
+//     console.log('siufh');
+//   });

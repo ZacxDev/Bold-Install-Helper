@@ -62,14 +62,10 @@ $('.bold-install').click(function(e)
     $('.discount_config_consistent').css("display", "block");
     $('.input-field').prop('disabled', false);
     $('.card .btn').click();
-    $('html, body').animate({
-            scrollTop: $(".products-step").offset().top
-        }, 2000);
+
       if ($(e.target).hasClass('bold-install-testOne'))
       {
-        $('html, body').animate({
-        scrollTop: $("#elementtoScrollToID").offset().top
-    }, 2000);
+
         $('.field-group [name="discount"]').val('5');
         $('.input-field[name="group_name"]').val('Bold Test 1');
         $('#subscription_type').val('1');
@@ -102,7 +98,7 @@ $('.bold-install').click(function(e)
 
 $('.recover-btn').click(function(e)
 {
-  if (appsnet)
+  if ($('#recover-login').val().indexOf('@boldcommerce') >= 0)
     $('#recover-login').val("support@boldapps.net");
   else
     $('#recover-login').val("support@boldcommerce.com");

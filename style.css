@@ -21,7 +21,7 @@
     display: inline-flex;
     width: 10%;
     height: 21%;
-
+z-index: 1000;
 }
 
 .bold_flex_div {

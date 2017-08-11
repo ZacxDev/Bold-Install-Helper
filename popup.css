@@ -1,0 +1,21 @@
+.ih-logo{
+  width: 100%;
+  height: auto;
+  font-size: 7px;
+  display: block;
+  overflow: hidden;
+  text-align: center;
+}
+
+.ih-logo img {
+  width: 30%;
+  height: auto;
+}
+
+.ih-logo h1 {
+  width: 100%;
+  height: auto;
+  margin-left: 5%;
+  color: aqua;
+  text-align: center;
+}
