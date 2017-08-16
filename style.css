@@ -1,19 +1,19 @@
+.customer-lookup-btn {
+  position: absolute !important;
+  margin-left: 4vw;
+  margin-left: 15%;
 
+}
 
 .recover-btn {
   display: inline-block;
   background-color: gray;
-  width: 22%;
+  width: 50%;
   height: 44px !important;
   margin-left: 0;
   float: right;
   margin-top: 1.6rem !important;
   font-size: 1.2rem !important;
-}
-
-.dialog-submit{
-  width: 73% !important;
-  margin-right: 0 !important;
 }
 
 .bold-install-widget {

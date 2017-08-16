@@ -1,13 +1,22 @@
 
-var appsnet = false;
+var classArr = ['cm-comment', 'cm-liquid', 'CodeMirror-matchingtag', 'cm-tag','cm-attribute', 'cm-braket', 'cm-string'];
+var clicked = false;
+
 $( document ).ready(function() {
   console.log('ready');
 
 var shopifyLogin = false;
+var liqReqPage = false;
 
 if($(".ico-shopify-bag").length != 0)
 {
   shopifyLogin = true;
+}
+
+if ($('.install-row').length != 0)
+{
+  liqReqPage = true;
+  loadCusLookupBtns();
 }
 
   var widget = $('<div class="bold-install-widget" />');
@@ -33,8 +42,17 @@ if($(".ico-shopify-bag").length != 0)
 
     if (shopifyLogin)
     {
-      var fillLogin = $('<input type="button" value="Support@" class="btn recover-btn" />');
-      fillLogin.appendTo($(".dialog-form "));
+      var fillLogin = $('<input type="button" value="@boldcommerce" class="btn recover-btn commerce-fill" />');
+    //  fillLogin.appendTo('.dialog-form ');
+      fillLogin.insertBefore('.dialog-form .dialog-submit');
+      var fillAppsLogin = $('<input type="button" value="@boldapps" class="btn recover-btn apps-fill" />');
+    //  fillAppsLogin.appendTo('.dialog-form ');
+      fillAppsLogin.insertBefore('.dialog-form .dialog-submit');
+    }
+
+    if (liqReqPage)
+    {
+      widget.css('display', 'none');
     }
 
     $('html').click(function() {
@@ -90,7 +108,11 @@ $('.bold-install').click(function(e)
         $('#subscription_type').val('3');
         $('.content .action_button_name').text('Continue');
         setTimeout(function() {
-          $('.content .action_button_name').click();
+          if (!clicked)
+          {
+            $('.content .action_button_name').click();
+            clicked = true;
+          }
         }, 500);
     }
   });
@@ -98,14 +120,18 @@ $('.bold-install').click(function(e)
 
 $('.recover-btn').click(function(e)
 {
-  if ($('#recover-login').val().indexOf('@boldcommerce') >= 0)
+  if ($(this).hasClass('apps-fill'))
     $('#recover-login').val("support@boldapps.net");
   else
     $('#recover-login').val("support@boldcommerce.com");
-  appsnet = !appsnet;
 
   $('.dialog-submit').click();
 });
+
+setTimeout(function()
+{
+  readDivChildText();
+}, 500);
 
 });
 
@@ -126,4 +152,18 @@ function fillBAB()
 function isBoxTab()
 {
   return $('.segment-header h1').text().indexOf('Build a Box') >= 0;
+}
+
+function loadCusLookupBtns()
+{
+  var url;
+  var  btn = $('<a type="button" class="customer-lookup-btn btn btn-primary">Lookup</a>');
+  btn.prependTo($(".with-row-borders td div a").parent().closest('td'));
+
+  $('.customer-lookup-btn').each(function() {
+    url = $(this).parent().find('a[target="_blank"]').text();
+    url = url.substring(url.indexOf('//') + 1, url.length);
+    console.log(url);
+    $(this).attr('href', 'https://util.boldapps.net/admin/shop?shop=' + url);
+  });
 }

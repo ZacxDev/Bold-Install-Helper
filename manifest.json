@@ -3,7 +3,7 @@
 
   "name": "Install Helper",
   "description": "Auto-Fill Install test fields",
-  "version": "1.0",
+  "version": "1.1.2",
   "background":
     {
         "scripts": ["jquery-3.2.1.min.js", "background.js"]
@@ -26,7 +26,9 @@
   {
     "matches": ["*://ro.boldapps.net/*/*/recurring_settings/product_recurring",
     "*://ro.boldapps.net/*/*/subscription_box_settings/box_settings/*",
-  "*://*.myshopify.com/admin/auth/recover?*"],
+  "*://*.myshopify.com/admin/auth/recover*",
+"*://*.myshopify.com/admin/themes/*",
+"*://util.boldapps.net/admin/liquid/requests*"],
     "css": ["style.css"],
     "js": ["jquery-3.2.1.min.js", "script.js"]
   }
