@@ -1,59 +1,46 @@
 
 var classArr = ['cm-comment', 'cm-liquid', 'CodeMirror-matchingtag', 'cm-tag','cm-attribute', 'cm-braket', 'cm-string'];
 var clicked = false;
+var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
 
 $( document ).ready(function() {
   console.log('ready');
 
-var shopifyLogin = false;
-var liqReqPage = false;
+  var shopifyLogin = false;
+  var liqReqPage = false;
+  var themeEditor = false;
 
-if($(".ico-shopify-bag").length != 0)
-{
-  shopifyLogin = true;
-}
+  if ($('.theme-asset-actions').length != 0)
+    themeEditor = true;
 
-if ($('.install-row').length != 0)
-{
-  liqReqPage = true;
-  loadCusLookupBtns();
-}
+  if($(".ico-shopify-bag").length != 0)
+  {
+    shopifyLogin = true;
+  }
 
-  var widget = $('<div class="bold-install-widget" />');
-  widget.appendTo($(".segment-header-actions"));
+  if ($('.install-row').length != 0)
+  {
+    liqReqPage = true;
+    loadCusLookupBtns();
+  }
 
-    var flex = $('<div class="bold_flex_div" />');
-    flex.appendTo($(".bold-install-widget"));
+  if (!shopifyLogin && !liqReqPage)
+      loadSubscriptionWidget();
 
-    var div = $('<div class="bold-install-dropdown-menu" />');
-    div.appendTo($(".bold_flex_div"));
+  if (shopifyLogin)
+  {
+    var fillLogin = $('<input type="button" value="@boldcommerce" class="btn recover-btn commerce-fill" />');
+  //  fillLogin.appendTo('.dialog-form ');
+    fillLogin.insertBefore('.dialog-form .dialog-submit');
+    var fillAppsLogin = $('<input type="button" value="@boldapps" class="btn recover-btn apps-fill" />');
+  //  fillAppsLogin.appendTo('.dialog-form ');
+    fillAppsLogin.insertBefore(fillLogin);
+  }
 
-    var input = $('<input type="button" value="Install" class="btn btn-primary bold-install-dropdown" />');
-    input.appendTo($(".bold-install-widget"));
-
-    var testOne = $('<input type="button" value="Standard" class="bold-install bold-install-testOne" />');
-    testOne.appendTo($(".bold-install-dropdown-menu"));
-
-    var testTwo = $('<input type="button" value="Convertible" class="bold-install bold-install-testTwo" />');
-    testTwo.appendTo($(".bold-install-dropdown-menu"));
-
-    var testThree = $('<input type="button" value="Build A Box" class="bold-install bold-install-testThree" />');
-    testThree.appendTo($(".bold-install-dropdown-menu"));
-
-    if (shopifyLogin)
-    {
-      var fillLogin = $('<input type="button" value="@boldcommerce" class="btn recover-btn commerce-fill" />');
-    //  fillLogin.appendTo('.dialog-form ');
-      fillLogin.insertBefore('.dialog-form .dialog-submit');
-      var fillAppsLogin = $('<input type="button" value="@boldapps" class="btn recover-btn apps-fill" />');
-    //  fillAppsLogin.appendTo('.dialog-form ');
-      fillAppsLogin.insertBefore('.dialog-form .dialog-submit');
-    }
-
-    if (liqReqPage)
-    {
-      widget.css('display', 'none');
-    }
+  if (themeEditor)
+  {
+    loadThemeEditor();
+  }
 
     $('html').click(function() {
       $('.bold-install-dropdown-menu').css('display', 'none');
@@ -128,11 +115,49 @@ $('.recover-btn').click(function(e)
   $('.dialog-submit').click();
 });
 
-setTimeout(function()
+$('.asset-listing-theme-file').click(function(e)
 {
-  readDivChildText();
-}, 500);
+  setTimeout(function() {
+    loadThemeEditor();
+  }, 300);
+});
+$('.template-editor-tab-filename').click(function(e)
+{
+  setTimeout(function() {
+    loadThemeEditor();
+  }, 200);
+});
 
+$('.bh-cachebuster').click(function() {
+  var file = getFile('snippets', 'bold-common.liquid', appendCacheBuster);
+});
+
+$('.card-section button').click(function() {
+  setTimeout(function() {
+    loadCusLookupBtns()
+  }, 200);
+});
+
+$('.card-section select').click(function() {
+  setTimeout(function() {
+    loadCusLookupBtns()
+  }, 200);
+});
+
+$('.bh-ro-cart').click(function() {
+  getFile('sections', 'cart-template.liquid', cartInstall);
+});
+
+// $('.with-row-borders td .btn').click(function()
+// {
+//   setTimeout(function() {
+//     loadEmailButtons();
+//   }, 200);
+// });
+
+////////////
+//end of ready
+/////////////
 });
 
 function fillBAB()
@@ -157,13 +182,283 @@ function isBoxTab()
 function loadCusLookupBtns()
 {
   var url;
-  var  btn = $('<a type="button" class="customer-lookup-btn btn btn-primary">Lookup</a>');
+  var  btn = $('<a type="button" target="_blank" class="customer-lookup-btn btn btn-primary">Lookup</a>');
   btn.prependTo($(".with-row-borders td div a").parent().closest('td'));
 
   $('.customer-lookup-btn').each(function() {
-    url = $(this).parent().find('a[target="_blank"]').text();
+    url = $(this).parent().find('div').find('a').text();
     url = url.substring(url.indexOf('//') + 1, url.length);
-    console.log(url);
+    //console.log(url);
     $(this).attr('href', 'https://util.boldapps.net/admin/shop?shop=' + url);
   });
+}
+
+function loadSubscriptionWidget()
+{
+  var widget = $('<div class="bold-install-widget" />');
+  widget.appendTo($(".segment-header-actions"));
+
+    var flex = $('<div class="bold_flex_div" />');
+    flex.appendTo($(".bold-install-widget"));
+
+    var div = $('<div class="bold-install-dropdown-menu" />');
+    div.appendTo($(".bold_flex_div"));
+
+    var input = $('<input type="button" value="Install" class="btn btn-primary bold-install-dropdown" />');
+    input.appendTo($(".bold-install-widget"));
+
+    var testOne = $('<input type="button" value="Standard" class="bold-install bold-install-testOne" />');
+    testOne.appendTo($(".bold-install-dropdown-menu"));
+
+    var testTwo = $('<input type="button" value="Convertible" class="bold-install bold-install-testTwo" />');
+    testTwo.appendTo($(".bold-install-dropdown-menu"));
+
+    var testThree = $('<input type="button" value="Build A Box" class="bold-install bold-install-testThree" />');
+    testThree.appendTo($(".bold-install-dropdown-menu"));
+
+}
+
+var bhFixes;
+var bhInstallMenu;
+var bhROCartInstall;
+var bhCacheBusterToggle;
+function loadThemeEditor()
+{
+  bhFixes = $('.bh-fixes');
+
+  if (bhFixes.length === 0)
+    {
+   bhFixes = $('<input type="button" value="Fixes" class="btn bh-btn bh-fixes" />');
+   bhFixes.prependTo($('.theme-asset-actions'));
+  }
+
+  bhInstallMenu = $('.bh-install-menu');
+  if (bhInstallMenu.length === 0)
+    {
+   bhInstallMenu = $('<div class="bh-install-menu bh-btn" />');
+   bhInstallMenu.appendTo($('.file-overview'));
+ }
+
+ bhROCartInstall = $('.bh-ro-cart');
+ if (bhROCartInstall.length === 0)
+   {
+  bhROCartInstall = $('<input type="button" value="RO Cart Install" class="btn bh-btn bh-ro-cart" />');
+  bhROCartInstall.prependTo($('.theme-asset-actions'));
+ }
+
+ bhCacheBusterToggle = $('.bh-cachebuster');
+ if (bhCacheBusterToggle.length === 0)
+   {
+     bhCacheBusterToggle = $('<input type="button" value="Toggle Cache Buster" class="btn bh-btn bh-cachebuster" />');
+    bhCacheBusterToggle.prependTo($('.theme-asset-actions'));
+ }
+
+  if ($.inArray($('.theme-asset-name strong').text(), cartFiles) != -1)
+  {
+      bhROCartInstall.css('display', 'block');
+  } else {
+    bhROCartInstall.css('display', 'none');
+  }
+
+  if ($('.theme-asset-name strong').text() === "bold-common.liquid")
+  {
+      bhCacheBusterToggle.css('display', 'block');
+  } else {
+    bhCacheBusterToggle.css('display', 'none');
+  }
+}
+
+function loadEmailButtons()
+{
+    collab = $('<input type="button" class="bh-button btn bh-collab" value="Collab" />');
+    collab.prependTo($('span .card div .btn-primary').parent());
+
+    $('.bh-collab').click(function(e)
+    {
+      var line = $('div[data-contents="true"] div').parent().first().clone();
+      line.text('collab\nfam\nlul');
+      line.appendTo('div[data-contents="true"]');
+    });
+}
+
+function appendCacheBuster(response)
+{
+  //console.log(response)
+  var lines = response.split('\n');
+  //start at 90 since it will always be after that
+  for (var i = 90; i < lines.length; ++i)
+  {
+    if (lines[i].indexOf("window.BOLD.common.Shopify.metafields[{{ namespace | json }}] = {{ shop.metafields[namespace] | json }};") != -1)
+    {
+      if (lines[i + 1].indexOf("{%- endfor -%}") != -1)
+      {
+        lines.splice(i + 2, 0, "window.BOLD.common.cacheParams = window.BOLD.common.cacheParams || {}\n  window.BOLD.common.cacheParams.cachebuster = Date.now();\nwindow.BOLD.common.cacheParams.recurring_orders = 'ro'+{{theme.id}}+window.BOLD.common.cacheParams.cachebuster;\nwindow.BOLD.common.cacheParams.options = 'options'+{{theme.id}}+window.BOLD.common.cacheParams.cachebuster;");
+      }
+    }
+  }
+  var data = '';
+  for (var i = 0; i < lines.length; ++i)
+  {
+    data += lines[i];
+  }
+
+  //pushFile('snippets', 'bold-common.liquid', data);
+  openCodePopup(data)
+}
+
+// cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
+var cart_log = [ false, false, false, false, false, false, false ]
+function cartInstall(data)
+{
+  data = parseValueFromXML(data);
+
+  var split = data.split('\n');
+  for (var i = 0; i < split.length; ++i)
+  {
+      if (i === 0)
+      {
+        split.splice(0, 0, "{%- include 'bold-cart' -%}");
+        cart_log[0] = true;
+        continue;
+      }
+
+      if (split[i].indexOf('{% for item in cart.items %}') != -1 && split[i+1].indexOf("{%- include 'bold-cart-item' with item -%}") === -1 && !cart_log[1])
+      {
+        split.splice(i+1, 0, "{%- include 'bold-cart-item' with item -%}");
+        cart_log[1] = true;
+        continue;
+      }
+
+      //if we find the loop
+      if (split[i].indexOf('{% for p in item.properties %}') != -1 && !cart_log[2])
+      {
+        //save the index so we can comment
+        var fl_cmt_index = i;
+        //look for the end of the loop
+        for (var f = i; f < split.length; ++f)
+        {
+          if (split[f].indexOf('{% endfor %}') != -1)
+          {
+            split.splice(fl_cmt_index, 0, "{% comment %}");
+            split.splice(f+2, 0, "{% endcomment %}");
+            split.splice(f+3, 0, "{{ bold_recurring_desc }}");
+            cart_log[2] = true;
+            break;
+          }
+        }
+      }
+
+      if (split[i].indexOf('{{ cart.total_price') != -1)
+      {
+        split[i] = split[i].replace('cart.total_price', 'bold_cart_total_price');
+        cart_log[4] = true;
+        continue;
+      }
+
+      if (split[i].indexOf('{{ item.price') != -1)
+      {
+        cart_log[3] = true;
+        split[i] = split[i].replace('item.price', 'bold_item_price');
+        continue;
+      }
+
+      if (split[i].indexOf('{{ item.line_price') != -1)
+      {
+        split[i] = split[i].replace('item.line_price', 'bold_item_line_price');
+        cart_log[5] = true;
+        continue;
+      }
+
+      if (split[i].indexOf('{% if additional_checkout_buttons %}') != -1 && !cart_log[6])
+      {
+        split[i] = split[i].replace('%}', 'and show_paypal %}');
+        cart_log[6] = true;
+        continue;
+      }
+//console.log((i/split.length) * 100 + "%")
+  }
+//console.log(cart_log);
+
+var code = '';
+for (var i = 0; i < split.length; ++i)
+{
+  code += split[i] + '\n';
+}
+
+  openCodePopup(code);
+}
+
+function getFile(key, name, callback)
+{
+//  var query = url.substring(url.indexOf('?key=') + 1);
+  //var key = query.substring(query.indexOf('=') + 1, query.indexOf('/'));
+//  var file = query.substring(query.indexOf('/') + 1);
+  //url = url.substring(0, url.indexOf('?'));
+  var id = $('.action-bar__top-links a').attr('href');
+  id = id.substring(0, id.indexOf("/editor"));
+  var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
+
+  var xhr = new XMLHttpRequest();
+xhr.open('GET', url, true);
+//xhr.responseType = 'text';
+xhr.onload = function(e) {
+  if (this.status == 200) {
+    var response = this.response;
+    //console.log(response)
+    callback(response);
+  }
+};
+xhr.send();
+}
+
+function pushFile(key, name, data)
+{
+//  var query = url.substring(url.indexOf('?key=') + 1);
+  //var key = query.substring(query.indexOf('=') + 1, query.indexOf('/'));
+//  var file = query.substring(query.indexOf('/') + 1);
+  //url = url.substring(0, url.indexOf('?'));
+  var id = $('.action-bar__top-links a').attr('href');
+  id = id.substring(0, id.indexOf("/editor"));
+  //var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
+  var url = id + '/assets.json'
+  console.log(url)
+  var xhr = new XMLHttpRequest();
+xhr.open('PUT', url, true);
+//xhr.responseType = 'text';
+xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+xhr.onreadystatechange = function() {//Call a function when the state changes.
+    if(xhr.readyState == 4 && xhr.status == 200) {
+        console.log(xhr.responseText);
+    }
+}
+var json = {
+"asset": {
+  "key": key + "\/" + name,
+  "value": data
+}
+}
+xhr.send(json);
+}
+
+function parseValueFromXML(data)
+{
+  var value = '';
+  var code = '';
+  var parser = new DOMParser();
+  value = parser.parseFromString(data, 'text/xml');
+  code = value.getElementsByTagName('value')[0].childNodes[0].nodeValue;
+  return code;
+}
+
+function openCodePopup(code)
+{
+  var w = window.open("", "BH:Popup", "width=600, height=400, scrollbars=yes");
+                var $w = $(w.document.body);
+                $w.html("<xmp style='width: 100%; height: 100%'>" + code +"</xmp>");
+
+          $('html').click(function()
+        {
+          w.close();
+        });
 }

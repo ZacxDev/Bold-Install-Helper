@@ -1,8 +1,52 @@
+
+.bh-radio-div {
+  margin-right: 3%;
+  color: black;
+  display: inline;
+  z-index: 1000;
+}
+
+.bh-btn
+{
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+  padding: 0.7rem !important;
+}
+
+.bh-cachebuster {
+  display: none !important;
+}
+
+.bh-ro-cart {
+
+}
+
+.bh-install-menu {
+  width: 5vw;
+  height: 15vh;
+  position: absolute;
+  border-radius: 5px;
+  margin-right: 0;
+  margin-left: 88%;
+  margin-top: 5px;
+  background: rgba(145, 158, 171, 0.5);
+  z-index: 100;
+  border-style: solid;
+  border-color: #919eab;
+  border-width: thin;
+  display: none;
+}
+
+.bh-fixes
+{
+  padding: 0.7rem !important;
+}
+
 .customer-lookup-btn {
   position: absolute !important;
   margin-left: 4vw;
   margin-left: 15%;
-
+  -webkit-transform: 0s;
 }
 
 .recover-btn {
@@ -17,11 +61,11 @@
 }
 
 .bold-install-widget {
-  position: fixed;
+    position: fixed;
     display: inline-flex;
     width: 10%;
     height: 21%;
-z-index: 1000;
+    z-index: 1000;
 }
 
 .bold_flex_div {
