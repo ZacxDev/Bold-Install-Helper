@@ -204,9 +204,10 @@ function appendCacheBuster(response)
 }
 
 // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
-var cart_log = [ false, false, false, false, false, false, false ]
+
 function cartInstall(data)
 {
+  var cart_log = [ false, false, false, false, false, false, false ]
   data = parseValueFromXML(data);
 
   var split = data.split('\n');

@@ -87,12 +87,12 @@ function loadThemeEditor()
     bhCacheBusterToggle.prependTo($('.theme-asset-actions'));
  }
 
-  if ($.inArray($('.theme-asset-name strong').text(), cartFiles) != -1)
-  {
-      bhROCartInstall.css('display', 'block');
-  } else {
-    bhROCartInstall.css('display', 'none');
-  }
+  // if ($.inArray($('.theme-asset-name strong').text(), cartFiles) != -1)
+  // {
+  //     bhROCartInstall.css('display', 'block');
+  // } else {
+  //   bhROCartInstall.css('display', 'none');
+  // }
 
   $('.bh-ro-cart').click(function() {
     var kv, key, name, tar = $('.theme-asset-name strong').text();
