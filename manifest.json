@@ -6,7 +6,7 @@
   "version": "1.1.5",
   "background":
     {
-        "scripts": ["jquery-3.2.1.min.js", "background.js"]
+        "scripts": ["jquery-3.2.1.min.js", "loader.js", "background.js"]
     },
   "browser_action": {
     "default_icon": "icon.png",
@@ -31,7 +31,7 @@
 "*://util.boldapps.net/admin/liquid/requests*",
 "file:///E:/File%20Dump/Bold%20Commerce%20Admin%20-.html"],
     "css": ["style.css"],
-    "js": ["jquery-3.2.1.min.js", "script.js"]
+    "js": ["jquery-3.2.1.min.js", "loader.js", "script.js"]
   }
 ]
 }

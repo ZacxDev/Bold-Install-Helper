@@ -1,4 +1,16 @@
 
+.bh-codepopup {
+  position: absolute;
+  width: 10vw;
+  height: 10vh;
+  background-color: #999;
+  border-radius: 10px;
+  margin-top: 20%;
+  margin-left: -20%;
+  z-index: 10;
+  overflow-x: hidden;
+}
+
 .bh-radio-div {
   margin-right: 3%;
   color: black;
