@@ -32,15 +32,17 @@ function loadSubscriptionWidget()
   var widget = $('<div class="bold-install-widget" />');
   widget.appendTo($(".segment-header-actions"));
 
+
+
+    var input = $('<input type="button" value="Install" class="btn btn-primary bold-install-dropdown" />');
+    input.appendTo($(".bold-install-widget"));
+
     var flex = $('<div class="bold_flex_div" />');
     flex.appendTo($(".bold-install-widget"));
 
     var div = $('<div class="bold-install-dropdown-menu" />');
     div.appendTo($(".bold_flex_div"));
-
-    var input = $('<input type="button" value="Install" class="btn btn-primary bold-install-dropdown" />');
-    input.appendTo($(".bold-install-widget"));
-
+    
     var testOne = $('<input type="button" value="Standard" class="bold-install bold-install-testOne" />');
     testOne.appendTo($(".bold-install-dropdown-menu"));
 
