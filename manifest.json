@@ -24,7 +24,7 @@
   ],
   "content_scripts": [
   {
-    "matches": ["*://ro.boldapps.net/*/*/recurring_settings/product_recurring",
+    "matches": ["*://ro.boldapps.net/*/*/recurring_settings/product_recurring*",
     "*://ro.boldapps.net/*/*/subscription_box_settings/box_settings/*",
   "*://*.myshopify.com/admin/auth/recover*",
 "*://*.myshopify.com/admin/themes/*",
@@ -33,7 +33,8 @@
 "*://*.myshopify.com/admin/apps/recurring-orders/s/*/subscription_box_settings/box_settings*",
 "file:///E:/File%20Dump/Bold%20Commerce%20Admin%20-.html"],
     "css": ["style.css"],
-    "js": ["jquery-3.2.1.min.js", "loader.js", "script.js"]
+    "js": ["jquery-3.2.1.min.js", "loader.js", "script.js"],
+    "all_frames": true
   }
 ]
 }

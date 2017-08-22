@@ -17,6 +17,10 @@ $( document ).ready(function() {
   {
     shopifyLogin = true;
   }
+  if($("iframe[data-src*='https://ro.boldapps.net/s/']").length != 0)
+  {
+    console.log("wadadadadad")
+  }
 
   if ($('.install-row').length != 0)
   {
