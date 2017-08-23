@@ -2,6 +2,8 @@
 var classArr = ['cm-comment', 'cm-liquid', 'CodeMirror-matchingtag', 'cm-tag','cm-attribute', 'cm-braket', 'cm-string'];
 var clicked = false;
 var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
+// cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
+var cart_log = [ false, false, false, false, false, false, false ];
 
 $( document ).ready(function() {
   console.log('ready');
@@ -177,115 +179,6 @@ function isBoxTab()
   return $('.segment-header h1').text().indexOf('Build a Box') >= 0;
 }
 
-
-function appendCacheBuster(response)
-{
-  //console.log(response)
-  var lines = response.split('\n');
-  //start at 90 since it will always be after that
-  for (var i = 90; i < lines.length; ++i)
-  {
-    if (lines[i].indexOf("window.BOLD.common.Shopify.metafields[{{ namespace | json }}] = {{ shop.metafields[namespace] | json }};") != -1)
-    {
-      if (lines[i + 1].indexOf("{%- endfor -%}") != -1)
-      {
-        lines.splice(i + 2, 0, "window.BOLD.common.cacheParams = window.BOLD.common.cacheParams || {}\n  window.BOLD.common.cacheParams.cachebuster = Date.now();\nwindow.BOLD.common.cacheParams.recurring_orders = 'ro'+{{theme.id}}+window.BOLD.common.cacheParams.cachebuster;\nwindow.BOLD.common.cacheParams.options = 'options'+{{theme.id}}+window.BOLD.common.cacheParams.cachebuster;");
-      }
-    }
-  }
-  var data = '';
-  for (var i = 0; i < lines.length; ++i)
-  {
-    data += lines[i];
-  }
-
-  //pushFile('snippets', 'bold-common.liquid', data);
-  openCodePopup(data)
-}
-
-// cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
-
-function cartInstall(data)
-{
-  var cart_log = [ false, false, false, false, false, false, false ]
-  data = parseValueFromXML(data);
-
-  var split = data.split('\n');
-  for (var i = 0; i < split.length; ++i)
-  {
-      if (i === 0 && split[0].indexOf("{%- include 'bold-cart' -%}") === -1)
-      {
-        split.splice(0, 0, "{%- include 'bold-cart' -%}");
-        cart_log[0] = true;
-        continue;
-      }
-
-      if (split[i].indexOf('{% for item in cart.items %}') != -1 && split[i+1].indexOf("{%- include 'bold-cart-item' with item -%}") === -1 && !cart_log[1])
-      {
-        split.splice(i+1, 0, "{%- include 'bold-cart-item' with item -%}");
-        cart_log[1] = true;
-        continue;
-      }
-
-      //if we find the loop
-      if (split[i].indexOf('{% for p in item.properties %}') != -1 && !cart_log[2])
-      {
-        //save the index so we can comment
-        var fl_cmt_index = i;
-        //look for the end of the loop
-        for (var f = i; f < split.length; ++f)
-        {
-          if (split[f].indexOf('{% endfor %}') != -1)
-          {
-            split.splice(fl_cmt_index, 0, "{% comment %}");
-            split.splice(f+2, 0, "{% endcomment %}");
-            split.splice(f+3, 0, "{{ bold_recurring_desc }}");
-            cart_log[2] = true;
-            break;
-          }
-        }
-      }
-
-      if (split[i].indexOf('{{ cart.total_price') != -1)
-      {
-        split[i] = split[i].replace('cart.total_price', 'bold_cart_total_price');
-        cart_log[4] = true;
-        continue;
-      }
-
-      if (split[i].indexOf('{{ item.price') != -1)
-      {
-        cart_log[3] = true;
-        split[i] = split[i].replace('item.price', 'bold_item_price');
-        continue;
-      }
-
-      if (split[i].indexOf('{{ item.line_price') != -1)
-      {
-        split[i] = split[i].replace('item.line_price', 'bold_item_line_price');
-        cart_log[5] = true;
-        continue;
-      }
-
-      if (split[i].indexOf('{% if additional_checkout_buttons %}') != -1 && !cart_log[6])
-      {
-        split[i] = split[i].replace('%}', 'and show_paypal %}');
-        cart_log[6] = true;
-        continue;
-      }
-//console.log((i/split.length) * 100 + "%")
-  }
-//console.log(cart_log);
-
-var code = '';
-for (var i = 0; i < split.length; ++i)
-{
-  code += split[i] + '\n';
-}
-
-  openCodePopup(code);
-}
-
 function getFile(key, name, callback)
 {
 //  var query = url.substring(url.indexOf('?key=') + 1);
@@ -347,40 +240,4 @@ function parseValueFromXML(data)
   value = parser.parseFromString(data, 'text/xml');
   code = value.getElementsByTagName('value')[0].childNodes[0].nodeValue;
   return code;
-}
-
-function openCodePopup(code)
-{
-  // var w = window.open("", "BH:Popup", "width=600, height=400, scrollbars=yes");
-  //               var $w = $(w.document.body);
-  //               $w.html("<xmp style='width: 100%; height: 100%'>" + code +"</xmp>");
-  //
-  //         $('html').click(function()
-  //       {
-  //         w.close();
-  //       });
-
-  //$('.bh-codepopup xmp').text(code);
-  //$('.bh-codepopup').css('display', 'block')
-  popup = $('.bh-codepopup');
-  if (popup.length === 0)
-    {
-      var popup = $('<div id="text-select" class="bh-codepopup"><xmp>' + code + '</xmp></div>')
-      popup.appendTo($('.theme-asset-actions'));
-    } else
-    {
-      popup.css('display', 'block');
-      $('.bh-codepopup xmp').text(code);
-    }
-
-  $('.bh-codepopup').click(function(e) {
-    SelectText('text-select');
-    e.stopPropagation();
-  });
-
-  $('html').click(function()
-  {
-      $('.bh-codepopup').css('display', 'none')
-  });
-
 }

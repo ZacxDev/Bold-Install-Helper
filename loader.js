@@ -2,13 +2,13 @@
 function loadEmailButtons()
 {
     collab = $('<input type="button" class="bh-button btn bh-collab" value="Collab" />');
-    collab.prependTo($('span .card div .btn-primary').parent());
+    //collab.prependTo($('span .card div .btn-primary:contains("Send")').parent());
 
     $('.bh-collab').click(function(e)
     {
-      var line = $('div[data-contents="true"] div').parent().first().clone();
-      line.text('collab\nfam\nlul');
-      line.appendTo('div[data-contents="true"]');
+      var line = $('div[data-contents="true"] div').last();
+    //  line.find('span[data-text="true"]').text('collab\nmessage');
+      //line.appendTo('div[data-contents="true"]');
     });
 }
 
@@ -42,7 +42,7 @@ function loadSubscriptionWidget()
 
     var div = $('<div class="bold-install-dropdown-menu" />');
     div.appendTo($(".bold_flex_div"));
-    
+
     var testOne = $('<input type="button" value="Standard" class="bold-install bold-install-testOne" />');
     testOne.appendTo($(".bold-install-dropdown-menu"));
 
@@ -75,6 +75,7 @@ function loadThemeEditor()
  //   bhInstallMenu.appendTo($('.file-overview'));
  // }
 
+//ro cart install btn
  bhROCartInstall = $('.bh-ro-cart');
  if (bhROCartInstall.length === 0)
    {
@@ -82,12 +83,21 @@ function loadThemeEditor()
   bhROCartInstall.prependTo($('.theme-asset-actions'));
  }
 
- bhCacheBusterToggle = $('.bh-cachebuster');
- if (bhCacheBusterToggle.length === 0)
+//ro cart code popup
+ var popup = $('.bh-codepopup');
+ if (popup.length === 0)
    {
-     bhCacheBusterToggle = $('<input type="button" value="Toggle Cache Buster" class="btn bh-btn bh-cachebuster" />');
-    bhCacheBusterToggle.prependTo($('.theme-asset-actions'));
- }
+     var popup = $('<div id="text-select" class="bh-codepopup"><xmp></xmp></div>')
+     popup.appendTo($('.file-overview'));
+   }
+
+// ro cart install log
+   var log = $('.bh-rocart-log');
+   if (log.length === 0)
+     {
+       var log = $('<div class="bh-rocart-log"></div>')
+       log.prependTo($('.theme-asset-actions'));
+     }
 
   // if ($.inArray($('.theme-asset-name strong').text(), cartFiles) != -1)
   // {
