@@ -66,10 +66,9 @@
 }
 
 .customer-lookup-btn {
-  position: absolute !important;
-  margin-left: 4vw;
-  margin-left: 15%;
-  -webkit-transform: 0s;
+  position: relative;
+  font-size: 12px;
+  margin: 0 auto;
 }
 
 .recover-btn {

@@ -15,18 +15,29 @@ function loadEmailButtons()
 
 function loadCusLookupBtns()
 {
+  destroyCusButtons();
   var url;
   var  btn = $('<a type="button" target="_blank" class="customer-lookup-btn btn btn-primary">Lookup</a>');
-  btn.prependTo($(".with-row-borders td div a").parent().closest('td'));
-
-  $('.customer-lookup-btn').each(function() {
-    url = $(this).parent().find('div').find('a').text();
+  var columnHeader = $('<th class="customerLookup"> <span>Customer Lookup</span> </th>')[0];
+  var tableHeaderChild = $('.install-row').children().eq(1)[0]
+  var tableBodyChild = $('tbody tr')
+  tableHeaderChild.after(columnHeader)
+  $('tbody > tr').each(function(index, element) {
+    var tableRow = $('tbody tr').eq(index)[0];
+    debugger;
+    var url = ($(tableRow).find("td > div > a")[0]).text;
     url = url.substring(url.indexOf('//') + 1, url.length);
-    //console.log(url);
-    $(this).attr('href', 'https://util.boldapps.net/admin/shop?shop=' + url);
+    ($('tbody tr').eq(index)).children().eq(1)[0].after($('<td class="customerLookup"> <span> <a type="button" target="_blank" class="customer-lookup-btn btn btn-primary">Lookup</a> </span> </td> ')[0]);
+    $('.customer-lookup-btn').eq(index).attr('href', 'https://util.boldapps.net/admin/shop?shop=' + url);
   });
 }
-
+function destroyCusButtons()
+{
+  if($('.customerLookup'))
+  {
+    $('.customerLookup').remove();
+  }
+}
 function loadSubscriptionWidget()
 {
   var widget = $('<div class="bold-install-widget" />');
