@@ -8,6 +8,18 @@ var cart_log = [ false, false, false, false, false, false, false ];
 $( document ).ready(function() {
   console.log('ready');
 
+  // chrome.runtime.sendMessage({
+  //   from:    'content',
+  //   message: 'zach'
+  // });
+  //
+  // chrome.runtime.onMessage.addListener(
+  //   function(request, sender, sendResponse) {
+  //     console.log(sender.tab ?
+  //                 "from a content script:" + sender.tab.url :
+  //                 "from the extension");
+  //   });
+
   var shopifyLogin = false;
   var liqReqPage = false;
   var themeEditor = false;

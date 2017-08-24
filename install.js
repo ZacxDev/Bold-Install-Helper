@@ -1,3 +1,29 @@
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+function isNested(list, start) {
+  var line;
+  for (var i = start; i < list.length; ++i)
+  {
+    //if we find an opening for tag before finding another closing one
+    line = replaceAll(list[i],' ', '');
+    if (line.indexOf('{%for%}') != -1)
+    {
+      return -1;
+    }
+      if (line.indexOf('{% endfor %}') != -1)
+      {
+        return i;
+      }
+  }
+  return -1;
+}
+
 function cartInstall(data)
 {
   // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
@@ -31,10 +57,18 @@ function cartInstall(data)
         {
           if (split[f].indexOf('{% endfor %}') != -1)
           {
+            //if there is another end for before another for
+            var next_for_line = isNested(split, f);
+            if (next_for_line != -1)
+              {
+                f = next_for_line;
+              }
+
             split.splice(fl_cmt_index, 0, "{% comment %}");
             split.splice(f+2, 0, "{% endcomment %}");
             split.splice(f+3, 0, "{{ bold_recurring_desc }}");
             cart_log[2] = true;
+
             break;
           }
         }
