@@ -1,3 +1,26 @@
+
+.bh-ajax-btn {
+  border-style: solid;
+  border-color: black;
+  text-align: center;
+  width: 100% !important;
+  background-color: #C0C0C0;
+}
+
+.bh-ajax-btn:hover {
+  background-color: #777;
+}
+
+.bh-ajax-menu {
+  width: 7%;
+  position: absolute;
+  height: 20%;
+  z-index: 10;
+  margin-left: 80%;
+  margin-top: 1%;
+  display: none;
+}
+
 .log-false {
   color: red;
   display: inline;

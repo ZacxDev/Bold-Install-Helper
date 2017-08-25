@@ -1,7 +1,6 @@
 
 var classArr = ['cm-comment', 'cm-liquid', 'CodeMirror-matchingtag', 'cm-tag','cm-attribute', 'cm-braket', 'cm-string'];
 var clicked = false;
-var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
 // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
 var cart_log = [ false, false, false, false, false, false, false ];
 
@@ -144,10 +143,6 @@ $('.template-editor-tab-filename').click(function(e)
   }, 200);
 });
 
-$('.bh-cachebuster').click(function() {
-  var file = getFile('snippets', 'bold-common.liquid', appendCacheBuster);
-});
-
 $('.card-section button').click(function() {
   setTimeout(function() {
     loadCusLookupBtns()
@@ -165,6 +160,14 @@ $('.with-row-borders td .btn').click(function()
   setTimeout(function() {
     loadEmailButtons();
   }, 200);
+});
+
+//hide menus when click html
+$('html').click(function()
+{
+    $('.bh-codepopup').css('display', 'none');
+    $('.bh-rocart-log').css('display', 'none');
+    $('.bh-ajax-menu').css('display', 'none');
 });
 
 ////////////

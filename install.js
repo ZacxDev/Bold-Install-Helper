@@ -1,3 +1,5 @@
+var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
+
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
@@ -48,7 +50,7 @@ function cartInstall(data)
       }
 
       //if we find the loop
-      if ((split[i].indexOf('{% for p in item.properties %}') != -1 || split[i].indexOf('{% for property in itemProperties %}') != -1)&& !cart_log[2])
+      if ((split[i].indexOf('{% for p in item.properties') != -1 || split[i].indexOf('{% for property in itemProperties') != -1) && !cart_log[2])
       {
         //save the index so we can comment
         var fl_cmt_index = i;
@@ -158,11 +160,62 @@ function openCodePopup(code)
     SelectText('text-select');
     e.stopPropagation();
   });
+}
 
-  $('html').click(function()
+
+function narrativeAjaxThemeMinJs(data)
+{
+
+var log = [ false, false, false, false, false, false ]
+//parse the actual code from the XML response
+data = parseValueFromXML(data);
+
+  // find property tag, insert recurring tag | add the $n recurringdesc thingy | clean cart in update(t) | put <p data-formatted_recurr...> in cart-drawer and cart-template
+  var lines = data.split('\n');
+  for (var i = 0; i < lines.length; ++i)
   {
-      $('.bh-codepopup').css('display', 'none');
-      $('.bh-rocart-log').css('display', 'none');
-  });
+    // create itemRecurring property
+    if (lines[i].indexOf('itemProperty:') != -1)
+    {
+      //inset recurring property on next line
+      lines.splice(i+1, 0, 'itemRecurring: "[data-cart-item-formatted_recurring_desc]",');
+      log[0] = true;
+    }
+    // run clean cart and append recurring desc to html
+    else if (lines[i].indexOf('update: function(t)') != -1)
+    {
+      //append cleancart
+      lines.splice(i+1, 0, "if(typeof(BOLD) === 'object' && BOLD.helpers && typeof(BOLD.helpers.cleanCart) === 'function' ) {cart = BOLD.helpers.cleanCart(cart);}")
 
+      // find the line we want to inset recurring desc into
+      var j = findIndexOf(lines, 'return e.find', i);
+      // if we find it, insert the code, and replace discounted price with itemPrice
+      if (j != -1)
+        lines[j] = lines[j].substring(0, lines[j].indexOf('$n(Sc.itemVariantTitle')) + "$n(Sc.itemRecurring, e).html(t.formatted_recurring_desc), " + lines[j].substring(lines[j].indexOf('$n(Sc.itemVariantTitle'), lines[j].length).replace('t.discounted_price', 'itemPrice');
+      //define itemprice
+      lines.splice(j, 0, "var itemPrice = '';if(t.properties != null){itemPrice = t.price;} else{itemPrice = t.discounted_price;}")
+    }
+
+    else if (lines[i].indexOf('update: function(t)') != -1)
+    {
+    }
+  }
+
+  var code = '';
+  for (var i = 0; i < lines.length; ++i)
+  {
+    code += lines[i] + '\n';
+  }
+
+    openCodePopup(code);
+}
+
+function findIndexOf(list, line, start)
+{
+  for (var j = start; j < list.length; ++j)
+  {
+    if (list[j].indexOf(line) != -1)
+      return j;
+  }
+  return -1;
 }
