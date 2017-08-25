@@ -256,3 +256,35 @@ function parseValueFromXML(data)
   code = value.getElementsByTagName('value')[0].childNodes[0].nodeValue;
   return code;
 }
+
+//we need to get the name of store from the URL and then set URL to *name*.myshopify.com/admin/products.json
+function getProduct(callback, title)
+{
+
+var url = '/products.json';
+  var xhr = new XMLHttpRequest();
+xhr.open('get', url, true);
+//xhr.responseType = 'text';
+xhr.onload = function(e) {
+  if (this.status == 200) {
+    var response = this.response;
+    //console.log(response)
+    callback(response, title);
+  }
+};
+xhr.send();
+}
+
+function setProdSelector(data, title, callback)
+{
+  var json = JSON.parse(data).products;
+debugger;
+  for (var i = 0; i < json.length; ++i)
+  {
+    if (json[i]['title'].indexOf(title) != -1)
+    {
+      var id = json[i]['id'];
+      $('#select_product').val('{"select":1,"products":[{"prod_id":"' + id + '","id":"0"}]}')
+    }
+  }
+}
