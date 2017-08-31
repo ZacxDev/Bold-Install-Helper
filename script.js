@@ -92,7 +92,7 @@ $('.bold-install').click(function(e)
         $('.products-step').css('display', 'block');
         $('.discount-step').css('display', 'block');
         $('.box-step').css('display', 'none');
-        getProduct(setProdSelector, '#Bold Test Product 1', 'bold-zachary');
+      //  getProduct(setProdSelector, '#Bold Test Product 1', 'bold-zachary');
       }else if ($(e.target).hasClass('bold-install-testTwo'))
       {
         $('.field-group [name="discount"]').val('5');
@@ -102,7 +102,8 @@ $('.bold-install').click(function(e)
         $('.discount-step').css('display', 'block');
         $('.box-step').css('display', 'none');
         $('.convertible').css('display', "block");
-        getProduct(setProdSelector, '#Bold Test Product 2', 'bold-zachary');
+      //  getProduct(setProdSelector, '#Bold Test Product 2', 'bold-zachary');
+      //  getProduct(setRecurringProdSelector, '#Bold Test Product 2', 'bold-zachary', '49799035398');
       } else if ($(e.target).hasClass('bold-install-testThree'))
       {
         $('.products-step').css('display', 'none');
@@ -296,7 +297,7 @@ function setProdSelector(data, title, var_id)
       $('#select_product_visible').val(title);
 
       var id = json[i]['variants'][0].id;
-debugger;
+
       //$('#select_product_visible').parent().find('.btn').click()
       $("#select_product")[0].product_selector.show();
     //  setTimeout(function() {
@@ -306,7 +307,6 @@ debugger;
       //$(document).trigger('close.facebox')
     //}, 2000);
       break;
-
     }
   }
 }
@@ -320,8 +320,8 @@ function setRecurringProdSelector(data, title, var_id)
     if (json[i]['title'].indexOf(title) != -1)
     {
       var id = json[i]['id'];
-      $('#select_product').first().val('{"select":1,"products":[{"prod_id":"' + id + '","id":"0"}]}');
-      $('#select_product_visible').val(title);
+      $('#select_recurring_product').first().val('{"select":1,"products":[{"prod_id":"' + id + '","id":"0"}]}');
+      $('#select_recurring_product_visible').val(title);
 
       var id = json[i]['variants'][0].id;
 

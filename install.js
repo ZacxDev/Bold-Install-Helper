@@ -14,11 +14,11 @@ function isNested(list, start) {
   {
     //if we find an opening for tag before finding another closing one
     line = replaceAll(list[i],' ', '');
-    if (line.indexOf('{%for%}') != -1)
+    if (line.indexOf('{%for') != -1)
     {
       return -1;
     }
-      if (line.indexOf('{% endfor %}') != -1)
+      if (line.indexOf('{%endfor%}') != -1)
       {
         return i;
       }
@@ -50,7 +50,7 @@ function cartInstall(data)
       }
 
       //if we find the loop
-      if ((split[i].indexOf('{% for p in item.properties') != -1 || split[i].indexOf('{% for property in itemProperties') != -1) && !cart_log[2])
+      if ((split[i].indexOf('{% for p in item.properties') != -1 || split[i].indexOf('{% for property in itemProperties') != -1 || split[i].indexOf('{% for p in itemProperties') != -1) && !cart_log[2])
       {
         //save the index so we can comment
         var fl_cmt_index = i;
@@ -59,15 +59,15 @@ function cartInstall(data)
         {
           if (split[f].indexOf('{% endfor %}') != -1)
           {
-            //if there is another end for before another for
-            var next_for_line = isNested(split, f);
+            //if there is another end for before another for (use f + 1 since otherwise it'll return the current line)
+            var next_for_line = isNested(split, f + 1);
             if (next_for_line != -1)
               {
                 f = next_for_line;
               }
 
-            split.splice(fl_cmt_index, 0, "{% comment %}");
-            split.splice(f+2, 0, "{% endcomment %}");
+            split.splice(fl_cmt_index, 0, "{%- comment -%}");
+            split.splice(f+2, 0, "{%- endcomment -%}");
             split.splice(f+3, 0, "{{ bold_recurring_desc }}");
             cart_log[2] = true;
 
@@ -178,26 +178,29 @@ data = parseValueFromXML(data);
     if (lines[i].indexOf('itemProperty:') != -1)
     {
       //inset recurring property on next line
-      lines.splice(i+1, 0, 'itemRecurring: "[data-cart-item-formatted_recurring_desc]",');
+      //lines.splice(i+1, 0, 'itemRecurring: "[data-cart-item-formatted_recurring_desc]",');
+      lines[i] = lines[i].substring(0, lines[i].indexOf('itemProperty:')) + 'itemRecurring: "[data-cart-item-formatted_recurring_desc]",' + lines[i].substring(lines[i].indexOf('itemProperty:'), lines[i].length);
       log[0] = true;
     }
     // run clean cart and append recurring desc to html
-    else if (lines[i].indexOf('update: function(t)') != -1)
+    if (lines[i].indexOf('this.trigger("cart_update_start"') != -1)
     {
       //append cleancart
-      lines.splice(i+1, 0, "if(typeof(BOLD) === 'object' && BOLD.helpers && typeof(BOLD.helpers.cleanCart) === 'function' ) {cart = BOLD.helpers.cleanCart(cart);}")
-
-      // find the line we want to inset recurring desc into
-      var j = findIndexOf(lines, 'return e.find', i);
-      // if we find it, insert the code, and replace discounted price with itemPrice
-      if (j != -1)
-        lines[j] = lines[j].substring(0, lines[j].indexOf('$n(Sc.itemVariantTitle')) + "$n(Sc.itemRecurring, e).html(t.formatted_recurring_desc), " + lines[j].substring(lines[j].indexOf('$n(Sc.itemVariantTitle'), lines[j].length).replace('t.discounted_price', 'itemPrice');
-      //define itemprice
-      lines.splice(j, 0, "var itemPrice = '';if(t.properties != null){itemPrice = t.price;} else{itemPrice = t.discounted_price;}")
+      //lines.splice(i+1, 0, "if(typeof(BOLD) === 'object' && BOLD.helpers && typeof(BOLD.helpers.cleanCart) === 'function' ) {cart = BOLD.helpers.cleanCart(cart);}")
+      debugger;
+      lines[i] = lines[i].substring(0, lines[i].indexOf('this.trigger("cart_update_start"')) + "if(typeof(BOLD) === 'object' && BOLD.helpers && typeof(BOLD.helpers.cleanCart) === 'function' ) {t = BOLD.helpers.cleanCart(t);}" + lines[i].substring(lines[i].indexOf('this.trigger("cart_update_start"'), lines[i].length);
     }
-
-    else if (lines[i].indexOf('update: function(t)') != -1)
+    //insert recurring desc to html
+    if (lines[i].indexOf('return e.find') != -1)
     {
+      // find the line we want to inset recurring desc into
+    //  var j = findIndexOf(lines, 'return e.find', i);
+      // if we find it, insert the code, and replace discounted price with itemPrice
+    //  if (j != -1)
+        lines[i] = lines[i].substring(0, lines[i].indexOf('$n(Sc.itemVariantTitle')) + "$n(Sc.itemRecurring, e).html(t.formatted_recurring_desc), " + lines[i].substring(lines[i].indexOf('$n(Sc.itemVariantTitle'), lines[i].length).replace('t.discounted_price', 'itemPrice');
+      //define itemprice
+      //lines.splice(j, 0, "var itemPrice = '';if(t.properties != null){itemPrice = t.price;} else{itemPrice = t.discounted_price;}")
+      lines[i] = lines[i].substring(0, lines[i].indexOf('return e.find')) + "var itemPrice = '';if(t.properties != null){itemPrice = t.price;} else{itemPrice = t.discounted_price;}" + lines[i].substring(lines[i].indexOf('return e.find'), lines[i].length);
     }
   }
 

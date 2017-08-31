@@ -43,9 +43,7 @@ function loadSubscriptionWidget()
   var widget = $('<div class="bold-install-widget" />');
   widget.appendTo($(".segment-header-actions"));
 
-
-
-    var input = $('<input type="button" value="Install" class="btn btn-primary bold-install-dropdown" />');
+    var input = $('<input type="button" value="Fill Subs" class="btn btn-primary bold-install-dropdown" />');
     input.appendTo($(".bold-install-widget"));
 
     var flex = $('<div class="bold_flex_div" />');
@@ -54,13 +52,13 @@ function loadSubscriptionWidget()
     var div = $('<div class="bold-install-dropdown-menu" />');
     div.appendTo($(".bold_flex_div"));
 
-    var testOne = $('<input type="button" value="Standard" class="bold-install bold-install-testOne" />');
+    var testOne = $('<input type="button" value="Standard" class="btn bold-install bold-install-testOne" />');
     testOne.appendTo($(".bold-install-dropdown-menu"));
 
-    var testTwo = $('<input type="button" value="Convertible" class="bold-install bold-install-testTwo" />');
+    var testTwo = $('<input type="button" value="Convertible" class="btn bold-install bold-install-testTwo" />');
     testTwo.appendTo($(".bold-install-dropdown-menu"));
 
-    var testThree = $('<input type="button" value="Build A Box" class="bold-install bold-install-testThree" />');
+    var testThree = $('<input type="button" value="Build A Box" class="btn bold-install bold-install-testThree" />');
     testThree.appendTo($(".bold-install-dropdown-menu"));
 
 }
@@ -94,7 +92,7 @@ function loadThemeEditor()
     {
    bhAjaxBtn = $('<input type="button" value="Narrative" class="bh-ajax-btn" />');
    bhAjaxBtn.appendTo($('.bh-ajax-menu'));
-   bhAjaxBtn = bhAjaxBtn.clone();
+   bhAjaxBtn = bhAjaxBtn.clone().attr('disabled', 'disabled');
    bhAjaxBtn.val('Supply');
    bhAjaxBtn.appendTo($('.bh-ajax-menu'));
    bhAjaxBtn = bhAjaxBtn.clone();
