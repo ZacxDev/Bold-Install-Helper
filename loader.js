@@ -24,7 +24,7 @@ function loadCusLookupBtns()
   tableHeaderChild.after(columnHeader)
   $('tbody > tr').each(function(index, element) {
     var tableRow = $('tbody tr').eq(index)[0];
-    debugger;
+
     var url = ($(tableRow).find("td > div > a")[0]).text;
     url = url.substring(url.indexOf('//') + 1, url.length);
     ($('tbody tr').eq(index)).children().eq(1)[0].after($('<td class="customerLookup"> <span> <a type="button" target="_blank" class="customer-lookup-btn btn btn-primary">Lookup</a> </span> </td> ')[0]);
@@ -43,9 +43,7 @@ function loadSubscriptionWidget()
   var widget = $('<div class="bold-install-widget" />');
   widget.appendTo($(".segment-header-actions"));
 
-
-
-    var input = $('<input type="button" value="Install" class="btn btn-primary bold-install-dropdown" />');
+    var input = $('<input type="button" value="Fill Subs" class="btn btn-primary bold-install-dropdown" />');
     input.appendTo($(".bold-install-widget"));
 
     var flex = $('<div class="bold_flex_div" />');
@@ -54,37 +52,54 @@ function loadSubscriptionWidget()
     var div = $('<div class="bold-install-dropdown-menu" />');
     div.appendTo($(".bold_flex_div"));
 
-    var testOne = $('<input type="button" value="Standard" class="bold-install bold-install-testOne" />');
+    var testOne = $('<input type="button" value="Standard" class="btn bold-install bold-install-testOne" />');
     testOne.appendTo($(".bold-install-dropdown-menu"));
 
-    var testTwo = $('<input type="button" value="Convertible" class="bold-install bold-install-testTwo" />');
+    var testTwo = $('<input type="button" value="Convertible" class="btn bold-install bold-install-testTwo" />');
     testTwo.appendTo($(".bold-install-dropdown-menu"));
 
-    var testThree = $('<input type="button" value="Build A Box" class="bold-install bold-install-testThree" />');
+    var testThree = $('<input type="button" value="Build A Box" class="btn bold-install bold-install-testThree" />');
     testThree.appendTo($(".bold-install-dropdown-menu"));
 
 }
 
-var bhFixes;
+var bhAjax;
 var bhInstallMenu;
 var bhROCartInstall, popup;
 var bhCacheBusterToggle;
 function loadThemeEditor()
 {
-  // bhFixes = $('.bh-fixes');
-  //
-  // if (bhFixes.length === 0)
-  //   {
-  //  bhFixes = $('<input type="button" value="Fixes" class="btn bh-btn bh-fixes" />');
-  //  bhFixes.prependTo($('.theme-asset-actions'));
-  // }
 
- //  bhInstallMenu = $('.bh-install-menu');
- //  if (bhInstallMenu.length === 0)
- //    {
- //   bhInstallMenu = $('<div class="bh-install-menu bh-btn" />');
- //   bhInstallMenu.appendTo($('.file-overview'));
- // }
+  // button to open ajax menu
+  bhAjax = $('.bh-ajax');
+  if (bhAjax.length === 0)
+    {
+   bhAjax = $('<input type="button" value="Ajax" class="btn bh-btn bh-ajax" />');
+   bhAjax.prependTo($('.theme-asset-actions'));
+  }
+
+//ajax install menu
+  bhAjaxMenu = $('.bh-ajax-menu');
+  if (bhAjaxMenu.length === 0)
+    {
+   bhAjaxMenu = $('<div class="bh-ajax-menu" />');
+   bhAjaxMenu.appendTo($('.file-overview'));
+  }
+
+  //ajax button
+  bhAjaxBtn = $('.bh-ajax-btn');
+  if (bhAjaxBtn.length === 0)
+    {
+   bhAjaxBtn = $('<input type="button" value="Narrative" class="bh-ajax-btn" />');
+   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
+   bhAjaxBtn = bhAjaxBtn.clone().attr('disabled', 'disabled');
+   bhAjaxBtn.val('Supply');
+   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
+   bhAjaxBtn = bhAjaxBtn.clone();
+   bhAjaxBtn.val('Turbo');
+   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
+  }
+
 
 //ro cart install btn
  bhROCartInstall = $('.bh-ro-cart');
@@ -110,6 +125,7 @@ function loadThemeEditor()
        log.prependTo($('.theme-asset-actions'));
      }
 
+// check if a cart file is open to append ro-cart btn
   // if ($.inArray($('.theme-asset-name strong').text(), cartFiles) != -1)
   // {
   //     bhROCartInstall.css('display', 'block');
@@ -117,6 +133,7 @@ function loadThemeEditor()
   //   bhROCartInstall.css('display', 'none');
   // }
 
+//ro-cart install btn listener
   $('.bh-ro-cart').click(function() {
     var kv, key, name, tar = $('.theme-asset-name strong').text();
     kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key')
@@ -126,6 +143,22 @@ function loadThemeEditor()
 
     getFile(key, value, cartInstall);
   });
+
+//ajax btn listener
+  $('.bh-ajax').click(function(e) {
+    $('.bh-ajax-menu').css('display','block');
+    e.stopPropagation();
+  });
+
+  $('.bh-ajax-menu').click(function(e) {
+    e.stopPropagation();
+  });
+
+  $('.bh-ajax-btn').click(function(e) {
+    if ($(this).val() === "Narrative")
+      getFile('assets', 'theme.min.js.liquid', narrativeAjaxThemeMinJs);
+  });
+
 }
 
 function SelectText(element) {

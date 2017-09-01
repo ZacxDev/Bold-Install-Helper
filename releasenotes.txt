@@ -1,0 +1,7 @@
+v1.1.13 30/08/17
+Features:
+	- Added Ajax install menu
+	- Added Ajax install(theme.min.js) for Narrative v1.2.2 (Note: Do not unminify file or it won't work as well)
+Fixes:
+	- ro cart install now works with nested for loops
+	- Ro subscription widget buttons look better

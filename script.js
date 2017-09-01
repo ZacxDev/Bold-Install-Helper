@@ -1,7 +1,6 @@
 
 var classArr = ['cm-comment', 'cm-liquid', 'CodeMirror-matchingtag', 'cm-tag','cm-attribute', 'cm-braket', 'cm-string'];
 var clicked = false;
-var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
 // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
 var cart_log = [ false, false, false, false, false, false, false ];
 
@@ -19,6 +18,12 @@ $( document ).ready(function() {
   //                 "from a content script:" + sender.tab.url :
   //                 "from the extension");
   //   });
+
+  chrome.runtime.sendMessage({command: "geturl"}, function(response) {
+    console.log(response.url);
+  });
+
+
 
   var shopifyLogin = false;
   var liqReqPage = false;
@@ -93,6 +98,7 @@ $('.bold-install').click(function(e)
         $('.products-step').css('display', 'block');
         $('.discount-step').css('display', 'block');
         $('.box-step').css('display', 'none');
+      //  getProduct(setProdSelector, '#Bold Test Product 1', 'bold-zachary');
       }else if ($(e.target).hasClass('bold-install-testTwo'))
       {
         $('.field-group [name="discount"]').val('5');
@@ -102,6 +108,8 @@ $('.bold-install').click(function(e)
         $('.discount-step').css('display', 'block');
         $('.box-step').css('display', 'none');
         $('.convertible').css('display', "block");
+      //  getProduct(setProdSelector, '#Bold Test Product 2', 'bold-zachary');
+      //  getProduct(setRecurringProdSelector, '#Bold Test Product 2', 'bold-zachary', '49799035398');
       } else if ($(e.target).hasClass('bold-install-testThree'))
       {
         $('.products-step').css('display', 'none');
@@ -117,8 +125,12 @@ $('.bold-install').click(function(e)
             clicked = true;
           }
         }, 500);
+        return;
     }
   });
+  setTimeout(function() {
+  //  $('#save_product_recurring_form').submit();
+  }, 200);
 });
 
 $('.recover-btn').click(function(e)
@@ -144,10 +156,6 @@ $('.template-editor-tab-filename').click(function(e)
   }, 200);
 });
 
-$('.bh-cachebuster').click(function() {
-  var file = getFile('snippets', 'bold-common.liquid', appendCacheBuster);
-});
-
 $('.card-section button').click(function() {
   setTimeout(function() {
     loadCusLookupBtns()
@@ -165,6 +173,14 @@ $('.with-row-borders td .btn').click(function()
   setTimeout(function() {
     loadEmailButtons();
   }, 200);
+});
+
+//hide menus when click html
+$('html').click(function()
+{
+    $('.bh-codepopup').css('display', 'none');
+    $('.bh-rocart-log').css('display', 'none');
+    $('.bh-ajax-menu').css('display', 'none');
 });
 
 ////////////
@@ -252,4 +268,78 @@ function parseValueFromXML(data)
   value = parser.parseFromString(data, 'text/xml');
   code = value.getElementsByTagName('value')[0].childNodes[0].nodeValue;
   return code;
+}
+
+//we need to get the name of store from the URL and then set URL to *name*.myshopify.com/admin/products.json
+function getProduct(callback, title, myshopify, var_id = '0')
+{
+
+var url = 'https://' + myshopify + '.myshopify.com/admin/products.json';
+
+  var xhr = new XMLHttpRequest();
+xhr.open('get', url, true);
+//xhr.responseType = 'text';
+xhr.onload = function(e) {
+  if (this.status == 200) {
+    var response = this.response;
+    //console.log(response)
+    callback(response, title, var_id);
+  }
+};
+xhr.send();
+}
+
+function setProdSelector(data, title, var_id)
+{
+  var json = JSON.parse(data).products;
+
+  for (var i = 0; i < json.length; ++i)
+  {
+    if (json[i]['title'].indexOf(title) != -1)
+    {
+    //  debugger;
+      var id = json[i]['id'];
+      $('#select_product').first().val('{"select":1,"products":[{"prod_id":"' + id + '","id":"0"}]}');
+      $('#select_product_visible').val(title);
+
+      var id = json[i]['variants'][0].id;
+
+      //$('#select_product_visible').parent().find('.btn').click()
+      $("#select_product")[0].product_selector.show();
+    //  setTimeout(function() {
+
+      visible_product_selector.select_product(id, '0', id + "-0");
+      visible_product_selector.continue_with_product();
+      //$(document).trigger('close.facebox')
+    //}, 2000);
+      break;
+    }
+  }
+}
+//this function works fine
+function setRecurringProdSelector(data, title, var_id)
+{
+  var json = JSON.parse(data).products;
+
+  for (var i = 0; i < json.length; ++i)
+  {
+    if (json[i]['title'].indexOf(title) != -1)
+    {
+      var id = json[i]['id'];
+      $('#select_recurring_product').first().val('{"select":1,"products":[{"prod_id":"' + id + '","id":"0"}]}');
+      $('#select_recurring_product_visible').val(title);
+
+      var id = json[i]['variants'][0].id;
+
+      $("#select_recurring_product")[0].product_selector.show();
+      setTimeout(function() {
+      visible_product_selector.select_product(id, var_id, id + '-' + var_id);
+      visible_product_selector.continue_with_product();
+      $(document).trigger('close.facebox')
+      }, 1000);
+
+      break;
+
+    }
+  }
 }
