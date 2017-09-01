@@ -46,3 +46,7 @@ xhr.onload = function(e) {
 };
 xhr.send();
 }
+document.getElementById('options_button').onclick = openOps;
+function openOps() {
+  chrome.runtime.openOptionsPage()
+    };
