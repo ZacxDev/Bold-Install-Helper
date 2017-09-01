@@ -19,6 +19,12 @@ $( document ).ready(function() {
   //                 "from the extension");
   //   });
 
+  chrome.runtime.sendMessage({command: "geturl"}, function(response) {
+    console.log(response.url);
+  });
+
+
+
   var shopifyLogin = false;
   var liqReqPage = false;
   var themeEditor = false;
