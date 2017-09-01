@@ -27,9 +27,6 @@
 //   });
 // });
 var url;
-chrome.tabs.query({'active': true, currentWindow: true}, function (tabs) {
-    url = tabs[0].url;
-});
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
@@ -37,5 +34,9 @@ function(request, sender, sendResponse) {
               "from a content script:" + sender.tab.url :
               "from the extension");
   if (request.command == "geturl")
-    sendResponse({url: url + ""});
+    sendResponse({url: sender.tab.url + ""});
+});
+
+$(document).ready(function() {
+  console.log('d')
 });
