@@ -22,7 +22,8 @@
   "permissions": [
     "activeTab",
     "tabs",
-    "clipboardWrite"
+    "clipboardWrite",
+    "*://*/*"
   ],
   "content_scripts": [
   {
