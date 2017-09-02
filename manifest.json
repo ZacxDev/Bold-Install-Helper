@@ -7,18 +7,18 @@
   "options_page": "options.html",
   "background":
     {
-        "scripts": ["jquery-3.2.1.min.js", "background.js"],
+        "scripts": ["js/jquery-3.2.1.min.js", "js/background.js"],
         "persistent": false
     },
   "browser_action": {
-    "default_icon": "icon.png",
+    "default_icon": "resources/icon.png",
     "default_popup": "popup.html",
     "default_title": "Auto Fill Inputs"
   },"icons":
    {
-      "128": "bold-install-helper-icon128.png",
-      "16": "bold-install-helper-icon16.png",
-      "48": "bold-install-helper-icon48.png"
+      "128": "resources/bold-install-helper-icon128.png",
+      "16": "resources/bold-install-helper-icon16.png",
+      "48": "resources/bold-install-helper-icon48.png"
    },
   "permissions": [
     "activeTab",
@@ -38,7 +38,7 @@
 "*://*.myshopify.com/admin/apps/recurring-orders/s/*/subscription_box_settings/box_settings*",
 "file:///E:/File%20Dump/Bold%20Commerce%20Admin%20-.html"],
     "css": ["style.css"],
-    "js": ["jquery-3.2.1.min.js", "loader.js", "install.js", "script.js"],
+    "js": ["js/jquery-3.2.1.min.js", "js/loader.js", "js/install.js", "js/script.js"],
     "all_frames": true
   }
 ]

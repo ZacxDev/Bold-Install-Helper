@@ -30,22 +30,22 @@ function(request, sender, sendResponse) {
 });
 
 function loadRecoverButtons(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "recoverbuttons.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/recoverbuttons.js"}, function() {
   });
 }
 
 function loadROWidget(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "rowidget.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/rowidget.js"}, function() {
   });
 }
 
 function loadThemeEditor(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "theme-editor.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/theme-editor.js"}, function() {
   });
 }
 
 function loadCusLookup(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "cuslookup.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/cuslookup.js"}, function() {
   });
 }
 
