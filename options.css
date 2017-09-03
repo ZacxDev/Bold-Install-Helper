@@ -156,3 +156,10 @@ body{
 	position:relative;
 	top:1px;
 }
+.signature {
+  color: black;
+  text-align: center;
+}
+.signature img {
+  max-width: 19px;
+}

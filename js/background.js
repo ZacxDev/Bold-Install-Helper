@@ -22,24 +22,24 @@ function(request, sender, sendResponse) {
           email_recovery_buttons = items.email_recovery_buttons_option;
           customer_account_highlight = items.customer_account_highlight_option;
           console.log(customer_lookup);
+
+          switch(true) {
+            case (url.indexOf('myshopify.com/admin/auth/recover') != -1 && email_recovery_buttons):
+              loadRecoverButtons(sender.tab);
+              break;
+            case (url.indexOf("recurring_settings/product_recurring") != -1 && recurring_orders_install || url.indexOf('subscription_box_settings/box_settings/') != -1 && recurring_orders_install):
+              loadROWidget(sender.tab);
+              break;
+            case (url.indexOf('myshopify.com/admin/themes/') != -1 && theme_editor_buttons && customer_account_highlight):
+              loadThemeEditor(sender.tab);
+              break;
+            case (url.indexOf('util.boldapps.net/admin/liquid/requests') != -1 && customer_lookup):
+              loadCusLookup(sender.tab);
+              break;
+            default:
+              break;
+          }
         });
-      switch(true) {
-        case (url.indexOf('myshopify.com/admin/auth/recover') != -1 && email_recovery_buttons):
-          loadRecoverButtons(sender.tab);
-          break;
-        case (url.indexOf("recurring_settings/product_recurring") != -1 && recurring_orders_install || url.indexOf('subscription_box_settings/box_settings/') != -1 && recurring_orders_install):
-          loadROWidget(sender.tab);
-          break;
-        case (url.indexOf('myshopify.com/admin/themes/') != -1 && theme_editor_buttons && customer_account_highlight):
-          loadThemeEditor(sender.tab);
-          break;
-        case (url.indexOf('util.boldapps.net/admin/liquid/requests') != -1 && customer_lookup):
-        console.log("Im here hurray");
-          loadCusLookup(sender.tab);
-          break;
-        default:
-          break;
-      }
     }
 });
 
