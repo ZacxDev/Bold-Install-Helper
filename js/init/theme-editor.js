@@ -148,7 +148,7 @@ function checkManageSubs(data) {
   var clipboardIcon = $('.clipboard-icon');
   if (clipboardIcon.length === 0)
   {
-    var clipboardIcon = $('<div class="clipboard-icon"><img src="https://clipboardjs.com/assets/images/clippy.svg" /></div>')
+    var clipboardIcon = $('<div class="clipboard-icon"><img src="https://clipboardjs.com/assets/images/clippy.svg" href="#" /></div>')
     clipboardIcon.prependTo($('a[data-asset-key="templates/customers/account.liquid"]').parent());
   }
 
@@ -161,15 +161,16 @@ function checkManageSubs(data) {
   }
 
 
-      $('.clipboard-icon').mouseenter(function() {
-        $('.clipboard-hover').css('display', 'block');
-      });
-
-      $('.clipboard-icon').mouseleave(function() {
-        $('.clipboard-hover').css('display', 'none');
-      });
+      // $('.clipboard-icon').mouseenter(function() {
+      //   $('.clipboard-hover').css('display', 'block');
+      // });
+      //
+      // $('.clipboard-icon').mouseleave(function() {
+      //   $('.clipboard-hover').css('display', 'none');
+      // });
 
       $('.clipboard-icon').click(function() {
+        $('.clipboard-hover').css('display', 'block');
         SelectText('manage-subs');
         document.execCommand('copy');
         $('.clipboard-hover').css('display', 'none');
