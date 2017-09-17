@@ -1,22 +1,34 @@
 
 
+var build_cart_names = [ 'buildcart', 'refreshcart', 'sc', 'yc' ]
 
+function buildCartIndex(data)
+{
 
+  var lines = parseValueFromXML(data).split('\n');
 
-function SelectText(element) {
-    var doc = document
-        , text = doc.getElementById(element)
-        , range, selection
-    ;
-    if (doc.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(text);
-        range.select();
-    } else if (window.getSelection) {
-        selection = window.getSelection();
-        range = document.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
+  for (var i = 0; i < lines.length; ++i)
+  {
+
+  }
+
+}
+
+function isBuildCart(line)
+{
+  // if the line is not declaring a function, return false
+  if (lines.indexOf('function') == -1)
+    return false;
+
+  var name;
+  // loop build_cart_names and check if the line has a function that matches the name
+  for (var i = 0; i < build_cart_names.length; ++i)
+  {
+    name = build_cart_names[i].toLowerCase();
+    // if the line is a function (checked above) and is named like a buildcart is, return true
+    if (line.indexOf(name) != -1)
+      return true;
+  }
+  // if line is a function but does not match any buildcarts
+  return false;
 }

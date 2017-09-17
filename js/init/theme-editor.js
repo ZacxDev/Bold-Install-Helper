@@ -141,8 +141,39 @@ function checkManageSubs(data) {
       return;
     }
   }
-  //if we don't find it, then highlight
+  //if we don't find it, then highlight and append the clipboard button
 
   $('a[data-asset-key="templates/customers/account.liquid"]').css('background-color', 'rgba(255, 0, 0, 0.5)');
+  // info hover popup
+  var clipboardIcon = $('.clipboard-icon');
+  if (clipboardIcon.length === 0)
+  {
+    var clipboardIcon = $('<div class="clipboard-icon"><img src="https://clipboardjs.com/assets/images/clippy.svg" href="#" /></div>')
+    clipboardIcon.prependTo($('a[data-asset-key="templates/customers/account.liquid"]').parent());
+  }
+
+  // info hover popup
+  var clipboardHover = $('.clipboard-hover');
+  if (clipboardHover.length === 0)
+  {
+    var clipboardHover = $('<div class="clipboard-hover"><xmp id="manage-subs"><p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p></xmp></div>')
+    clipboardHover.prependTo($('a[data-asset-key="templates/customers/account.liquid"]').parent());
+  }
+
+
+      // $('.clipboard-icon').mouseenter(function() {
+      //   $('.clipboard-hover').css('display', 'block');
+      // });
+      //
+      // $('.clipboard-icon').mouseleave(function() {
+      //   $('.clipboard-hover').css('display', 'none');
+      // });
+
+      $('.clipboard-icon').click(function() {
+        $('.clipboard-hover').css('display', 'block');
+        SelectText('manage-subs');
+        document.execCommand('copy');
+        $('.clipboard-hover').css('display', 'none');
+      });
 
 }
