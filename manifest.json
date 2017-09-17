@@ -34,6 +34,7 @@
   "*://*.myshopify.com/admin/auth/recover*",
 "*://*.myshopify.com/admin/themes/*",
 "*://util.boldapps.net/admin/liquid/requests*",
+"*://partners.shopify.com/*/managed_stores/new",
 "*://*.myshopify.com/admin/apps/recurring-orders/s/*/recurring_settings/product_recurring",
 "*://*.myshopify.com/admin/apps/recurring-orders/s/*/subscription_box_settings/box_settings*",
 "file:///E:/File%20Dump/Bold%20Commerce%20Admin%20-.html"],
