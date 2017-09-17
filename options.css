@@ -163,3 +163,15 @@ body{
 .signature img {
   max-width: 19px;
 }
+
+.collaborator_account_notes
+{
+  -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 15px;
+}
+.setting_label_text_area
+{
+  font-size: 25px;
+  width: 40%;
+}

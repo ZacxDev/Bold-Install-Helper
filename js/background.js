@@ -1,5 +1,5 @@
 
-var url, customer_lookup, theme_editor_buttons, recurring_orders_install, email_recovery_buttons, customer_account_highlight;
+var url, customer_lookup, theme_editor_buttons, recurring_orders_install, email_recovery_buttons, customer_account_highlight, collaborator_account_checkboxes, collaborator_account_notes;
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
@@ -13,7 +13,9 @@ function(request, sender, sendResponse) {
           theme_editor_buttons_option: false,
           recurring_orders_install_option: false,
           email_recovery_buttons_option: false,
-          customer_account_highlight_option: false
+          customer_account_highlight_option: false,
+          collaborator_account_checkboxes_options: false,
+          collaborator_account_notes_options: ""
         }, function(items) {
           console.log(items);
           customer_lookup = items.customer_lookup_option;
@@ -21,24 +23,28 @@ function(request, sender, sendResponse) {
           recurring_orders_install = items.recurring_orders_install_option;
           email_recovery_buttons = items.email_recovery_buttons_option;
           customer_account_highlight = items.customer_account_highlight_option;
-          console.log(customer_lookup);
+          collaborator_account_checkboxes: items.collaborator_account_checkboxes_options;
+          collaborator_account_notes: items.collaborator_account_notes_options;
 
-          switch(true) {
-            case (url.indexOf('myshopify.com/admin/auth/recover') != -1 && email_recovery_buttons):
-              loadRecoverButtons(sender.tab);
+        switch(true) {
+          case (url.indexOf('myshopify.com/admin/auth/recover') != -1 && email_recovery_buttons):
+            loadRecoverButtons(sender.tab);
+            break;
+          case (url.indexOf("recurring_settings/product_recurring") != -1 && recurring_orders_install || url.indexOf('subscription_box_settings/box_settings/') != -1 && recurring_orders_install):
+            loadROWidget(sender.tab);
+            break;
+          case (url.indexOf('myshopify.com/admin/themes/') != -1 && theme_editor_buttons && customer_account_highlight):
+            loadThemeEditor(sender.tab);
+            break;
+          case (url.indexOf('util.boldapps.net/admin/liquid/requests') != -1 && customer_lookup):
+            loadCusLookup(sender.tab);
+            break;
+          case (url.indexOf('/managed_stores/new') != -1 && collaborator_account_checkboxes):
+              loadCollaboratorAccounts(sender.tab);
               break;
-            case (url.indexOf("recurring_settings/product_recurring") != -1 && recurring_orders_install || url.indexOf('subscription_box_settings/box_settings/') != -1 && recurring_orders_install):
-              loadROWidget(sender.tab);
-              break;
-            case (url.indexOf('myshopify.com/admin/themes/') != -1 && theme_editor_buttons && customer_account_highlight):
-              loadThemeEditor(sender.tab);
-              break;
-            case (url.indexOf('util.boldapps.net/admin/liquid/requests') != -1 && customer_lookup):
-              loadCusLookup(sender.tab);
-              break;
-            default:
-              break;
-          }
+          default:
+            break;
+        }
         });
     }
 });
@@ -60,6 +66,10 @@ function loadThemeEditor(tab) {
 
 function loadCusLookup(tab) {
   chrome.tabs.executeScript(tab.id, {file: "js/init/cuslookup.js"}, function() {
+  });
+}
+function loadCollaboratorAccounts(tab) {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/collabAccounts.js"}, function() {
   });
 }
 
