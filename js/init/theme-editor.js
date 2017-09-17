@@ -17,7 +17,7 @@ function loadThemeEditor()
   bhAjax = $('.bh-ajax');
   if (bhAjax.length === 0)
     {
-   bhAjax = $('<input type="button" value="Ajax" class="btn bh-btn bh-ajax" />');
+   bhAjax = $('<input type="button" value="Ajax" class="btn bh-btn bh-ajax" style="display:none;" />');
    bhAjax.prependTo($('.theme-asset-actions'));
   }
 
@@ -40,6 +40,9 @@ function loadThemeEditor()
    bhAjaxBtn.appendTo($('.bh-ajax-menu'));
    bhAjaxBtn = bhAjaxBtn.clone();
    bhAjaxBtn.val('Turbo');
+   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
+   bhAjaxBtn = bhAjaxBtn.clone().removeAttr('disabled');;
+   bhAjaxBtn.val('Genaric');
    bhAjaxBtn.appendTo($('.bh-ajax-menu'));
   }
 
@@ -104,6 +107,8 @@ function loadThemeEditorListeners() {
     $('.bh-ajax-btn').click(function(e) {
       if ($(this).val() === "Narrative")
         getFile('assets', 'theme.min.js.liquid', narrativeAjaxThemeMinJs);
+      if ($(this).val() === "Genaric")
+        getFile('assets', 'theme.min.js.liquid', buildCartIndex);
     });
 
     $('.asset-listing-theme-file').click(function(e)
