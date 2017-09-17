@@ -1,5 +1,5 @@
 
-var url, customer_lookup, theme_editor_buttons, recurring_orders_install, email_recovery_buttons, customer_account_highlight, collaborator_account_checkboxes, collaborator_account_notes;
+var url, customer_lookup, theme_editor_buttons, recurring_orders_install, email_recovery_buttons, customer_account_highlight, collaborator_account_checkboxes, bold_file_buttons, collaborator_account_notes;
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
@@ -14,18 +14,18 @@ function(request, sender, sendResponse) {
           recurring_orders_install_option: false,
           email_recovery_buttons_option: false,
           customer_account_highlight_option: false,
+          bold_buttons_options: false,
           collaborator_account_checkboxes_options: false,
           collaborator_account_notes_options: ""
         }, function(items) {
-          console.log(items);
           customer_lookup = items.customer_lookup_option;
           theme_editor_buttons = items.theme_editor_buttons_option;
           recurring_orders_install = items.recurring_orders_install_option;
           email_recovery_buttons = items.email_recovery_buttons_option;
+          bold_file_buttons =  items.bold_buttons_options;
           customer_account_highlight = items.customer_account_highlight_option;
           collaborator_account_checkboxes: items.collaborator_account_checkboxes_options;
           collaborator_account_notes: items.collaborator_account_notes_options;
-
         switch(true) {
           case (url.indexOf('myshopify.com/admin/auth/recover') != -1 && email_recovery_buttons):
             loadRecoverButtons(sender.tab);
@@ -35,7 +35,9 @@ function(request, sender, sendResponse) {
             break;
           case (url.indexOf('myshopify.com/admin/themes/') != -1 && theme_editor_buttons && customer_account_highlight):
             loadThemeEditor(sender.tab);
-            break;
+          case (url.indexOf('myshopify.com/admin/themes/') != -1 && bold_file_buttons):
+              loadCreationButtons(sender.tab);
+              break;
           case (url.indexOf('util.boldapps.net/admin/liquid/requests') != -1 && customer_lookup):
             loadCusLookup(sender.tab);
             break;
@@ -68,8 +70,13 @@ function loadCusLookup(tab) {
   chrome.tabs.executeScript(tab.id, {file: "js/init/cuslookup.js"}, function() {
   });
 }
+function loadCreationButtons(tab) {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/creationButtons.js"}, function() {
+  });
+}
+
 function loadCollaboratorAccounts(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "js/init/collabAccounts.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/themeEditorButtons.js"}, function() {
   });
 }
 
