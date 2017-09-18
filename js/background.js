@@ -24,8 +24,8 @@ function(request, sender, sendResponse) {
           email_recovery_buttons = items.email_recovery_buttons_option;
           bold_file_buttons =  items.bold_buttons_options;
           customer_account_highlight = items.customer_account_highlight_option;
-          collaborator_account_checkboxes: items.collaborator_account_checkboxes_options;
-          collaborator_account_notes: items.collaborator_account_notes_options;
+          collaborator_account_checkboxes = items.collaborator_account_checkboxes_options;
+          collaborator_account_notes = items.collaborator_account_notes_options;
         switch(true) {
           case (url.indexOf('myshopify.com/admin/auth/recover') != -1 && email_recovery_buttons):
             loadRecoverButtons(sender.tab);
@@ -76,7 +76,7 @@ function loadCreationButtons(tab) {
 }
 
 function loadCollaboratorAccounts(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "js/init/themeEditorButtons.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/collabAccounts.js"}, function() {
   });
 }
 
