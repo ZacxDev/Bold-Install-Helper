@@ -8,16 +8,6 @@
   cursor: copy;
 }
 
-.clipboard-hover {
-  width: 50px;
-  height: 20px;
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0);
-  color: rgba(0, 0, 0, 0);
-  height: auto;
-  display: none;
-}
-
 .bh-ajax-btn:disabled:hover {
   background-color: #C0C0C0;
 }

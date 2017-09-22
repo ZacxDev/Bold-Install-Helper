@@ -59,6 +59,9 @@ xhr.onload = function(e) {
     var response = this.response;
     //console.log(response)
     callback(response);
+  } else if (this.status == 404)
+  {
+    callback(undefined);
   }
 };
 xhr.send();
@@ -96,6 +99,9 @@ xhr.send(json);
 
 function parseValueFromXML(data)
 {
+  if (data == undefined)
+    return '';
+
   var value = '';
   var code = '';
   var parser = new DOMParser();

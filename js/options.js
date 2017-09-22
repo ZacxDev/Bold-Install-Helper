@@ -1,3 +1,8 @@
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    restore_options();
+  });
+
 // Saves options to chrome.storage
 function save_options() {
   var customer_lookup = document.getElementById('customer_lookup').checked;

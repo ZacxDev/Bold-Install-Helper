@@ -62,7 +62,9 @@ function loadROWidget(tab) {
 }
 
 function loadThemeEditor(tab) {
-  chrome.tabs.executeScript(tab.id, {file: "js/init/theme-editor.js"}, function() {
+  chrome.tabs.executeScript(tab.id, {file: "js/init/theme-editor/liquidScanner.js"}, function() {
+    chrome.tabs.executeScript(tab.id, {file: "js/init/theme-editor.js"}, function() {
+    });
   });
 }
 

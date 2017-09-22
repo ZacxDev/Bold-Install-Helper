@@ -1,3 +1,9 @@
+v1.1.18 21/09/17
+Features:
+	- Added App Selector in popup to auto change options
+Notes:
+	- Began work on bold code scanner
+
 v1.1.13 30/08/17
 Features:
 	- Added Ajax install menu
