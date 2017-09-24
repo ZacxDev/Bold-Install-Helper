@@ -1,4 +1,32 @@
 
+.scan-hover {
+  height: 30px;
+  background-color: rgba(77, 77, 77, 0.5);
+  border-radius: 20px;
+  color: white;
+  position: fixed;
+  margin-left: -3%;
+margin-top: 1.2%;
+width: 9%;
+}
+
+.scan-hover p {
+  font-size: 12px;
+  margin-left: 10%;
+  margin-top: 1%;
+}
+
+.scan-icon {
+  max-width: 28px;
+  display: inline;
+  position: absolute;
+  margin-left: 5px;
+  cursor: help;
+}
+
+.scan-icon {
+  opacity: 0.6;
+}
 
 .clipboard-icon img {
   max-width: 20px;

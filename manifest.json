@@ -5,6 +5,7 @@
   "description": "Auto-Fill Install test fields",
   "version": "1.1.17",
   "options_page": "options.html",
+  "web_accessible_resources": ["resources/scanicon.png"],
   "background":
     {
         "scripts": ["js/jquery-3.2.1.min.js", "js/background.js"],
