@@ -86,15 +86,39 @@ function createScanIcon(file, checks)
 }
 function createScanListeners()
 {
-  $(".scan-icon").mouseenter(function()
+  $(".scan-icon").mouseenter(function(e)
   {
     $(this).parent().find('.scan-hover').css('display', 'block');
-    $(this).parent().find('.scan-hover').css('left', $(this).position.left);
-    $(this).parent().find('.scan-hover').css('top', $(this).position.top);
+  //  debugger;
+    $(this).parent().find('.scan-hover').css('left', $(this).offset().left - 10);
+    $(this).parent().find('.scan-hover').css('top', ($(this).offset().top - 55));
   });
 
   $(".scan-icon").mouseleave(function()
   {
     $(this).parent().find('.scan-hover').css('display', 'none');
   });
+
+  $(".scan-icon").click(function() {
+    openSnipPage();
+  });
+
+}
+
+function getApp(callback) {
+  chrome.runtime.sendMessage({command: "getapp"}, function(response) {
+    chrome.runtime.onMessage.addListener(
+      function(request, sender, sendResponse) {
+        callback(request.app);
+      });
+    });
+}
+
+function openSnipPage()
+{
+  var app = "";
+getApp(function(appname) {
+  app = appname;
+});
+
 }

@@ -6,8 +6,9 @@
   color: white;
   position: fixed;
   margin-left: -3%;
-margin-top: 1.2%;
-width: 9%;
+  margin-top: 1.2%;
+  width: 9%;
+  display: none;
 }
 
 .scan-hover p {
