@@ -12,16 +12,30 @@
 <body>
 
 <div class="options_page">
+
+  <div class="settings_title">
+    <h3>Install Helper Settings</h3>
+  </div>
+
   <div class="app_selector">
-    <div class="option_ro">
-      <p>Recurring Orders</p>
+    <div class="option_tab" value="ro">
+      <label>Recurring Orders</label>
+    </div>
+
+    <div class="option_tab option_tab_selected" value="po">
+      <label>Product Options</label>
+    </div>
+
+    <div class="option_tab" value="qp">
+      <label>Quantity Breaks</label>
+    </div>
+
+    <div class="option_tab" value="pd">
+      <label>Product Discount</label>
     </div>
   </div>
 
   <div class="main_content" >
-    <div class="settings_title">
-      <h3>Install Helper Settings</h3>
-    </div>
 
     <div class="settings_content">
       <div class="line">
@@ -43,7 +57,7 @@
           <span class="slider round"></span>
         </label>
       </div>
-      <div class="line">
+      <div class="line ro_option">
       <div class="setting_label">
         <label class="setting_label" for="recurring_orders_install">Recurring Orders Subscription Buttons: </label>
       </div>
@@ -106,6 +120,7 @@
 <div class='signature'>
   <p>Built By Zach Lowden and Jordan Oliver <img src="https://lovelace-media.imgix.net/uploads/877/52352600-fd89-0132-f41f-0e18518aac2f.png" /></p>
 </div>
+  <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/options.js"></script>
 </body>
 </html>

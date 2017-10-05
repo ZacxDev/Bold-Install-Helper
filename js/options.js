@@ -56,3 +56,14 @@ function restore_options() {
 document.addEventListener('DOMContentLoaded', restore_options);
 document.getElementById('save_options').addEventListener('click',
     save_options);
+
+$(document).ready(function() {
+
+$('.option_tab').click(function() {
+  var app = $(this).attr('value');
+  $("." + app + "_option").hide();
+  $('.option_tab_selected').removeClass('option_tab_selected');
+  $(this).addClass('option_tab_selected');
+});
+
+});
