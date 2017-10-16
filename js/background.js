@@ -7,14 +7,18 @@ function(request, sender, sendResponse) {
     sendResponse({url: sender.tab.url + ""});
   else if (request.command == "getapp")
   {
+    // grab app string from storage
     chrome.storage.sync.get({selected_app: ""}, function(items) {
 
+      // send app string back to tab
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, {app: items.selected_app}, function(response) {
-    //console.log(response.farewell);
-  });
+  chrome.tabs.sendMessage(tabs[0].id, {app: items.selected_app});
 });
     });
+  }
+  else if (request.command == "openmissingcode")
+  {
+    chrome.tabs.create({'url': chrome.extension.getURL('missingCode.html')});
   }
   else if (request.command == "init")
     {

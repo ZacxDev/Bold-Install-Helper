@@ -142,7 +142,7 @@
 .recover-btn {
   display: inline-block;
   background-color: gray;
-  width: 50%;
+  width: 50% !important;
   height: 44px !important;
   margin-left: 0;
   float: right;

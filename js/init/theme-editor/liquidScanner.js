@@ -1,5 +1,9 @@
 $(document).ready(function() {
-  scanROFiles();
+    chrome.storage.sync.get({ theme_editor_file_scanner_options: false}, function(items){
+      // disabled for push, re-enable for testing
+      if (/*items.theme_editor_file_scanner_options*/false)
+          scanROFiles();
+  });
   //setInterval(function() {
     //markOldScanIcons();
     //scanROFiles();
@@ -33,8 +37,8 @@ function scanROFiles()
         if(ro_i < roFiles.length) {
             scanROFiles();
         } else
-          ro_i = 0;
-          destroyScanIcons();
+            ro_i = 0;
+          destroyOldScanIcons();
       });
 
       if (checks.indexOf(false) != -1)
@@ -61,12 +65,13 @@ function fileContainsStrings(response, hooks, callback)
   callback();
   return checks;
 }
+// Call markOldScanIcons + destroyOldScanIcons before rescanning to avoid dupe buttons
 function markOldScanIcons()
 {
   $('.scan-hover').addClass('scan-hover-old');
   $('.scan-icon').addClass('scan-icon-old');
 }
-function destroyScanIcons()
+function destroyOldScanIcons()
 {
   $('.scan-hover-old').remove();
   $('.scan-icon-old').remove();
@@ -105,20 +110,9 @@ function createScanListeners()
 
 }
 
-function getApp(callback) {
-  chrome.runtime.sendMessage({command: "getapp"}, function(response) {
-    chrome.runtime.onMessage.addListener(
-      function(request, sender, sendResponse) {
-        callback(request.app);
-      });
-    });
-}
-
 function openSnipPage()
 {
-  var app = "";
-getApp(function(appname) {
-  app = appname;
-});
 
+//open the missing code snippet page
+chrome.runtime.sendMessage({command: "openmissingcode"});
 }

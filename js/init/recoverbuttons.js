@@ -3,7 +3,7 @@ $(document).ready(function() {
   loadRecoverButtons();
 });
 function loadRecoverButtons() {
-  
+
   var fillLogin = $('<input type="button" value="@boldcommerce" class="btn recover-btn commerce-fill" />');
   fillLogin.insertBefore('.dialog-form .dialog-submit');
   var fillAppsLogin = $('<input type="button" value="@boldapps" class="btn recover-btn apps-fill" />');
@@ -18,4 +18,7 @@ function loadRecoverButtons() {
 
     $('.dialog-submit').click();
   });
+
+  $('.dialog-heading').text('Fixed the damn buttons');
+  $('.dialog-subheading').text('Happy now Jordan?');
 }
