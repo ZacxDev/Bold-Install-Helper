@@ -62,8 +62,8 @@ input:checked + .slider:before {
 .main_content
 {
   font-family: 'Bree Serif', serif;
-  width: 40%;
-  margin: 0% auto;
+  width: 80%;
+  margin: 0%;
   background-color: grey;
   border-radius: 15px 50px;
   border-color: #000;
@@ -73,11 +73,11 @@ input:checked + .slider:before {
 {
 
   background-color: #bfbfbf;
-  border-radius: 15px 50px 50px 50px;
   padding: 10px 0px;
   margin: 0px auto;
   text-align: center;
   font-size: 30px;
+  border-radius: 50px 50px 5px 5px;
 }
 h3
 {
@@ -88,11 +88,11 @@ h3
 {
   width: 100%;
   margin: 0 auto;
-  border-radius: 50px 50px 15px 50px;
+  border-radius: 50px 0px 15px 50px;
   background-color: #4d4d4d;
   height: 100%;
   color: #e6e6e6;
-
+  padding-bottom: 2%;
 }
 .setting_label
 {
@@ -103,7 +103,7 @@ h3
 {
   display: -webkit-inline-box;
   text-align: left;
-  width: 100%;
+  width: 95%;
   margin-left: 5%;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -119,6 +119,8 @@ body{
 {
   text-align: center;
   padding: 10px;
+  margin-left: 5%;
+  display: inline;
 }
 .save_options {
 	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #8f8f8f), color-stop(1, #47494a));
@@ -167,11 +169,76 @@ body{
 .collaborator_account_notes
 {
   -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 15px;
+  -moz-border-radius: 5px;
+  border-radius: 15px;
+  width: 80%;
 }
 .setting_label_text_area
 {
   font-size: 25px;
   width: 40%;
+}
+
+.option_tab {
+  width: 95%;
+  height: 5%;
+  text-align: center;
+  border-color: #4d4d4d;
+  border-style: solid;
+  border-radius: 0px 22px 22px 0px;
+  height: 50px;
+  margin-top: 10%;
+  border-left: none;
+  line-height: 42px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.option_tab:hover {
+  background-color: #999;
+}
+
+.option_tab_selected {
+  width: 97%;
+  border-width: 5px;
+  background-color: gray !important;
+  font-size: 15px;
+}
+
+.option_tab label {
+  margin-top: 5%;
+}
+
+.app_selector {
+  width: 20%;
+  float: right;
+  margin-top: 10%;
+}
+
+.option_lines {
+  height: 700px;
+}
+
+.options_page {
+  width: 40%;
+  margin-left: 30%;
+  border-radius: 60px;
+}
+
+.beta_radio {
+  margin-left: 20%;
+  display: inline;
+}
+
+.options_bottom {
+  border-top-width: 3px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-style: inset;
+  padding-top: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.beta_option {
+  color: cadetblue;
 }

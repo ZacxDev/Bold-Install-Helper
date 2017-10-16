@@ -1,0 +1,20 @@
+body {
+  background-color: #555;
+}
+
+.missing-code-content {
+  width: 100%;
+  text-align: center;
+}
+
+.missing-code-pane {
+  width: 25%;
+  height: 500px;
+  margin: auto;
+  background-color: #999;
+  border-radius: 5%;
+}
+
+.missing-code-pane h1 {
+  padding-top: 2%;
+}
