@@ -19,6 +19,4 @@ function loadRecoverButtons() {
     $('.dialog-submit').click();
   });
 
-  $('.dialog-heading').text('Fixed the damn buttons');
-  $('.dialog-subheading').text('Happy now Jordan?');
 }
