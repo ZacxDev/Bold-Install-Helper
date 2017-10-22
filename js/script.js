@@ -17,6 +17,13 @@ var roHooks = {
   cart_drawer : []
 }
 
+// ro snippets
+var roSnips = {
+  theme : {
+    includes: ["include x", "include y", "include z"]
+  },
+}
+
 //////////////////////
 // SCANNER DATA END //
 //////////////////////

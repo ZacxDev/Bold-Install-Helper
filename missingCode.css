@@ -14,6 +14,7 @@ body {
   border-radius: 5%;
   display: inline-block;
   margin-left: 10%;
+  margin-top: 1%;
 }
 
 .missing-code-pane h1 {
@@ -46,4 +47,67 @@ body {
   border-color: gray;
   color: white;
   cursor: pointer;
+}
+
+.missing-code-snippet {
+  background-color: #777;
+  width: 40%;
+  height: 10%;
+  margin-left: 5%;
+  display: inline-block;
+  margin-top: 2%;
+  box-shadow: 0px 5px 15px -2px #111;
+}
+
+.missing-code-snippet h3 {
+  display: inline-block;
+}
+
+.snip-view {
+
+}
+
+.snip-buttons img {
+  max-width: 16px;
+  position: relative;
+  cursor: pointer;
+}
+
+.snip-buttons {
+  display: inline-block;
+  float: right;
+  padding-right: 10px;
+  padding-top: 5px;
+}
+
+.snip-copy {
+  margin-top: 5px;
+}
+
+.snip-view-pane-fade {
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  text-align: center;
+  top: 0px;
+  left: 0px;
+}
+
+.snip-view-pane {
+  width: 40%;
+  background-color: #888;
+  margin-left: 30%;
+  height: 60%;
+  border-radius: 5%;
+}
+
+.snip-view-pane p {
+  background-color: #d9d9d9;
+  width: 80%;
+  margin-left: 10%;
+  height: 80%;
+  border-radius: 1%;
+  text-align: left;
+  overflow: auto;
 }
