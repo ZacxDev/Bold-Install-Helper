@@ -23,6 +23,13 @@ function(request, sender, sendResponse) {
   else if (request.command == "init")
     {
       url = sender.tab.url;
+
+      //don't run on extention pages
+      if (url.indexOf("chrome-extension") != -1)
+      {
+        return;
+      }
+
         chrome.storage.sync.get({
           customer_lookup_option: false,
           theme_editor_buttons_option: false,

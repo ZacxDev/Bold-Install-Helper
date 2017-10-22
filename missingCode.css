@@ -10,11 +10,40 @@ body {
 .missing-code-pane {
   width: 25%;
   height: 500px;
-  margin: auto;
   background-color: #999;
   border-radius: 5%;
+  display: inline-block;
+  margin-left: 10%;
 }
 
 .missing-code-pane h1 {
   padding-top: 2%;
+}
+
+.missing-code-files {
+  background-color: #222;
+  width: 15%;
+  display: inline-block;
+  float: right;
+  height: 100%;
+}
+
+.missing-code-files-title {
+  background-color: #444;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.missing-code-file-item {
+  padding-top: 1;
+  padding-bottom: 1;
+  font-size: small;
+  margin-top: 5%;
+  border-style: solid;
+  border-width: 2px;
+  border-color: gray;
+  color: white;
+  cursor: pointer;
 }

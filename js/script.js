@@ -1,3 +1,27 @@
+
+// This file is used for global stuff as it is loaded everywhere
+
+//////////////////
+// SCANNER DATA //
+//////////////////
+
+var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "snippets/cart-drawer.liquid" ];
+// key must match an roFiles file name, replace all - with _
+// spacing does not matter in hooks
+var roHooks = {
+  theme: ["include 'bold-common'", "include 'bold-ro-init'", "'bold-helper-functions.js'|asset_url|script_tag", "'bold-r.css'|asset_url|stylesheet_tag"],
+  cart : [],
+  product : [],
+  cart_template : [],
+  product_template : [],
+  cart_drawer : []
+}
+
+//////////////////////
+// SCANNER DATA END //
+//////////////////////
+
+
 var clicked = false;
 // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
 var cart_log = [ false, false, false, false, false, false, false ];
