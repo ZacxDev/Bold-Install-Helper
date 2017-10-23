@@ -44,12 +44,18 @@ function updateCodePane()
 
   var fileName = $('.selected p').text();
   fileName = fileName.substring(fileName.indexOf('/') + 1, fileName.indexOf('.'));
+  fileName = replaceAll(fileName, '-', '_');
 
   $('.missing-code-snippet').remove();
-  var snipItem;
+  var snipItem, lines = "";
   $.each(roSnips[fileName], function(key, value) {
-    snipItem = $('<div class="missing-code-snippet""><p id="snip-code">' + value + '</p><h3>{snippet.title}</h3><div class="snip-buttons"><div class="snip-view"><img src="https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/eye-24-512.png" /></div><div class="snip-copy"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/340540-200.png" /></div></div</div>');
-    snipItem.find('h3').text(key);
+    lines = "";
+    // seperate array so it looks nice
+    $.each(value, function(index, value) {
+      lines = lines + "\n" + value;
+    });
+    snipItem = $('<div class="missing-code-snippet""><textarea id="snip-code">' + lines + '</textarea><h3>{snippet.title}</h3><div class="snip-buttons"><div class="snip-view"><img src="https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/eye-24-512.png" /></div><div class="snip-copy"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/340540-200.png" /></div></div</div>');
+    snipItem.find('h3').text(replaceAll(key, "_", " "));
     snipItem.appendTo($('.missing-code-pane'));
   });
 
@@ -81,9 +87,9 @@ function loadMissingCodeListeners()
   });
 
   $(document).on('click', '.snip-copy', function() {
-    var el =   $(this).parent().parent().find('p');
+    var el = $(this).parent().parent().find('textarea');
     el.show();
-    SelectText(el.attr('id'));
+    el.select();
     document.execCommand('copy');
     if ($(this).is('div'))
       el.hide();
@@ -99,7 +105,7 @@ function updateSnipViewPane()
 {
   var snip = $('.current-snip');
   $('.snip-view-pane h1').text(snip.find('h3').text());
-  $('.snip-view-pane p').text(snip.find('p').text());
+  $('.snip-view-pane textarea').val(snip.find('textarea').val());
 }
 
 function getApp(callback) {

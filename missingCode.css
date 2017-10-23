@@ -68,6 +68,10 @@ body {
 
 }
 
+#snip-code {
+  display: none;
+}
+
 .snip-buttons img {
   max-width: 16px;
   position: relative;
@@ -103,10 +107,9 @@ body {
   border-radius: 5%;
 }
 
-.snip-view-pane p {
+.snip-view-pane textarea {
   background-color: #d9d9d9;
   width: 80%;
-  margin-left: 10%;
   height: 80%;
   border-radius: 1%;
   text-align: left;

@@ -6,25 +6,57 @@
 //////////////////
 
 // @variable roFiles: this is used for api calls to read the files, must match query string format
-var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "snippets/cart-drawer.liquid" ];
-// key must match an roFiles file name, replace all - with _
+var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "sections/featured-product.liquid", "snippets/cart-drawer.liquid", "templates/customersaccount.liquid" ];
+// key must match an roFiles file name, replace all - with _, remove all '/'
 // spacing does not matter in hooks
 // @variable roHooks: this is used to search the files, make as genaric as possible
 var roHooks = {
-  theme: ["include 'bold-common'", "include 'bold-ro-init'", "'bold-helper-functions.js'|asset_url|script_tag", "'bold-r.css'|asset_url|stylesheet_tag"],
-  cart : [],
-  product : [],
-  cart_template : [],
+  theme: ["include 'bold-common'", "include 'bold-ro-init'", "'bold-helper-functions.js'|asset_url|script_tag", "'bold-ro.css'|asset_url|stylesheet_tag"],
+  cart : ["include 'bold-cart'"],
+  product : ["include 'bold-ro'", "include 'bold-product' with product, hide_action: 'break', output: 'none'"],
+  cart_template : ["include 'bold-cart'", "include 'bold-cart-item' with item", "{{ bold_recurring_desc }}", 'bold_item_price', "bold_cart_total_price", "{{ bold_ro_cart }}", "if additional_checkout_buttons and show_paypal"],
   product_template : [],
-  cart_drawer : []
+  cart_drawer : [],
+  customersaccount: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
+}
+
+//unused so far
+var roOptionalHooks = {
+  theme: ["'bold-helper-functions.js'|asset_url|script_tag", "'bold-ro.css'|asset_url|stylesheet_tag"]
 }
 
 // ro snippets
-// @variable roSnips: this is used to populate the snippets on missing code page (missingCode.html|.js|.css), MUST be functional and proper code
+// @variable roSnips: this is used to populate the snippets on missing code page (missingCode.html|.js|.css), MUST be functional and proper code, MUST match an roFiles entry without key or extention, MUST replace all '-' with '_'
 var roSnips = {
   theme : {
-    includes: ["include x", "include y", "include z"]
+    includes: ["{%- include 'bold-ro-init' -%}", "{%- include 'bold-common' -%}", "{%- include 'bold-product' with product, hide_action: 'header' -%}"]
   },
+  product : {
+    includes: ["{%- include 'bold-ro' -%}", "{%- include 'bold-product' with product, hide_action: 'break', output: 'none' -%}"]
+  },
+  cart : {
+    includes: ["{%- include 'bold-cart' -%}"]
+  },
+  cart_template : {
+    includes: ["{%- include 'bold-cart' -%}"],
+    loop_cart_item: ["{%- include 'bold-cart-item' with item -%}"],
+    recurring_desc: ["{{ bold_recurring_desc }}"],
+    prices: ['bold_item_price', "bold_cart_total_price"],
+    cart_widget: ["{{ bold_ro_cart }}"],
+    show_paypal: ["{%- if additional_checkout_buttons and show_paypal -%}"]
+  },
+  customersaccount: {
+    manage_subs: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
+  },
+  product_template: {
+    includes: ["{%- include 'bold-ro' -%}", "{%- include 'bold-product' with product, hide_action: 'break', output: 'none' -%}"],
+    ro_widget: ["{{ bold_ro_widget }}"],
+    add_to_existing: ['<!-- bold-ro-liquid --><div class="bold_add_to_orders" style="display: inline-block;"></div><!-- bold-ro-liquid -->'],
+    product_json: ["{%- include 'bold-product', output: 'json' -%}"]
+  },
+  featured_product: {
+    product_json: ["{%- include 'bold-product', output: 'json' -%}"]
+  }
 }
 
 //////////////////////
@@ -234,4 +266,12 @@ function SelectText(element) {
         selection.removeAllRanges();
         selection.addRange(range);
     }
+}
+
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
