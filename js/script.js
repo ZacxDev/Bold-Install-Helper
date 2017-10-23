@@ -5,9 +5,11 @@
 // SCANNER DATA //
 //////////////////
 
+// @variable roFiles: this is used for api calls to read the files, must match query string format
 var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "snippets/cart-drawer.liquid" ];
 // key must match an roFiles file name, replace all - with _
 // spacing does not matter in hooks
+// @variable roHooks: this is used to search the files, make as genaric as possible
 var roHooks = {
   theme: ["include 'bold-common'", "include 'bold-ro-init'", "'bold-helper-functions.js'|asset_url|script_tag", "'bold-r.css'|asset_url|stylesheet_tag"],
   cart : [],
@@ -18,6 +20,7 @@ var roHooks = {
 }
 
 // ro snippets
+// @variable roSnips: this is used to populate the snippets on missing code page (missingCode.html|.js|.css), MUST be functional and proper code
 var roSnips = {
   theme : {
     includes: ["include x", "include y", "include z"]
