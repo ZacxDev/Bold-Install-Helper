@@ -5,9 +5,13 @@
 // SCANNER DATA //
 //////////////////
 
-// @variable roFiles: this is used for api calls to read the files, must match query string format
+// @variable roFiles: this is used for api calls to read the files, must match query string format || Also used to generate the snippets on missing code page
 var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "sections/featured-product.liquid", "snippets/cart-drawer.liquid", "templates/customersaccount.liquid" ];
-// key must match an roFiles file name, replace all - with _, remove all '/'
+
+// @variable roSnipFiles: this is used to generate extra snippets on missing code page
+var roSnipFiles = [ "assets/bold-ro.css" ];
+
+// key must match an roFiles entry, replace all - with _, remove all '/'
 // spacing does not matter in hooks
 // @variable roHooks: this is used to search the files, make as genaric as possible
 var roHooks = {
@@ -56,6 +60,27 @@ var roSnips = {
   },
   featured_product: {
     product_json: ["{%- include 'bold-product', output: 'json' -%}"]
+  },
+  bold_ro: {
+    debut: ["css here fam"]
+  }
+}
+
+// used to generate theme-specific snippets, theme name MUST match an option value in $('.theme-select-wrap select') -> missingCode.html
+var roThemes = {
+  debut: {
+    theme: {
+      includes: ["hey there"]
+    }
+  },
+  narrative: {
+    cart_drawer: {
+      README: ["Put the recurring desc hook just above the <ul> where properties are being looped/shown "],
+      recurring_desc_hook: ["<p data-cart-item-formatted_recurring_desc></p>"]
+    },
+    theme_min_js: {
+      recurring_property: ['recurring: "[data-cart-item-formatted_recurring_desc]",']
+    }
   }
 }
 

@@ -29,10 +29,17 @@ function updatePage(appname)
       fileItem.appendTo($('.missing-code-files'));
       fileItem.find('p').text(value);
     });
+
+    $.each(roSnipFiles, function(index, value) {
+      fileItem = $('<div class="missing-code-file-item"><p>{file.title}</p></div>');
+      fileItem.appendTo($('.missing-code-files'));
+      fileItem.find('p').text(value);
+    });
   }
 
   $('.missing-code-file-item').first().addClass('selected');
   updateCodePane();
+  updateThemeSnips();
 
   // hide the snippet viewer pane
   $('.snip-view-pane-fade').hide();
@@ -43,12 +50,23 @@ function updateCodePane()
   $('.missing-code-pane h1').text($('.selected p').text());
 
   var fileName = $('.selected p').text();
-  fileName = fileName.substring(fileName.indexOf('/') + 1, fileName.indexOf('.'));
-  fileName = replaceAll(fileName, '-', '_');
+  if (fileName.indexOf('/') != -1 && fileName.indexOf('/') != -1)
+  {
+    fileName = fileName.substring(fileName.indexOf('/') + 1, fileName.indexOf('.'));
+    fileName = replaceAll(fileName, '-', '_');
+  }
+  var snips = roSnips;
+
+  //if it's a theme snippet, get the code from the themes array
+  if ($('.selected').hasClass('theme-file'))
+  {
+    var theme = $('.theme-select-wrap select').val();
+    snips = roThemes[theme];
+  }
 
   $('.missing-code-snippet').remove();
   var snipItem, lines = "";
-  $.each(roSnips[fileName], function(key, value) {
+  $.each(snips[fileName], function(key, value) {
     lines = "";
     // seperate array so it looks nice
     $.each(value, function(index, value) {
@@ -99,6 +117,10 @@ function loadMissingCodeListeners()
     $('.snip-view-pane-fade').hide();
   });
 
+  $(document).on('change', '.theme-select-wrap select', function() {
+    updateThemeSnips();
+  });
+
 }
 
 function updateSnipViewPane()
@@ -106,6 +128,18 @@ function updateSnipViewPane()
   var snip = $('.current-snip');
   $('.snip-view-pane h1').text(snip.find('h3').text());
   $('.snip-view-pane textarea').val(snip.find('textarea').val());
+}
+
+function updateThemeSnips()
+{
+  var theme = $('.theme-select-wrap select').val();
+
+  $('.theme-file').remove();
+  $.each(roThemes[theme], function(key, value) {
+    fileItem = $('<div class="missing-code-file-item theme-file"><p>{file.title}</p></div>');
+    fileItem.appendTo($('.missing-code-files'));
+    fileItem.find('p').text(key);
+  });
 }
 
 function getApp(callback) {

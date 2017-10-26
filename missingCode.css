@@ -27,6 +27,7 @@ body {
   display: inline-block;
   float: right;
   height: 100%;
+  overflow: auto;
 }
 
 .missing-code-files-title {
@@ -47,6 +48,10 @@ body {
   border-color: gray;
   color: white;
   cursor: pointer;
+}
+
+.theme-file {
+  border-color: blue;
 }
 
 .missing-code-snippet {
