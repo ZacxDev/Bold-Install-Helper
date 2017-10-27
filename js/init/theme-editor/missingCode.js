@@ -65,13 +65,22 @@ function updateCodePane()
   }
 
   $('.missing-code-snippet').remove();
+  $('.readme-panel').empty();
   var snipItem, lines = "";
   $.each(snips[fileName], function(key, value) {
     lines = "";
+
     // seperate array so it looks nice
     $.each(value, function(index, value) {
       lines = lines + "\n" + value;
     });
+
+    if (key === "README")
+    {
+      $(lines).appendTo($('.readme-panel'));
+      return true;
+    }
+
     snipItem = $('<div class="missing-code-snippet""><textarea id="snip-code">' + lines + '</textarea><h3>{snippet.title}</h3><div class="snip-buttons"><div class="snip-view"><img src="https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/eye-24-512.png" /></div><div class="snip-copy"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/340540-200.png" /></div></div</div>');
     snipItem.find('h3').text(replaceAll(key, "_", " "));
     snipItem.appendTo($('.missing-code-pane'));

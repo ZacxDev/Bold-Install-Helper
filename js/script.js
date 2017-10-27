@@ -75,11 +75,14 @@ var roThemes = {
   },
   narrative: {
     cart_drawer: {
-      README: ["Put the recurring desc hook just above the <ul> where properties are being looped/shown "],
+      README: ["<p>Put the recurring desc hook just above the <ul> where properties are being looped/shown</p>"],
       recurring_desc_hook: ["<p data-cart-item-formatted_recurring_desc></p>"]
     },
     theme_min_js: {
-      recurring_property: ['recurring: "[data-cart-item-formatted_recurring_desc]",']
+      README: ["<p>Add the itemRecurring property inside the function where they are building the item, normally called Sc or yc.  Next, add the createItemList_define_itemPrice above the return of _createItemList, then add the createItemList_show_recurring_property after where they are setting the item title in the return of _createItemList.  Finally, farther down in the return replace the t.discounted_price with itemPrice</p>"],
+      recurring_property: ['itemRecurring: "[data-cart-item-formatted_recurring_desc]",'],
+      createItemList_show_recurring_property: ["$n(Sc.itemRecurring, e).html(t.formatted_recurring_desc),"],
+      createItemList_define_itemPrice: ['var itemPrice = ""; if(t.properties != null) { itemPrice = t.price ; } else { itemPrice = t.discounted_price; } ']
     }
   }
 }

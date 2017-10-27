@@ -13,7 +13,6 @@ body {
   background-color: #999;
   border-radius: 5%;
   display: inline-block;
-  margin-left: 10%;
   margin-top: 1%;
 }
 
@@ -127,6 +126,14 @@ body {
   border-radius: 50%;
   border-color: black;
   height: 5%;
+}
+
+.readme-panel {
+  background: #999;
+  width: 20%;
+  height: auto;
+  float: left;
+  margin-top: 1%;
 }
 
 button:focus {
