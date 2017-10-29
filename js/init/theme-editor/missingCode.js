@@ -22,46 +22,42 @@ function updatePage(appname)
 
   var fileItem;
 
-  if (appname == "ro")
-  {
-    $.each(roFiles, function(index, value) {
-      fileItem = $('<div class="missing-code-file-item"><p>{file.title}</p></div>');
-      fileItem.appendTo($('.missing-code-files'));
-      fileItem.find('p').text(value);
-    });
+  // we can call the callback directly since we already have the appname
+  updateSnipsCallback(appname, function(){
+    $('.missing-code-file-item').first().addClass('selected');
+    updateCodePane();
+    updateThemeSnips();
 
-    $.each(roSnipFiles, function(index, value) {
-      fileItem = $('<div class="missing-code-file-item"><p>{file.title}</p></div>');
-      fileItem.appendTo($('.missing-code-files'));
-      fileItem.find('p').text(value);
-    });
-  }
-
-  $('.missing-code-file-item').first().addClass('selected');
-  updateCodePane();
-  updateThemeSnips();
-
-  // hide the snippet viewer pane
-  $('.snip-view-pane-fade').hide();
+    // hide the snippet viewer pane
+    $('.snip-view-pane-fade').hide();
+  });
 }
 
 function updateCodePane()
 {
   $('.missing-code-pane h1').text($('.selected p').text());
 
-  var fileName = $('.selected p').text();
-  if (fileName.indexOf('/') != -1 && fileName.indexOf('/') != -1)
-  {
+  var fileName = $('.selected p').data('hash-key');
+  if (fileName.indexOf('/') != -1)
     fileName = fileName.substring(fileName.indexOf('/') + 1, fileName.indexOf('.'));
-    fileName = replaceAll(fileName, '-', '_');
-  }
+
+  fileName = replaceAll(fileName, '-', '_');
+  fileName = replaceAll(fileName, ' ', '');
+  fileName = fileName.toLowerCase();
+
   var snips = roSnips;
 
   //if it's a theme snippet, get the code from the themes array
-  if ($('.selected').hasClass('theme-file'))
+  if ($('.selected').hasClass('theme-snippet'))
   {
     var theme = $('.theme-select-wrap select').val();
     snips = roThemes[theme];
+  } else if ($('.selected').hasClass('ajax-snippet'))
+  {
+    snips = roAjaxSnips;
+  }  else if ($('.selected').hasClass('fixes-snippet'))
+  {
+    snips = roFixesSnips;
   }
 
   $('.missing-code-snippet').remove();
@@ -83,7 +79,7 @@ function updateCodePane()
 
     snipItem = $('<div class="missing-code-snippet""><textarea id="snip-code">' + lines + '</textarea><h3>{snippet.title}</h3><div class="snip-buttons"><div class="snip-view"><img src="https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/eye-24-512.png" /></div><div class="snip-copy"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/340540-200.png" /></div></div</div>');
     snipItem.find('h3').text(replaceAll(key, "_", " "));
-    snipItem.appendTo($('.missing-code-pane'));
+    snipItem.appendTo($('.missing-code-pane .snippets-wrap'));
   });
 
   // hide snip code
@@ -130,6 +126,10 @@ function loadMissingCodeListeners()
     updateThemeSnips();
   });
 
+  $(document).on('change', '.snippet-select-wrap select', function() {
+    updateSnips();
+  });
+
 }
 
 function updateSnipViewPane()
@@ -139,15 +139,61 @@ function updateSnipViewPane()
   $('.snip-view-pane textarea').val(snip.find('textarea').val());
 }
 
+function updateSnips()
+{
+  getApp(function(appname) {
+    updateSnipsCallback(appname);
+  });
+}
+
+function updateSnipsCallback(appname, callback)
+{
+
+  var snipType = $('.snippet-select-wrap select').val();
+  var snipClass = "";
+
+  if (snipType == "ajax")
+    snipClass = "ajax-snippet";
+  else if (snipType == "fixes")
+    snipClass = "fixes-snippet"
+
+  // remove old snippets
+  $('.sidebar-snippets-wrap').empty();
+  if (appname == "ro")
+  {
+    $.each(roSnippetGroups[snipType], function(index, value) {
+      fileItem = $('<div class="missing-code-file-item ' + snipClass + '"><p>{file.title}</p></div>');
+      fileItem.appendTo($('.sidebar-snippets-wrap'));
+      fileItem.find('p').text(value);
+      // hash-key is used to get snippets from script.js hash
+      fileItem.find('p').data('hash-key', value);
+    });
+
+    $.each(roSnipFiles, function(index, value) {
+      fileItem = $('<div class="missing-code-file-item"><p>{file.title}</p></div>');
+      fileItem.appendTo($('.sidebar-snippets-wrap'));
+      fileItem.find('p').text(value);
+      fileItem.find('p').data('hash-key', value);
+    });
+  }
+  if (typeof callback == "function")
+    callback();
+}
+
 function updateThemeSnips()
 {
   var theme = $('.theme-select-wrap select').val();
 
-  $('.theme-file').remove();
+  $('.theme-snippet').remove();
+  var prettyKey;
   $.each(roThemes[theme], function(key, value) {
-    fileItem = $('<div class="missing-code-file-item theme-file"><p>{file.title}</p></div>');
-    fileItem.appendTo($('.missing-code-files'));
-    fileItem.find('p').text(key);
+    fileItem = $('<div class="missing-code-file-item theme-snippet"><p>{file.title}</p></div>');
+    fileItem.appendTo($('.sidebar-theme-snippets-wrap'));
+    prettyKey = key;
+    prettyKey = replaceAll(prettyKey, '_', '-');
+    prettyKey = replaceAll(prettyKey, '$', '.');
+    fileItem.find('p').text(prettyKey);
+    fileItem.find('p').data('hash-key', key);
   });
 }
 

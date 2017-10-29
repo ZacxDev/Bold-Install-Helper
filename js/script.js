@@ -9,7 +9,7 @@
 var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "sections/featured-product.liquid", "snippets/cart-drawer.liquid", "templates/customersaccount.liquid" ];
 
 // @variable roSnipFiles: this is used to generate extra snippets on missing code page
-var roSnipFiles = [ "assets/bold-ro.css" ];
+var roSnipFiles = [];
 
 // key must match an roFiles entry, replace all - with _, remove all '/'
 // spacing does not matter in hooks
@@ -24,9 +24,11 @@ var roHooks = {
   customersaccount: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
 }
 
-//unused so far
-var roOptionalHooks = {
-  theme: ["'bold-helper-functions.js'|asset_url|script_tag", "'bold-ro.css'|asset_url|stylesheet_tag"]
+// @variable snippetGroups: this is used by the snippet-select-warp select to display certain types of snippets
+var roSnippetGroups = {
+  robo: roFiles,
+  ajax: ["ajax"],
+  fixes: ["fixes"]
 }
 
 // ro snippets
@@ -60,13 +62,25 @@ var roSnips = {
   },
   featured_product: {
     product_json: ["{%- include 'bold-product', output: 'json' -%}"]
-  },
-  bold_ro: {
-    debut: ["css here fam"]
+  }
+}
+
+// @variable roAjaxSnips: used to generate snippet pane snippets, each entry name MUST match an roSnippetGroups ajax entry
+var roAjaxSnips = {
+  ajax: {
+    clean_cart: ["cleancart here fam"]
+  }
+}
+
+// @variable roAjaxSnips: used to generate snippet pane snippets, each entry name MUST match an roSnippetGroups fixes entry
+var roFixesSnips = {
+  fixes: {
+    widget_on_variant_change: ["update widget pls"]
   }
 }
 
 // used to generate theme-specific snippets, theme name MUST match an option value in $('.theme-select-wrap select') -> missingCode.html
+// NOTE: '_' is replaced with '-', '$' is replaced with '.'
 var roThemes = {
   debut: {
     theme: {
@@ -78,11 +92,14 @@ var roThemes = {
       README: ["<p>Put the recurring desc hook just above the <ul> where properties are being looped/shown</p>"],
       recurring_desc_hook: ["<p data-cart-item-formatted_recurring_desc></p>"]
     },
-    theme_min_js: {
+    theme$min$js: {
       README: ["<p>Add the itemRecurring property inside the function where they are building the item, normally called Sc or yc.  Next, add the createItemList_define_itemPrice above the return of _createItemList, then add the createItemList_show_recurring_property after where they are setting the item title in the return of _createItemList.  Finally, farther down in the return replace the t.discounted_price with itemPrice</p>"],
       recurring_property: ['itemRecurring: "[data-cart-item-formatted_recurring_desc]",'],
       createItemList_show_recurring_property: ["$n(Sc.itemRecurring, e).html(t.formatted_recurring_desc),"],
       createItemList_define_itemPrice: ['var itemPrice = ""; if(t.properties != null) { itemPrice = t.price ; } else { itemPrice = t.discounted_price; } ']
+    },
+    bold_ro$css: {
+      debut: ["css here fam"]
     }
   }
 }
