@@ -5,6 +5,8 @@
 // SCANNER DATA //
 //////////////////
 
+var roAjaxFiles = [ "theme.min.js.liquid", "theme.js.liquid" ]
+
 // @variable roFiles: this is used for api calls to read the files, must match query string format || Also used to generate the snippets on missing code page
 var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "sections/featured-product.liquid", "snippets/cart-drawer.liquid", "templates/customersaccount.liquid" ];
 
@@ -19,8 +21,8 @@ var roHooks = {
   cart : ["include 'bold-cart'"],
   product : ["include 'bold-ro'", "include 'bold-product' with product, hide_action: 'break', output: 'none'"],
   cart_template : ["include 'bold-cart'", "include 'bold-cart-item' with item", "{{ bold_recurring_desc }}", 'bold_item_price', "bold_cart_total_price", "{{ bold_ro_cart }}", "if additional_checkout_buttons and show_paypal"],
-  product_template : [],
-  cart_drawer : [],
+  product_template : [""],
+  cart_drawer : [""],
   customersaccount: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
 }
 

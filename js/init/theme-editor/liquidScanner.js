@@ -21,7 +21,12 @@ function scanROFiles()
 
     getFile(key, file, function(response)
     {
-      var checks = fileContainsStrings(response, roHooks[file.substring(0, file.indexOf('.')).replace('-', '_').replace('/', '')], function() {
+      var hooks = roHooks[file.substring(0, file.indexOf('.')).replace('-', '_').replace('/', '')];
+      // if there are no hooks found for that file, pass an empty array
+      if (hooks == undefined)
+        hooks = [];
+
+      var checks = fileContainsStrings(response, hooks, function() {
         ro_i++;
         if(ro_i < roFiles.length) {
             scanROFiles();
