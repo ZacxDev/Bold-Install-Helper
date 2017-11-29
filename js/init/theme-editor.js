@@ -106,16 +106,16 @@ function loadThemeEditorListeners() {
     });
 
   //ajax btn listener
-    $('.bh-ajax').click(function(e) {
+     $(document).on('click', '.bh-ajax', function(e) {
       $('.bh-ajax-menu').css('display','block');
       e.stopPropagation();
     });
 
-    $('.bh-ajax-menu').click(function(e) {
+    $(document).on('click', '.bh-ajax-menu', function(e) {
       e.stopPropagation();
     });
 
-    $('.bh-ajax-btn').click(function(e) {
+    $(document).on('click', '.bh-ajax-btn', function(e) {
       if ($(this).val() === "Narrative")
         getFile('assets', 'theme.min.js.liquid', narrativeAjaxThemeMinJs);
       if ($(this).val() === "Genaric")

@@ -5,8 +5,6 @@
 // SCANNER DATA //
 //////////////////
 
-var roAjaxFiles = [ "theme.min.js.liquid", "theme.js.liquid" ]
-
 // @variable roFiles: this is used for api calls to read the files, must match query string format || Also used to generate the snippets on missing code page
 var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "sections/featured-product.liquid", "snippets/cart-drawer.liquid", "templates/customersaccount.liquid" ];
 
