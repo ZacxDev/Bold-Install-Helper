@@ -19,8 +19,8 @@ var roHooks = {
   cart : ["include 'bold-cart'"],
   product : ["include 'bold-ro'", "include 'bold-product' with product, hide_action: 'break', output: 'none'"],
   cart_template : ["include 'bold-cart'", "include 'bold-cart-item' with item", "{{ bold_recurring_desc }}", 'bold_item_price', "bold_cart_total_price", "{{ bold_ro_cart }}", "if additional_checkout_buttons and show_paypal"],
-  product_template : [],
-  cart_drawer : [],
+  product_template : [""],
+  cart_drawer : [""],
   customersaccount: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
 }
 

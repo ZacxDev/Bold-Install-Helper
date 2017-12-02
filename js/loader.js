@@ -1,5 +1,7 @@
 
 
+var roAjaxFiles = [ "theme.min.js.liquid", "theme.js.liquid" ]
+
 var build_cart_names = [ 'buildCart', 'refreshCart', 'Sc =', 'Yc =' ]
 
 function buildCartIndex(data)

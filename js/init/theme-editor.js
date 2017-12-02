@@ -12,12 +12,11 @@ var bhROCartInstall, popup;
 var bhCacheBusterToggle;
 function loadThemeEditor()
 {
-
   // button to open ajax menu
   bhAjax = $('.bh-ajax');
   if (bhAjax.length === 0)
     {
-   bhAjax = $('<input type="button" value="Ajax" class="btn bh-btn bh-ajax" style="display:none;" />');
+   bhAjax = $('<input type="button" value="Ajax" class="btn bh-btn bh-ajax" />');
    bhAjax.prependTo($('.theme-asset-actions'));
   }
 
@@ -26,7 +25,7 @@ function loadThemeEditor()
   if (bhAjaxMenu.length === 0)
     {
    bhAjaxMenu = $('<div class="bh-ajax-menu" />');
-   bhAjaxMenu.appendTo($('.file-overview'));
+   bhAjaxMenu.appendTo($('body'));
   }
 
   //ajax button
@@ -81,6 +80,18 @@ function loadThemeEditor()
 
 }
 
+function refreshThemeEditor()
+{
+  var file = $('[data-bind="currentTab.basename"]:not(input)').text();
+
+  if (roAjaxFiles.indexOf(file) == -1)
+  {
+    $('.bh-ajax, .bh-ajax-menu, .bh-ajax-btn').hide();
+  } else {
+    $('.bh-ajax').show();
+  }
+}
+
 function loadThemeEditorListeners() {
 
   //ro-cart install btn listener
@@ -95,16 +106,16 @@ function loadThemeEditorListeners() {
     });
 
   //ajax btn listener
-    $('.bh-ajax').click(function(e) {
+     $(document).on('click', '.bh-ajax', function(e) {
       $('.bh-ajax-menu').css('display','block');
       e.stopPropagation();
     });
 
-    $('.bh-ajax-menu').click(function(e) {
+    $(document).on('click', '.bh-ajax-menu', function(e) {
       e.stopPropagation();
     });
 
-    $('.bh-ajax-btn').click(function(e) {
+    $(document).on('click', '.bh-ajax-btn', function(e) {
       if ($(this).val() === "Narrative")
         getFile('assets', 'theme.min.js.liquid', narrativeAjaxThemeMinJs);
       if ($(this).val() === "Genaric")
@@ -114,14 +125,16 @@ function loadThemeEditorListeners() {
     $('.asset-listing-theme-file').click(function(e)
     {
       setTimeout(function() {
-        loadThemeEditor();
+        //loadThemeEditor();
+        refreshThemeEditor();
       }, 300);
     });
-    $('.template-editor-tab-filename').click(function(e)
+    $(document).on('click', '.template-editor-tab-filename', function(e)
     {
       setTimeout(function() {
-        loadThemeEditor();
-      }, 200);
+        //loadThemeEditor();
+        refreshThemeEditor();
+      }, 300);
     });
 
     //hide menus when click html
