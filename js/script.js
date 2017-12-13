@@ -5,104 +5,6 @@
 // SCANNER DATA //
 //////////////////
 
-// @variable roFiles: this is used for api calls to read the files, must match query string format || Also used to generate the snippets on missing code page
-var roFiles = [ "layout/theme.liquid", "templates/cart.liquid", "templates/product.liquid", "sections/cart-template.liquid", "sections/product-template.liquid", "sections/featured-product.liquid", "snippets/cart-drawer.liquid", "templates/customersaccount.liquid" ];
-
-// @variable roSnipFiles: this is used to generate extra snippets on missing code page
-var roSnipFiles = [];
-
-// key must match an roFiles entry, replace all - with _, remove all '/'
-// spacing does not matter in hooks
-// @variable roHooks: this is used to search the files, make as genaric as possible
-var roHooks = {
-  theme: ["include 'bold-common'", "include 'bold-ro-init'", "'bold-helper-functions.js'|asset_url|script_tag", "'bold-ro.css'|asset_url|stylesheet_tag"],
-  cart : ["include 'bold-cart'"],
-  product : ["include 'bold-ro'", "include 'bold-product' with product, hide_action: 'break', output: 'none'"],
-  cart_template : ["include 'bold-cart'", "include 'bold-cart-item' with item", "{{ bold_recurring_desc }}", 'bold_item_price', "bold_cart_total_price", "{{ bold_ro_cart }}", "if additional_checkout_buttons and show_paypal"],
-  product_template : [""],
-  cart_drawer : [""],
-  customersaccount: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
-}
-
-// @variable snippetGroups: this is used by the snippet-select-warp select to display certain types of snippets
-var roSnippetGroups = {
-  robo: roFiles,
-  ajax: ["ajax"],
-  fixes: ["fixes"]
-}
-
-// ro snippets
-// @variable roSnips: this is used to populate the snippets on missing code page (missingCode.html|.js|.css), MUST be functional and proper code, MUST match an roFiles entry without key or extention, MUST replace all '-' with '_'
-var roSnips = {
-  theme : {
-    includes: ["{%- include 'bold-ro-init' -%}", "{%- include 'bold-common' -%}", "{%- include 'bold-product' with product, hide_action: 'header' -%}"]
-  },
-  product : {
-    includes: ["{%- include 'bold-ro' -%}", "{%- include 'bold-product' with product, hide_action: 'break', output: 'none' -%}"]
-  },
-  cart : {
-    includes: ["{%- include 'bold-cart' -%}"]
-  },
-  cart_template : {
-    includes: ["{%- include 'bold-cart' -%}"],
-    loop_cart_item: ["{%- include 'bold-cart-item' with item -%}"],
-    recurring_desc: ["{{ bold_recurring_desc }}"],
-    prices: ['bold_item_price', "bold_cart_total_price"],
-    cart_widget: ["{{ bold_ro_cart }}"],
-    show_paypal: ["{%- if additional_checkout_buttons and show_paypal -%}"]
-  },
-  customersaccount: {
-    manage_subs: ['<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>']
-  },
-  product_template: {
-    includes: ["{%- include 'bold-ro' -%}", "{%- include 'bold-product' with product, hide_action: 'break', output: 'none' -%}"],
-    ro_widget: ["{{ bold_ro_widget }}"],
-    add_to_existing: ['<!-- bold-ro-liquid --><div class="bold_add_to_orders" style="display: inline-block;"></div><!-- bold-ro-liquid -->'],
-    product_json: ["{%- include 'bold-product', output: 'json' -%}"]
-  },
-  featured_product: {
-    product_json: ["{%- include 'bold-product', output: 'json' -%}"]
-  }
-}
-
-// @variable roAjaxSnips: used to generate snippet pane snippets, each entry name MUST match an roSnippetGroups ajax entry
-var roAjaxSnips = {
-  ajax: {
-    clean_cart: ["cleancart here fam"]
-  }
-}
-
-// @variable roAjaxSnips: used to generate snippet pane snippets, each entry name MUST match an roSnippetGroups fixes entry
-var roFixesSnips = {
-  fixes: {
-    widget_on_variant_change: ["update widget pls"]
-  }
-}
-
-// used to generate theme-specific snippets, theme name MUST match an option value in $('.theme-select-wrap select') -> missingCode.html
-// NOTE: '_' is replaced with '-', '$' is replaced with '.'
-var roThemes = {
-  debut: {
-    theme: {
-      includes: ["hey there"]
-    }
-  },
-  narrative: {
-    cart_drawer: {
-      README: ["<p>Put the recurring desc hook just above the <ul> where properties are being looped/shown</p>"],
-      recurring_desc_hook: ["<p data-cart-item-formatted_recurring_desc></p>"]
-    },
-    theme$min$js: {
-      README: ["<p>Add the itemRecurring property inside the function where they are building the item, normally called Sc or yc.  Next, add the createItemList_define_itemPrice above the return of _createItemList, then add the createItemList_show_recurring_property after where they are setting the item title in the return of _createItemList.  Finally, farther down in the return replace the t.discounted_price with itemPrice</p>"],
-      recurring_property: ['itemRecurring: "[data-cart-item-formatted_recurring_desc]",'],
-      createItemList_show_recurring_property: ["$n(Sc.itemRecurring, e).html(t.formatted_recurring_desc),"],
-      createItemList_define_itemPrice: ['var itemPrice = ""; if(t.properties != null) { itemPrice = t.price ; } else { itemPrice = t.discounted_price; } ']
-    },
-    bold_ro$css: {
-      debut: ["css here fam"]
-    }
-  }
-}
 
 //////////////////////
 // SCANNER DATA END //
@@ -295,9 +197,29 @@ function setRecurringProdSelector(data, title, var_id)
   }
 }
 
+function SelectCodeMirror()
+{
+  var line = $(".CodeMirror-code div .CodeMirror-linenumber").last().text();
+  var i = 0;
+  var scrollPos;
+  while (i < 5555)
+  {
+    i += 100;
+    scrollPos = $('.CodeMirror-scroll').scrollTop();
+  $('.CodeMirror-scroll').animate({
+       scrollTop: i
+   }, 0);
+   SelectText('.CodeMirror-code');
+   if ($('.CodeMirror-scroll').scrollTop() == scrollPos)
+   {
+    break;
+  }
+  }
+}
+
 function SelectText(element) {
     var doc = document
-        , text = doc.getElementById(element)
+        , text = doc.querySelector(element)
         , range, selection
     ;
     if (doc.body.createTextRange) {
@@ -319,4 +241,12 @@ function escapeRegExp(str) {
 
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
+function addObserver(element, callback)
+{
+  var element = document.querySelector(element);
+    var observer = new MutationObserver(callback);
+    var config = {childList: true, subtree: true};
+    observer.observe(element, config);
 }

@@ -4,6 +4,10 @@ $(document).ready(function() {
   loadThemeEditorListeners();
   // check customers/account.liquid for manage subs button
   getFile("templates", "customers/account.liquid", checkManageSubs);
+  refreshThemeEditor();
+  addObserver('.theme-asset-name strong', function() {
+    refreshThemeEditor();
+  });
 });
 
 var bhAjax;
@@ -16,7 +20,7 @@ function loadThemeEditor()
   bhAjax = $('.bh-ajax');
   if (bhAjax.length === 0)
     {
-   bhAjax = $('<input type="button" value="Ajax" class="btn bh-btn bh-ajax" />');
+   bhAjax = $('<input type="button" value="RO Ajax" class="btn bh-btn bh-ajax" />');
    bhAjax.prependTo($('.theme-asset-actions'));
   }
 
@@ -32,7 +36,7 @@ function loadThemeEditor()
   bhAjaxBtn = $('.bh-ajax-btn');
   if (bhAjaxBtn.length === 0)
     {
-   bhAjaxBtn = $('<input type="button" value="Narrative" class="bh-ajax-btn" />');
+   bhAjaxBtn = $('<input type="button" value="Narrative" class="btn bh-ajax-btn" />');
    bhAjaxBtn.appendTo($('.bh-ajax-menu'));
    bhAjaxBtn = bhAjaxBtn.clone().attr('disabled', 'disabled');
    bhAjaxBtn.val('Supply');
@@ -84,9 +88,10 @@ function refreshThemeEditor()
 {
   var file = $('[data-bind="currentTab.basename"]:not(input)').text();
 
-  if (roAjaxFiles.indexOf(file) == -1)
+//  if (roAjaxFiles.indexOf(file) == -1)
+if (file.indexOf('.js') == -1)
   {
-    $('.bh-ajax, .bh-ajax-menu, .bh-ajax-btn').hide();
+    $('.bh-ajax, .bh-ajax-menu').hide();
   } else {
     $('.bh-ajax').show();
   }
@@ -96,13 +101,7 @@ function loadThemeEditorListeners() {
 
   //ro-cart install btn listener
     $('.bh-ro-cart').click(function() {
-      var kv, key, name, tar = $('.theme-asset-name strong').text();
-      kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key')
-
-      key = kv.substring(0, kv.indexOf('/'))
-      value = kv.substring(kv.indexOf('/') + 1, kv.length)
-
-      getFile(key, value, cartInstall);
+      doROCartInstall();
     });
 
   //ajax btn listener
@@ -126,14 +125,14 @@ function loadThemeEditorListeners() {
     {
       setTimeout(function() {
         //loadThemeEditor();
-        refreshThemeEditor();
+      //  refreshThemeEditor();
       }, 300);
     });
     $(document).on('click', '.template-editor-tab-filename', function(e)
     {
       setTimeout(function() {
         //loadThemeEditor();
-        refreshThemeEditor();
+      //  refreshThemeEditor();
       }, 300);
     });
 
@@ -153,7 +152,7 @@ function checkManageSubs(data) {
 
   for (var i = 0; i < lines.length; ++i)
   {
-    if (lines[i].indexOf('<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>') != -1)
+    if (lines[i].indexOf('/tools/checkout/front_end/login') != -1)
     {
       // if we find the code in the file, don't highlight
       return;
@@ -183,4 +182,15 @@ function checkManageSubs(data) {
         document.execCommand('copy');
         $('.clipboard-hover').css('display', 'none');
       });
+}
+
+function doROCartInstall()
+{
+  var kv, key, name, tar = $('.theme-asset-name strong').text();
+  kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key')
+
+  key = kv.substring(0, kv.indexOf('/'))
+  value = kv.substring(kv.indexOf('/') + 1, kv.length)
+
+  getFile(key, value, cartInstall);
 }

@@ -1,0 +1,28 @@
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>  $( function() {
+    $( ".cadet_modal" ).draggable();
+    $( ".cadet_modal" ).css('position', 'absolute')
+  } );</script>
+<div class="cadet_modal ui-widget-content">
+ <div class="cadet_left">
+   <input type="button" class="cadet-btn" data-app="ro" value="Recurring Orders" />
+   <input type="button" class="cadet-btn" data-app="lp" value="Loyalty Points" />
+ </div>
+ <div class="cadet_right">
+   <p>Robo Cadet<a class="cadet_close">X</a></p>
+
+   <div class="cadet_spacer"></div>
+   <div class="cadet_ro" style="display:none;">
+     <a>Ajax</a>
+     <div class="cadet_ro_spacer"></div>
+     <a class="ro_cartpage">Cart Page</a>
+   </div>
+
+   <div class="cadet_report">
+     <a>View Log</a>
+   </div>
+ </div>
+</div>
+<div class="cadet_peek" style="display: none;">
+  <img/>
+</div>

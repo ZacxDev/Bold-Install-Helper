@@ -57,13 +57,17 @@
 }
 
 .bh-ajax-menu {
-  width: 7%;
+  width: 5%;
   position: absolute;
-  height: 20%;
+  height: auto;
   z-index: 10;
-  left: 84%;
+  left: 85%;
   top: 32%;
   display: none;
+  border-width: 2px;
+  border-color: #bfbfbf;
+  border-style: solid;
+  border-radius: 5%;
 }
 
 .log-false {
