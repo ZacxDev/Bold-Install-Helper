@@ -9,6 +9,11 @@ $(document).ready(function() {
     // inject stylesheet for robocadet
     var cadetstyle = $('<link rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/robocadet.css') + '">');
     $('head').append(cadetstyle);
+
+    // inject install.js
+    var installjs = $('<script src="' + chrome.extension.getURL('js/init/theme-editor/robocadet/install.js') + '"></script>');
+    $('head').append(installjs);
+
     // load listeners
     loadCadetListeners();
   });
@@ -31,36 +36,6 @@ function loadCadetListeners()
     $('.cadet_modal').show();
     $('.cadet_peek').hide();
   });
-
-// Prevent modal from going off screen
-  var mouseDown = false;
-  $('.cadet_modal').mouseup(function() {
-    if (parseInt($(this).css('left')) < 0)
-      $(this).css('left', '0');
-    if (parseInt($(this).css('top')) < 0)
-      $(this).css('top', '0');
-    mouseDown = false;
-    if (parseInt($(this).css('left')) + $(this).width() > $(window).width())
-      $(this).css('left', $(window).width() - $(this).width());
-    if (parseInt($(this).css('top')) + $(this).height() > $(window).height())
-      $(this).css('top', $(window).height() - $(this).height());
-  });
-
-  $('.cadet_modal').mousedown(function() {
-    mouseDown = true;
-  });
-  $('.cadet_modal').mousemove(function() {
-    if (mouseDown)
-    {
-      if (parseInt($(this).css('left')) + $(this).width() > $(window).width())
-        $(this).css('left', $(window).width() - $(this).width());
-      if (parseInt($(this).css('top')) + $(this).height() > $(window).height())
-        $(this).css('top', $(window).height() - $(this).height());
-    }
-  });
-
-// Prevent modal from going off screen ^^
-
 }
 
 function refreshCadetModal(ele)

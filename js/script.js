@@ -12,8 +12,6 @@
 
 
 var clicked = false;
-// cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
-var cart_log = [ false, false, false, false, false, false, false ];
 
 $( document ).ready(function() {
   console.log('ready');
@@ -28,7 +26,6 @@ $( document ).ready(function() {
   chrome.runtime.sendMessage({command: "init"}, function(response) {
     //console.log(response.url);
   });
-
 
 ////////////
 //end of ready
@@ -56,58 +53,21 @@ function isBoxTab()
 
 function getFile(key, name, callback)
 {
-//  var query = url.substring(url.indexOf('?key=') + 1);
-  //var key = query.substring(query.indexOf('=') + 1, query.indexOf('/'));
-//  var file = query.substring(query.indexOf('/') + 1);
-  //url = url.substring(0, url.indexOf('?'));
   var id = $('.action-bar__top-links a').attr('href');
   id = id.substring(0, id.indexOf("/editor"));
   var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
 
-  var xhr = new XMLHttpRequest();
-xhr.open('GET', url, true);
-//xhr.responseType = 'text';
-xhr.onload = function(e) {
-  if (this.status == 200) {
-    var response = this.response;
-    //console.log(response)
-    callback(response);
-  } else if (this.status == 404)
-  {
-    callback(undefined);
-  }
-};
-xhr.send();
+  $.get(id + '/assets.json?asset[key]=' + key + '/' + name + '&theme_id=' + id, function(data) {
+    callback(key, name, data.asset.value);
+  });
 }
 
-function pushFile(key, name, data)
+function injectScript(func)
 {
-//  var query = url.substring(url.indexOf('?key=') + 1);
-  //var key = query.substring(query.indexOf('=') + 1, query.indexOf('/'));
-//  var file = query.substring(query.indexOf('/') + 1);
-  //url = url.substring(0, url.indexOf('?'));
-  var id = $('.action-bar__top-links a').attr('href');
-  id = id.substring(0, id.indexOf("/editor"));
-  //var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
-  var url = id + '/assets.json'
-  console.log(url)
-  var xhr = new XMLHttpRequest();
-xhr.open('PUT', url, true);
-//xhr.responseType = 'text';
-xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-xhr.onreadystatechange = function() {//Call a function when the state changes.
-    if(xhr.readyState == 4 && xhr.status == 200) {
-        console.log(xhr.responseText);
-    }
-}
-var json = {
-"asset": {
-  "key": key + "\/" + name,
-  "value": data
-}
-}
-xhr.send(json);
+  var script = document.createElement('script');
+  script.textContent = "(" + func + ")();";
+  (document.head||document.documentElement).appendChild(script);
+//  script.remove();
 }
 
 function parseValueFromXML(data)

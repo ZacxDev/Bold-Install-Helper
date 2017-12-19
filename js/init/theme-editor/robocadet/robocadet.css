@@ -65,15 +65,32 @@
   width: 30%;
 }
 
-.cadet_report {
+.cadet_report_view {
   text-align: center;
   width: 100%;
   margin-top: 10%;
 }
 
-.cadet_report a {
+.cadet_report_view a {
   float: right;
   margin-right: 4%;
+}
+
+.cadet_report_wrap {
+  width: 98%;
+  border-width: 0;
+  border-top-width: 1px;
+  border-color: red;
+  border-style: solid;
+}
+
+p.cadet_report {
+  font-size: 12px;
+  color: green;
+}
+
+.cadet_report_false {
+  color: red;
 }
 
 .cadet_selected {

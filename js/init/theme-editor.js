@@ -100,9 +100,9 @@ if (file.indexOf('.js') == -1)
 function loadThemeEditorListeners() {
 
   //ro-cart install btn listener
-    $('.bh-ro-cart').click(function() {
-      doROCartInstall();
-    });
+  $(document).on('click', '.bh-ro-cart', function() {
+    doROCartInstall();
+  });
 
   //ajax btn listener
      $(document).on('click', '.bh-ajax', function(e) {
@@ -148,16 +148,16 @@ function loadThemeEditorListeners() {
 
 function checkManageSubs(data) {
 
-  var lines = parseValueFromXML(data).split("\n");
+  //var lines = parseValueFromXML(data).split("\n");
 
-  for (var i = 0; i < lines.length; ++i)
-  {
-    if (lines[i].indexOf('/tools/checkout/front_end/login') != -1)
+//  for (var i = 0; i < lines.length; ++i)
+//  {
+    if (data.indexOf('/tools/checkout/front_end/login') != -1)
     {
       // if we find the code in the file, don't highlight
       return;
     }
-  }
+  //}
   //if we don't find it, then highlight and append the clipboard button
 
   $('a[data-asset-key="templates/customers/account.liquid"]').css('background-color', 'rgba(255, 0, 0, 0.5)');
@@ -186,11 +186,12 @@ function checkManageSubs(data) {
 
 function doROCartInstall()
 {
-  var kv, key, name, tar = $('.theme-asset-name strong').text();
-  kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key')
+  injectScript(function() {
+    var kv, key, name, tar = $('.theme-asset-name strong').text();
+    kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
 
-  key = kv.substring(0, kv.indexOf('/'))
-  value = kv.substring(kv.indexOf('/') + 1, kv.length)
-
-  getFile(key, value, cartInstall);
+    key = kv.substring(0, kv.indexOf('/'));
+    value = kv.substring(kv.indexOf('/') + 1, kv.length);
+    getFile(key, value, cartInstall);
+  });
 }

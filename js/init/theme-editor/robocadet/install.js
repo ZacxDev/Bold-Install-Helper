@@ -1,4 +1,6 @@
 var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
+// cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
+var cart_log = [ false, false, false, false, false, false, false ];
 
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -26,11 +28,47 @@ function isNested(list, start) {
   return -1;
 }
 
-function cartInstall(data)
+function getFile(key, name, callback)
+{
+  var id = $('.action-bar__top-links a').attr('href');
+  id = id.substring(0, id.indexOf("/editor"));
+  var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
+
+  $.get(id + '/assets.json?asset[key]=' + key + '/' + name + '&theme_id=' + id, function(data) {
+    callback(key, name, data.asset.value);
+  });
+}
+
+
+function pushFile(key, name, data, callback)
+{
+  var id = $('.action-bar__top-links a').attr('href');
+  id = id.substring(0, id.indexOf("/editor"));
+  var url = id + '/assets.json';
+  var params = {
+    "asset": {
+    "key": key + "\/" + name,
+    "value": data
+    }
+  }
+
+  $.ajax({
+    url: url,
+    type: 'PUT',
+    data: params,
+    success: callback,
+    error: function(result)
+    {
+      console.log("error:" + result);
+    }
+  });
+}
+
+function cartInstall(key, name, data)
 {
   // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
   cart_log = [ false, false, false, false, false, false, false ]
-  data = parseValueFromXML(data);
+  //data = parseValueFromXML(data);
 
   var split = data.split('\n');
   for (var i = 0; i < split.length; ++i)
@@ -113,7 +151,58 @@ for (var i = 0; i < split.length; ++i)
   code += split[i] + '\n';
 }
 
-  openCodePopup(code);
+  pushFile(key, name, code, function() {
+    refreshCodeTab();
+  });
+  updateCadetReport();
+}
+
+function refreshCodeTab()
+{
+    // mark prev tab
+    $('.template-editor-tab.active').prev().addClass('cadet_placeholder');
+    // close/reopen tab
+    $('.template-editor-tab.active .template-editor-close-tab').click();
+    $('[data-asset-key="sections/cart-template.liquid"]').click();
+    // Move the tab back to where it was
+    setTimeout(function() {
+      $('.template-editor-tab.active').insertAfter('.cadet_placeholder');
+      $('.cadet_placeholder').removeClass('cadet_placeholder');
+    }, 250);
+}
+
+function updateCadetReport()
+{
+  var strike = false;
+  var logMsg = "";
+  for (var i=0; i < cart_log.length; ++i)
+  {
+    strike = false;
+    if (!cart_log[i])
+      strike = true;
+
+    if(strike)
+      logMsg += "<p class='cadet_report_false'>"
+
+    if (i === 0)
+      logMsg += ' cartInclude ';
+    else if (i === 1)
+      logMsg += ' forItemInclude ';
+    else if (i === 2)
+        logMsg += ' boldRecurringDesc ';
+    else if (i === 3)
+          logMsg += ' itemPrice ';
+    else if (i === 4)
+          logMsg += ' cartTotalPrice ';
+    else if (i === 5)
+          logMsg += ' itemLinePrice ';
+    else if (i === 6)
+          logMsg += ' showPaypal ';
+    if(strike)
+      logMsg += "</p>"
+  }
+
+  $('.cadet_report').html(logMsg);
 }
 
 function openCodePopup(code)

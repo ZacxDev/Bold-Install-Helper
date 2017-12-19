@@ -1,6 +1,15 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>  $( function() {
-    $( ".cadet_modal" ).draggable();
+    $( ".cadet_modal" ).draggable({
+scroll: false,
+containment: 'window',
+start: function(event, ui) {
+   ui.position.top -= $(window).scrollTop();
+},
+drag: function(event, ui) {
+  ui.position.top -= $(window).scrollTop();
+}
+    });
     $( ".cadet_modal" ).css('position', 'absolute')
   } );</script>
 <div class="cadet_modal ui-widget-content">
@@ -18,9 +27,13 @@
      <a class="ro_cartpage">Cart Page</a>
    </div>
 
-   <div class="cadet_report">
+   <div class="cadet_report_view">
      <a>View Log</a>
    </div>
+   <div class="cadet_report_wrap">
+     <p class="cadet_report">This is the report</p>
+   </div>
+
  </div>
 </div>
 <div class="cadet_peek" style="display: none;">
