@@ -11,6 +11,7 @@
   left: 40%;
   position: absolute;
   z-index: 1000;
+  overflow: hidden;
 }
 
 .cadet_modal div {
@@ -76,12 +77,13 @@
   margin-right: 4%;
 }
 
-.cadet_report_wrap {
+div.cadet_report_wrap {
   width: 98%;
   border-width: 0;
   border-top-width: 1px;
   border-color: red;
   border-style: solid;
+  display: none;
 }
 
 p.cadet_report {
@@ -94,8 +96,6 @@ p.cadet_report {
 }
 
 .cadet_selected {
-  border-width: 0;
-  border-bottom-width: 1px;
   border-color: red;
   color: red;
 }
@@ -103,17 +103,21 @@ p.cadet_report {
 .cadet-btn {
   height: auto;
   display: inline-block;
-  padding: 0.9rem 1.5rem;
+  padding: 0.4rem 1rem;
   background: none;
   border-width: 0;
   border-bottom-width: 1px;
   border-radius: 0;
-  width: 100% !important;
+  width: 80% !important;
+  float: right;
+  font-size: 12px;
+  border-left-width: 1px;
 }
 
 .cadet-btn:focus {
   border-width: 0;
   border-bottom-width: 1px;
+  border-left-width: 1px;
   border-color: red;
   color: red;
 }
@@ -121,6 +125,35 @@ p.cadet_report {
 .cadet-btn:hover {
   border-color: red;
   transition : border 750ms ease-out;
+}
+
+.cadet_expandable {
+  transition: all .2s ease-in-out;
+  transform-origin: top;
+  transform: scale(1,0);
+  float: right;
+}
+
+.cadet_expand {
+  width: 100%;
+  background: none;
+  border-width: 0px;
+  border-bottom-width: 1px;
+  border-bottom-color: red;
+  padding: 10px 0 10px 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease-out;
+}
+.cadet_expand:focus {
+  outline: none;
+}
+
+.cadet_expand:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.cadet_expand_selected {
+  background-color: rgba(255, 0, 0, 0.1);
 }
 
 .cadet_peek {

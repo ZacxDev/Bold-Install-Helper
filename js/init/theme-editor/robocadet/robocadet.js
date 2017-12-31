@@ -1,4 +1,9 @@
 $(document).ready(function() {
+
+// Check if on theme editor page
+  if ($('.template-editor-container').length == 0)
+    return;
+
   $.get(chrome.extension.getURL('js/init/theme-editor/robocadet/robocadet.html'), function(data) {
     $('body').prepend(data);
 
@@ -35,6 +40,32 @@ function loadCadetListeners()
   $(document).on('click', '.cadet_peek', function() {
     $('.cadet_modal').show();
     $('.cadet_peek').hide();
+  });
+  $(document).on('click', '.cadet_report_view a', function()
+  {
+    $('.cadet_report_wrap').show();
+    $(this).text('Hide Report');
+    $(this).addClass('cadet_report_view_hide');
+  });
+  $(document).on('click', '.cadet_report_view_hide', function() {
+    $('.cadet_report_wrap').hide();
+    $(this).text('View Report');
+    $(this).removeClass('cadet_report_view_hide');
+  });
+  $(document).on('click', '.cadet_expand', function() {
+    var tar = $(this).data('expands');
+    $('.' + tar).show();
+    $('.' + tar).css('transform', 'scale(1,1)');
+    $(this).addClass('cadet_hide cadet_expand_selected');
+  });
+  $(document).on('click', '.cadet_hide', function() {
+    var tar = $(this).data('expands');
+    $('.' + tar).css('transform', 'scale(1,0)');
+    $('.' + tar).on('transitionend', function() {
+      $(this).hide();
+      $(this).off('transitionend');
+    });
+    $(this).removeClass('cadet_hide cadet_expand_selected');
   });
 }
 

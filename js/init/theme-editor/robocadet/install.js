@@ -56,7 +56,7 @@ function pushFile(key, name, data, callback)
     url: url,
     type: 'PUT',
     data: params,
-    success: callback,
+    success: callback(key, name),
     error: function(result)
     {
       console.log("error:" + result);
@@ -151,19 +151,19 @@ for (var i = 0; i < split.length; ++i)
   code += split[i] + '\n';
 }
 
-  pushFile(key, name, code, function() {
-    refreshCodeTab();
+  pushFile(key, name, code, function(key, name) {
+    refreshCodeTab(key, name);
   });
   updateCadetReport();
 }
 
-function refreshCodeTab()
+function refreshCodeTab(key, name)
 {
     // mark prev tab
     $('.template-editor-tab.active').prev().addClass('cadet_placeholder');
     // close/reopen tab
     $('.template-editor-tab.active .template-editor-close-tab').click();
-    $('[data-asset-key="sections/cart-template.liquid"]').click();
+    $('[data-asset-key="' + key + '/' + name + '"]').click();
     // Move the tab back to where it was
     setTimeout(function() {
       $('.template-editor-tab.active').insertAfter('.cadet_placeholder');

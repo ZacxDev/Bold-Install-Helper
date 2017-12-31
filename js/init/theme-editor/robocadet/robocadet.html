@@ -14,8 +14,16 @@ drag: function(event, ui) {
   } );</script>
 <div class="cadet_modal ui-widget-content">
  <div class="cadet_left">
-   <input type="button" class="cadet-btn" data-app="ro" value="Recurring Orders" />
-   <input type="button" class="cadet-btn" data-app="lp" value="Loyalty Points" />
+   <button class="cadet_expand" data-expands="cadet_apps">Apps</button>
+   <div class="cadet_apps cadet_expandable" style="display: none;">
+     <input type="button" class="cadet-btn" data-app="ro" value="Recurring Orders" />
+    <input type="button" class="cadet-btn" data-app="lp" value="Loyalty Points" />
+  </div>
+  <button class="cadet_expand" data-expands="cadet_files">Files</button>
+  <div class="cadet_files cadet_expandable" style="display: none;">
+    <input type="button" class="cadet-btn" value="CSS" />
+   <input type="button" class="cadet-btn" value="JavaScript" />
+ </div>
  </div>
  <div class="cadet_right">
    <p>Robo Cadet<a class="cadet_close">X</a></p>
@@ -28,7 +36,7 @@ drag: function(event, ui) {
    </div>
 
    <div class="cadet_report_view">
-     <a>View Log</a>
+     <a>View Report</a>
    </div>
    <div class="cadet_report_wrap">
      <p class="cadet_report">This is the report</p>
