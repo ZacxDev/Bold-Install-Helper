@@ -195,3 +195,27 @@ function doROCartInstall()
     getFile(key, value, cartInstall);
   });
 }
+
+function doROAjaxInstalll()
+{
+    injectScript(function() {
+      var kv, key, value, tar = $('.theme-asset-name strong').text();
+      kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
+
+      key = kv.substring(0, kv.indexOf('/'));
+      value = kv.substring(kv.indexOf('/') + 1, kv.length);
+      getFile(key, value, narrativeAjaxThemeMinJs);
+    });
+}
+
+function undoCadetAction()
+{
+  injectScript(function() {
+    var name = GetCurrentFileName();
+    if (file_history[name] != undefined)
+    {
+      pushFile(GetCurrentFileKey(), name, file_history[name], refreshCodeTab);
+      $('.cadet_undo').hide();
+    }
+  });
+}

@@ -33,6 +33,9 @@ function loadCadetListeners()
   $(document).on('click', 'a.ro_cartpage', function() {
     doROCartInstall();
   });
+  $(document).on('click', 'a.ro_ajax', function() {
+    doROAjaxInstalll();
+  });
   $(document).on('click', '.cadet_close', function() {
     $('.cadet_modal').hide();
     $('.cadet_peek').show();
@@ -41,7 +44,7 @@ function loadCadetListeners()
     $('.cadet_modal').show();
     $('.cadet_peek').hide();
   });
-  $(document).on('click', '.cadet_report_view a', function()
+  $(document).on('click', '.cadet_report_toggle', function()
   {
     $('.cadet_report_wrap').show();
     $(this).text('Hide Report');
@@ -67,6 +70,14 @@ function loadCadetListeners()
     });
     $(this).removeClass('cadet_hide cadet_expand_selected');
   });
+
+  $(document).on('click', '.cadet_undo', function() {
+    undoCadetAction();
+  });
+
+  $(document).on('click', '.cadet_action', function() {
+    $('.cadet_undo').show();
+  });
 }
 
 function refreshCadetModal(ele)
@@ -81,5 +92,10 @@ function refreshCadetModal(ele)
   {
     $('.cadet_ro').show();
     $('.cadet_ro').addClass('cadet_visable');
+  }
+  else if (ele.data('app') === "lp")
+  {
+    $('.cadet_lp').show();
+    $('.cadet_lp').addClass('cadet_visable');
   }
 }

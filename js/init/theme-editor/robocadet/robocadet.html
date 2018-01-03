@@ -26,22 +26,46 @@ drag: function(event, ui) {
  </div>
  </div>
  <div class="cadet_right">
-   <p>Robo Cadet<a class="cadet_close">X</a></p>
-
+   <p>[Beta] Robo Cadet<a class="cadet_close">X</a></p>
    <div class="cadet_spacer"></div>
-   <div class="cadet_ro" style="display:none;">
-     <a>Ajax</a>
-     <div class="cadet_ro_spacer"></div>
-     <a class="ro_cartpage">Cart Page</a>
+
+   <div class="cadet_ro cadet_menu" style="display:none;">
+     <table>
+       <tr>
+         <td>
+           <a class="ro_ajax cadet_action">Ajax</a>
+         </td>
+         <td>
+           <a class="ro_cartpage cadet_action">Cart Page</a>
+         </td>
+       </tr>
+     </table>
+   </div>
+
+   <div class="cadet_lp cadet_menu" style="display:none;">
+     <table>
+       <tr>
+         <td>
+           <a class="lp_theme cadet_action">Theme</a>
+         </td>
+         <td>
+           <a class="lp_theme cadet_action">Header</a>
+         </td>
+         <td>
+           <a class="lp_theme cadet_action">Cart</a>
+         </td>
+       </tr>
+     </table>
    </div>
 
    <div class="cadet_report_view">
-     <a>View Report</a>
+    <a class="cadet_undo">Undo</a>
+    <a class="cadet_bugreport">Report an Issue</a>
+    <a class="cadet_report_toggle">View Report</a>
    </div>
    <div class="cadet_report_wrap">
-     <p class="cadet_report">This is the report</p>
+     This is the report
    </div>
-
  </div>
 </div>
 <div class="cadet_peek" style="display: none;">

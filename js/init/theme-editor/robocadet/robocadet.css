@@ -53,12 +53,12 @@
   height: 10%;
 }
 
-.cadet_ro {
+.cadet_menu {
   width: 100%;
   text-align: center;
 }
 
-.cadet_ro a {
+.cadet_action {
   color: red;
 }
 
@@ -67,13 +67,16 @@
 }
 
 .cadet_report_view {
-  text-align: center;
+  text-align: right;
   width: 100%;
   margin-top: 10%;
 }
 
+.cadet_undo {
+  display: none;
+}
+
 .cadet_report_view a {
-  float: right;
   margin-right: 4%;
 }
 
@@ -84,15 +87,22 @@ div.cadet_report_wrap {
   border-color: red;
   border-style: solid;
   display: none;
+  overflow: auto;
+  max-height: 80px;
 }
 
-p.cadet_report {
+.cadet_report_wrap ul {
+  list-style-type: none;
+}
+
+.cadet_report_wrap {
   font-size: 12px;
   color: green;
 }
 
-.cadet_report_false {
+span.cadet_report_false {
   color: red;
+  font-size: 12px;
 }
 
 .cadet_selected {

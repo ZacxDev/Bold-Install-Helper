@@ -1,6 +1,7 @@
 var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-drawer.liquid'];
 // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
-var cart_log = [ false, false, false, false, false, false, false ];
+var cart_log = {};
+var file_history = {};
 
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -35,6 +36,7 @@ function getFile(key, name, callback)
   var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
 
   $.get(id + '/assets.json?asset[key]=' + key + '/' + name + '&theme_id=' + id, function(data) {
+    file_history[name] = data.asset.value;
     callback(key, name, data.asset.value);
   });
 }
@@ -67,7 +69,7 @@ function pushFile(key, name, data, callback)
 function cartInstall(key, name, data)
 {
   // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
-  cart_log = [ false, false, false, false, false, false, false ]
+  cart_log = {'cartInclude' : false, 'forItemInclude': false, 'boldDesc': false, 'itemPrice': false, 'cartTotalPrice': false, 'itemLinePrice': false, 'showPaypal': false, };
   //data = parseValueFromXML(data);
 
   var split = data.split('\n');
@@ -76,19 +78,19 @@ function cartInstall(key, name, data)
       if (i === 0 && split[0].indexOf("{%- include 'bold-cart' -%}") === -1)
       {
         split.splice(0, 0, "{%- include 'bold-cart' -%}");
-        cart_log[0] = true;
+        cart_log['cartInclude'] = true;
         continue;
       }
 
-      if (split[i].indexOf('{% for item in') != -1 && split[i+1].indexOf("{%- include 'bold-cart-item' with item -%}") === -1 && !cart_log[1])
+      if (split[i].indexOf('{% for item in') != -1 && split[i+1].indexOf("{%- include 'bold-cart-item' with item -%}") === -1 && !cart_log['forItemInclude'])
       {
         split.splice(i+1, 0, "{%- include 'bold-cart-item' with item -%}");
-        cart_log[1] = true;
+        cart_log['forItemInclude'] = true;
         continue;
       }
 
       //if we find the loop
-      if ((split[i].indexOf('{% for p in item.properties') != -1 || split[i].indexOf('{% for property in itemProperties') != -1 || split[i].indexOf('{% for p in itemProperties') != -1) && !cart_log[2])
+      if ((split[i].indexOf('{% for p in item.properties') != -1 || split[i].indexOf('{% for property in itemProperties') != -1 || split[i].indexOf('{% for p in itemProperties') != -1) && !cart_log['boldDesc'])
       {
         //save the index so we can comment
         var fl_cmt_index = i;
@@ -107,7 +109,7 @@ function cartInstall(key, name, data)
             split.splice(fl_cmt_index, 0, "{%- comment -%}");
             split.splice(f+2, 0, "{%- endcomment -%}");
             split.splice(f+3, 0, "{{ bold_recurring_desc }}");
-            cart_log[2] = true;
+            cart_log['boldDesc'] = true;
 
             break;
           }
@@ -117,13 +119,13 @@ function cartInstall(key, name, data)
       if (split[i].indexOf('{{ cart.total_price') != -1)
       {
         split[i] = split[i].replace('cart.total_price', 'bold_cart_total_price');
-        cart_log[4] = true;
+        cart_log['cartTotalPrice'] = true;
         continue;
       }
 
       if (split[i].indexOf('{{ item.price') != -1)
       {
-        cart_log[3] = true;
+        cart_log['itemPrice'] = true;
         split[i] = split[i].replace('item.price', 'bold_item_price');
         continue;
       }
@@ -131,34 +133,35 @@ function cartInstall(key, name, data)
       if (split[i].indexOf('{{ item.line_price') != -1)
       {
         split[i] = split[i].replace('item.line_price', 'bold_item_line_price');
-        cart_log[5] = true;
+        cart_log['itemLinePrice'] = true;
         continue;
       }
 
-      if (split[i].indexOf('{% if additional_checkout_buttons %}') != -1 && !cart_log[6])
+      if (split[i].indexOf('{% if additional_checkout_buttons %}') != -1 && !cart_log['showPaypal'])
       {
         split[i] = split[i].replace('%}', 'and show_paypal %}');
-        cart_log[6] = true;
+        cart_log['showPaypal'] = true;
         continue;
       }
 //console.log((i/split.length) * 100 + "%")
   }
 //console.log(cart_log);
 
-var code = '';
-for (var i = 0; i < split.length; ++i)
-{
-  code += split[i] + '\n';
-}
+  var code = '';
+  for (var i = 0; i < split.length; ++i)
+  {
+    code += split[i] + '\n';
+  }
 
   pushFile(key, name, code, function(key, name) {
-    refreshCodeTab(key, name);
+      refreshCodeTab(key, name);
   });
   updateCadetReport();
 }
 
 function refreshCodeTab(key, name)
 {
+  setTimeout(function() {
     // mark prev tab
     $('.template-editor-tab.active').prev().addClass('cadet_placeholder');
     // close/reopen tab
@@ -168,96 +171,46 @@ function refreshCodeTab(key, name)
     setTimeout(function() {
       $('.template-editor-tab.active').insertAfter('.cadet_placeholder');
       $('.cadet_placeholder').removeClass('cadet_placeholder');
-    }, 250);
+    }, 300);
+  }, 300);
 }
 
-function updateCadetReport()
+function updateCadetReport(log)
 {
+  if (typeof log == "undefined")
+    log = cart_log;
   var strike = false;
-  var logMsg = "";
-  for (var i=0; i < cart_log.length; ++i)
-  {
+  var logMsg = "<ul>";
+
+  for (var k in log){
     strike = false;
-    if (!cart_log[i])
+    if (!log[k])
       strike = true;
+      logMsg += "<li>";
 
-    if(strike)
-      logMsg += "<p class='cadet_report_false'>"
+      if(strike)
+        logMsg += "<span class='cadet_report_false'>"
 
-    if (i === 0)
-      logMsg += ' cartInclude ';
-    else if (i === 1)
-      logMsg += ' forItemInclude ';
-    else if (i === 2)
-        logMsg += ' boldRecurringDesc ';
-    else if (i === 3)
-          logMsg += ' itemPrice ';
-    else if (i === 4)
-          logMsg += ' cartTotalPrice ';
-    else if (i === 5)
-          logMsg += ' itemLinePrice ';
-    else if (i === 6)
-          logMsg += ' showPaypal ';
-    if(strike)
-      logMsg += "</p>"
+      logMsg += k + "</li>";
+
+      if (strike)
+        logMsg += "</span>";
   }
+  logMsg += "</ul>";
 
-  $('.cadet_report').html(logMsg);
+  $('.cadet_report_wrap').html(logMsg);
 }
 
+//deprecated
 function openCodePopup(code)
 {
-
-    $('.bh-codepopup').css('display', 'block');
-    $('.bh-codepopup xmp').text(code);
-
-    SelectText('text-select');
-    document.execCommand('copy');
-    // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
-    var logMsg = '';
-    var strike = false;
-    for (var i=0; i < cart_log.length; ++i)
-    {
-      strike = false;
-      if (!cart_log[i])
-        strike = true;
-
-      if(strike)
-        logMsg += "<p class='log-false'>"
-
-      if (i === 0)
-        logMsg += ' cartInclude ';
-      else if (i === 1)
-        logMsg += ' forItemInclude ';
-      else if (i === 2)
-          logMsg += ' boldRecurringDesc ';
-      else if (i === 3)
-            logMsg += ' itemPrice ';
-      else if (i === 4)
-            logMsg += ' cartTotalPrice ';
-      else if (i === 5)
-            logMsg += ' itemLinePrice ';
-      else if (i === 6)
-            logMsg += ' showPaypal ';
-      if(strike)
-        logMsg += "</p>"
-    }
-    $('.bh-rocart-log').css('display', 'block');
-    $('.bh-rocart-log').html(logMsg);
-
-  $('.bh-codepopup').click(function(e) {
-    SelectText('text-select');
-    e.stopPropagation();
-  });
 }
 
 
-function narrativeAjaxThemeMinJs(data)
+function narrativeAjaxThemeMinJs(key, name, data)
 {
 
-var log = [ false, false, false, false, false, false ]
-//parse the actual code from the XML response
-data = parseValueFromXML(data);
+var log = {'recurringProperty': false, 'cleanCart': false, 'formatted_recurring_desc': false}
 
   // find property tag, insert recurring tag | add the $n recurringdesc thingy | clean cart in update(t) | put <p data-formatted_recurr...> in cart-drawer and cart-template
   var lines = data.split('\n');
@@ -269,15 +222,15 @@ data = parseValueFromXML(data);
       //inset recurring property on next line
       //lines.splice(i+1, 0, 'itemRecurring: "[data-cart-item-formatted_recurring_desc]",');
       lines[i] = lines[i].substring(0, lines[i].indexOf('itemProperty:')) + 'itemRecurring: "[data-cart-item-formatted_recurring_desc]",' + lines[i].substring(lines[i].indexOf('itemProperty:'), lines[i].length);
-      log[0] = true;
+      log['recurringProperty'] = true;
     }
     // run clean cart and append recurring desc to html
     if (lines[i].indexOf('this.trigger("cart_update_start"') != -1)
     {
       //append cleancart
       //lines.splice(i+1, 0, "if(typeof(BOLD) === 'object' && BOLD.helpers && typeof(BOLD.helpers.cleanCart) === 'function' ) {cart = BOLD.helpers.cleanCart(cart);}")
-      debugger;
       lines[i] = lines[i].substring(0, lines[i].indexOf('this.trigger("cart_update_start"')) + "if(typeof(BOLD) === 'object' && BOLD.helpers && typeof(BOLD.helpers.cleanCart) === 'function' ) {t = BOLD.helpers.cleanCart(t);}" + lines[i].substring(lines[i].indexOf('this.trigger("cart_update_start"'), lines[i].length);
+      log['cleanCart'] = true;
     }
     //insert recurring desc to html
     if (lines[i].indexOf('return e.find') != -1)
@@ -290,6 +243,7 @@ data = parseValueFromXML(data);
       //define itemprice
       //lines.splice(j, 0, "var itemPrice = '';if(t.properties != null){itemPrice = t.price;} else{itemPrice = t.discounted_price;}")
       lines[i] = lines[i].substring(0, lines[i].indexOf('return e.find')) + "var itemPrice = '';if(t.properties != null){itemPrice = t.price;} else{itemPrice = t.discounted_price;}" + lines[i].substring(lines[i].indexOf('return e.find'), lines[i].length);
+      log['formatted_recurring_desc'] = true;
     }
   }
 
@@ -299,7 +253,10 @@ data = parseValueFromXML(data);
     code += lines[i] + '\n';
   }
 
-    openCodePopup(code);
+  pushFile(key, name, code, function(key, name) {
+    refreshCodeTab(key, name);
+  });
+  updateCadetReport(log);
 }
 
 function findIndexOf(list, line, start)
@@ -310,4 +267,22 @@ function findIndexOf(list, line, start)
       return j;
   }
   return -1;
+}
+
+function GetCurrentFileKey()
+{
+  var kv, key, tar = $('.theme-asset-name strong').text();
+  kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
+
+  key = kv.substring(0, kv.indexOf('/'));
+  return key;
+}
+
+function GetCurrentFileName()
+{
+  var kv, value, tar = $('.theme-asset-name strong').text();
+  kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
+
+  value = kv.substring(kv.indexOf('/') + 1, kv.length);
+  return value;
 }
