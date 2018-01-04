@@ -29,6 +29,7 @@ drag: function(event, ui) {
    <p>[Beta] Robo Cadet<a class="cadet_close">X</a></p>
    <div class="cadet_spacer"></div>
 
+<div class="cadet_mainstage">
    <div class="cadet_ro cadet_menu" style="display:none;">
      <table>
        <tr>
@@ -58,13 +59,16 @@ drag: function(event, ui) {
      </table>
    </div>
 
-   <div class="cadet_report_view">
-    <a class="cadet_undo">Undo</a>
-    <a class="cadet_bugreport">Report an Issue</a>
-    <a class="cadet_report_toggle">View Report</a>
+   <div class="cadet_report_wrap cadet_menu">
+     <div class="cadet_report_content">
+       This is the report
+     </div>
    </div>
-   <div class="cadet_report_wrap">
-     This is the report
+ </div>
+   <div class="cadet_apps_tools">
+     <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Functions</a>
+    <a class="cadet_undo">Undo</a>
+    <a class="cadet_menu_toggle cadet_report_toggle" data-opens="cadet_report_wrap">View Report</a>
    </div>
  </div>
 </div>

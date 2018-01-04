@@ -14,9 +14,6 @@
   overflow: hidden;
 }
 
-.cadet_modal div {
-  display: inline-block;
-}
 
 .cadet_left {
   float: left;
@@ -55,6 +52,10 @@
 
 .cadet_menu {
   width: 100%;
+  height: 100%;
+  transform-origin: bottom;
+  transform: scale(1,0);
+  transition: all .3s ease-out;
   text-align: center;
 }
 
@@ -66,29 +67,33 @@
   width: 30%;
 }
 
-.cadet_report_view {
+.cadet_apps_tools {
   text-align: right;
   width: 100%;
-  margin-top: 10%;
 }
 
 .cadet_undo {
   display: none;
 }
 
-.cadet_report_view a {
+.cadet_apps_tools a {
   margin-right: 4%;
 }
 
-div.cadet_report_wrap {
+div.cadet_mainstage {
   width: 98%;
+  height: 10em;
+  margin-top: 5%;
+}
+
+div.cadet_report_content {
   border-width: 0;
   border-top-width: 1px;
   border-color: red;
   border-style: solid;
-  display: none;
   overflow: auto;
-  max-height: 80px;
+  width: 100%;
+  height: 100%;
 }
 
 .cadet_report_wrap ul {

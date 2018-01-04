@@ -16,9 +16,17 @@ function(request, sender, sendResponse) {
 });
     });
   }
-  else if (request.command == "openmissingcode")
+  else if (request.command == "savethemetabs")
   {
-    chrome.tabs.create({'url': chrome.extension.getURL('missingCode.html')});
+    saveThemeEditorTabs(request.tabs);
+  }
+  else if (request.command == "getthemetabs")
+  {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      getThemeEditorTabs(function(tablist) {
+        chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
+      });
+    });
   }
   else if (request.command == "init")
     {
@@ -109,3 +117,21 @@ function loadCollaboratorAccounts(tab) {
 $(document).ready(function() {
 
 });
+
+function saveThemeEditorTabs(tabs)
+{
+  chrome.storage.sync.set({
+    theme_editor_tabs: tabs
+  }, function() {
+    console.log('Saved tabs');
+  });
+}
+
+function getThemeEditorTabs(callback)
+{
+  chrome.storage.sync.get({
+    theme_editor_tabs: []
+  }, function(items) {
+    callback(items.theme_editor_tabs);
+  });
+}

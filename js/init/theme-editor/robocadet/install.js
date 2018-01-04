@@ -198,7 +198,7 @@ function updateCadetReport(log)
   }
   logMsg += "</ul>";
 
-  $('.cadet_report_wrap').html(logMsg);
+  $('.cadet_report_content').html(logMsg);
 }
 
 //deprecated
@@ -271,6 +271,8 @@ function findIndexOf(list, line, start)
 
 function GetCurrentFileKey()
 {
+  if ($('.theme-asset-name strong').text() === "")
+    return "";
   var kv, key, tar = $('.theme-asset-name strong').text();
   kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
 
@@ -280,6 +282,9 @@ function GetCurrentFileKey()
 
 function GetCurrentFileName()
 {
+  if ($('.theme-asset-name strong').text() === "")
+    return "";
+
   var kv, value, tar = $('.theme-asset-name strong').text();
   kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
 

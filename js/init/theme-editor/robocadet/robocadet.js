@@ -19,6 +19,8 @@ $(document).ready(function() {
     var installjs = $('<script src="' + chrome.extension.getURL('js/init/theme-editor/robocadet/install.js') + '"></script>');
     $('head').append(installjs);
 
+    // hide menus so that we don't see initial transition
+    $('.cadet_menu').hide();
     // load listeners
     loadCadetListeners();
   });
@@ -44,17 +46,6 @@ function loadCadetListeners()
     $('.cadet_modal').show();
     $('.cadet_peek').hide();
   });
-  $(document).on('click', '.cadet_report_toggle', function()
-  {
-    $('.cadet_report_wrap').show();
-    $(this).text('Hide Report');
-    $(this).addClass('cadet_report_view_hide');
-  });
-  $(document).on('click', '.cadet_report_view_hide', function() {
-    $('.cadet_report_wrap').hide();
-    $(this).text('View Report');
-    $(this).removeClass('cadet_report_view_hide');
-  });
   $(document).on('click', '.cadet_expand', function() {
     var tar = $(this).data('expands');
     $('.' + tar).show();
@@ -78,6 +69,11 @@ function loadCadetListeners()
   $(document).on('click', '.cadet_action', function() {
     $('.cadet_undo').show();
   });
+
+  $(document).on('click', '.cadet_menu_toggle', function() {
+    var tar = $(this).data('opens');
+    toggleMenu($('.' + tar));
+  });
 }
 
 function refreshCadetModal(ele)
@@ -90,12 +86,24 @@ function refreshCadetModal(ele)
 
   if (ele.data('app') === "ro")
   {
-    $('.cadet_ro').show();
+  //  $('.cadet_ro').show();
     $('.cadet_ro').addClass('cadet_visable');
+    toggleMenu($('.cadet_ro'));
   }
   else if (ele.data('app') === "lp")
   {
-    $('.cadet_lp').show();
+    //$('.cadet_lp').show();
     $('.cadet_lp').addClass('cadet_visable');
+    toggleMenu($('.cadet_lp'));
   }
+}
+
+function toggleMenu(tar)
+{
+  $('.cadet_menu_open').hide();
+  $('.cadet_menu_open').css('transform', 'scale(1,0)');
+  $('.cadet_menu_open').removeClass('cadet_menu_open');
+  $(tar).show();
+  $(tar).addClass('cadet_menu_open');
+  $(tar).css('transform', 'scale(1,1)');
 }

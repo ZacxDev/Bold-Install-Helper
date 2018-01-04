@@ -4,9 +4,24 @@ $(document).ready(function() {
   loadThemeEditorListeners();
   // check customers/account.liquid for manage subs button
   getFile("templates", "customers/account.liquid", checkManageSubs);
-  refreshThemeEditor();
-  addObserver('.theme-asset-name strong', function() {
-    refreshThemeEditor();
+  // refreshThemeEditor();
+  // addObserver('.theme-asset-name strong', function() {
+  //   refreshThemeEditor();
+  // });
+
+  chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.command == "settabs"){
+        for (var i = 0; i < request.tabs.length; i++)
+        {
+          // stick code file name onto body attribute
+          $('body').attr('cadet-opentab', request.tabs[i] + "");
+          injectScript(function() {
+            // grab the file name from body and open that file
+              $('[data-asset-key="' + $('body').attr('cadet-opentab') + '"]').click();
+          });
+        }
+    }
   });
 });
 
@@ -84,18 +99,18 @@ function loadThemeEditor()
 
 }
 
-function refreshThemeEditor()
-{
-  var file = $('[data-bind="currentTab.basename"]:not(input)').text();
-
-//  if (roAjaxFiles.indexOf(file) == -1)
-if (file.indexOf('.js') == -1)
-  {
-    $('.bh-ajax, .bh-ajax-menu').hide();
-  } else {
-    $('.bh-ajax').show();
-  }
-}
+// function refreshThemeEditor()
+// {
+//   var file = $('[data-bind="currentTab.basename"]:not(input)').text();
+//
+// //  if (roAjaxFiles.indexOf(file) == -1)
+// if (file.indexOf('.js') == -1)
+//   {
+//     $('.bh-ajax, .bh-ajax-menu').hide();
+//   } else {
+//     $('.bh-ajax').show();
+//   }
+// }
 
 function loadThemeEditorListeners() {
 
@@ -210,12 +225,23 @@ function doROAjaxInstalll()
 
 function undoCadetAction()
 {
+  $('.cadet_undo').hide();
   injectScript(function() {
     var name = GetCurrentFileName();
     if (file_history[name] != undefined)
     {
       pushFile(GetCurrentFileKey(), name, file_history[name], refreshCodeTab);
-      $('.cadet_undo').hide();
     }
   });
+}
+
+function saveOpenTabs()
+{
+  var tablist = [];
+  $('.template-editor-tab-filename').each(function() {
+    var key = $('#asset-list').find('[data-asset-key*="' + $(this).text() + '"]');
+    tablist.push(key.data('asset-key'));
+  });
+
+  chrome.runtime.sendMessage({command: "savethemetabs", tabs: tablist});
 }
