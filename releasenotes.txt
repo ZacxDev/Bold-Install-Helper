@@ -1,13 +1,10 @@
-v1.1.18 21/09/17
-Features:
-	- Added App Selector in popup to auto change options
-Notes:
-	- Began work on bold code scanner
-
-v1.1.13 30/08/17
-Features:
-	- Added Ajax install menu
-	- Added Ajax install(theme.min.js) for Narrative v1.2.2 (Note: Do not unminify file or it won't work as well)
-Fixes:
-	- ro cart install now works with nested for loops
-	- Ro subscription widget buttons look better
+Features: 
+ - Apps Tab:
+	- automatic liquid changes for x file for y app
+	- changes can be undone if shit goes south
+	- report on what was changed
+- Utility Tab:
+	- one click to upload and include bold assets
+	- collection of useful snippets for each app
+- Documentation Tab:
+	- Links to install documentation for each app for common themes

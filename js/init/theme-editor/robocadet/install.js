@@ -32,7 +32,7 @@ function isNested(list, start) {
 function getFile(key, name, callback)
 {
   var id = $('.action-bar__top-links a').attr('href');
-  id = id.substring(0, id.indexOf("/editor"));
+  id = id.substring(id.indexOf("s/") + 2, id.indexOf("/editor"));
   var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
 
   $.get(id + '/assets.json?asset[key]=' + key + '/' + name + '&theme_id=' + id, function(data) {
@@ -258,6 +258,48 @@ var log = {'recurringProperty': false, 'cleanCart': false, 'formatted_recurring_
   });
   updateCadetReport(log);
 }
+
+
+/* @param: line - line to insert into theme Header
+*  @param: check - what to check for to see if line is already there
+*  @param: callback - the callback
+*/
+function appendToThemeHeaderContent(line, check, callback)
+{
+  //grab file and insert asset include
+  getFile('layout', 'theme.liquid', function(k, n, data)
+  {
+
+    if (data.indexOf(line) != -1)
+    {
+      callback();
+      return;
+    }
+
+    var lines = data.split('\n');
+
+    for (var i = 0; i < lines.length; i++)
+    {
+      if (lines[i].indexOf('content_for_header') != -1)
+      {
+        lines.splice(i+1, 0, "\n" + line)
+        break;
+      }
+    }
+
+// convert array into string
+    var code = '';
+    for (var i = 0; i < lines.length; ++i)
+    {
+      code += lines[i] + '\n';
+    }
+    //update file
+    pushFile('layout', 'theme.liquid', code, function() {
+      callback();
+    });
+  });
+}
+
 
 function findIndexOf(list, line, start)
 {

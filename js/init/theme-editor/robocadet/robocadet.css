@@ -115,7 +115,7 @@ span.cadet_report_false {
   color: red;
 }
 
-.cadet-btn {
+input.cadet-btn {
   height: auto;
   display: inline-block;
   padding: 0.4rem 1rem;
@@ -123,8 +123,7 @@ span.cadet_report_false {
   border-width: 0;
   border-bottom-width: 1px;
   border-radius: 0;
-  width: 80% !important;
-  float: right;
+  width: 100%;
   font-size: 12px;
   border-left-width: 1px;
 }
@@ -146,7 +145,6 @@ span.cadet_report_false {
   transition: all .2s ease-in-out;
   transform-origin: top;
   transform: scale(1,0);
-  float: right;
 }
 
 .cadet_expand {

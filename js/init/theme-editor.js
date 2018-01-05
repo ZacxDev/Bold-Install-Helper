@@ -9,20 +9,7 @@ $(document).ready(function() {
   //   refreshThemeEditor();
   // });
 
-  chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.command == "settabs"){
-        for (var i = 0; i < request.tabs.length; i++)
-        {
-          // stick code file name onto body attribute
-          $('body').attr('cadet-opentab', request.tabs[i] + "");
-          injectScript(function() {
-            // grab the file name from body and open that file
-              $('[data-asset-key="' + $('body').attr('cadet-opentab') + '"]').click();
-          });
-        }
-    }
-  });
+  openSavedTabs();
 });
 
 var bhAjax;
@@ -244,4 +231,22 @@ function saveOpenTabs()
   });
 
   chrome.runtime.sendMessage({command: "savethemetabs", tabs: tablist});
+}
+
+function openSavedTabs()
+{
+  chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.command == "settabs"){
+        for (var i = 0; i < request.tabs.length; i++)
+        {
+          injectScript(function(s) {
+              $('[data-asset-key="' + s + '"]').click();
+          }, [request.tabs[i]]);
+        }
+    }
+  });
+
+// send get tabs message that will trigger above listener
+  chrome.runtime.sendMessage({command: "getthemetabs"});
 }

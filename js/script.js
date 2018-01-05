@@ -62,10 +62,30 @@ function getFile(key, name, callback)
   });
 }
 
-function injectScript(func)
+/*
+* @param: func - the function that is injected, must be anonymous, can take string params
+* @param: parms - must be an array of strings to pass into function as params
+*/
+function injectScript(func, param)
 {
+  if (typeof param != 'object')
+    param = "";
   var script = document.createElement('script');
-  script.textContent = "(" + func + ")();";
+  script.textContent = "(" + func + ")(";
+
+// if it's an array, iterate the value and pass them as paramaters
+  if (typeof param == 'object')
+  {
+    for (var i = 0; i < param.length; i++)
+    {
+      // surround with quotes to make string value as it's injected as plaintext
+      script.textContent += "'" + param[i] + "',";
+    }
+  }
+
+  // close function call and pass empty string so that last comma from for loop doesn't break stuff
+  script.textContent += "'');";
+
   (document.head||document.documentElement).appendChild(script);
 //  script.remove();
 }
@@ -209,4 +229,22 @@ function addObserver(element, callback)
     var observer = new MutationObserver(callback);
     var config = {childList: true, subtree: true};
     observer.observe(element, config);
+}
+
+function readTextFile(file, callback)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                callback(allText)
+            }
+        }
+    }
+    rawFile.send(null);
 }

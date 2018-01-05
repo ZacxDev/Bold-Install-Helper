@@ -14,19 +14,24 @@ drag: function(event, ui) {
   } );</script>
 <div class="cadet_modal ui-widget-content">
  <div class="cadet_left">
-   <button class="cadet_expand" data-expands="cadet_apps">Apps</button>
+   <button class="cadet_expand" data-expands="cadet_apps">[Beta]Apps</button>
    <div class="cadet_apps cadet_expandable" style="display: none;">
-     <input type="button" class="cadet-btn" data-app="ro" value="Recurring Orders" />
-    <input type="button" class="cadet-btn" data-app="lp" value="Loyalty Points" />
+     <input type="button" class="cadet-btn" data-app="ro" data-opens="cadet_ro" value="Recurring Orders" />
+    <input type="button" class="cadet-btn" data-app="lp" data-opens="cadet_lp" value="Loyalty Points" />
   </div>
-  <button class="cadet_expand" data-expands="cadet_files">Files</button>
+  <button class="cadet_expand" data-expands="cadet_files">Utility</button>
   <div class="cadet_files cadet_expandable" style="display: none;">
-    <input type="button" class="cadet-btn" value="CSS" />
-   <input type="button" class="cadet-btn" value="JavaScript" />
+    <input type="button" class="cadet-btn" data-opens="cadet_files_menu" value="Files" />
+    <input type="button" class="cadet-btn" data-opens="cadet_snippets_menu" value="Snippets" />
  </div>
+ <button class="cadet_expand" data-expands="cadet_docs">Documentation</button>
+  <div class="cadet_docs cadet_expandable" style="display: none;">
+   <input type="button" class="cadet-btn" value="Recurring Orders" />
+   <input type="button" class="cadet-btn" value="Quantity Breaks" />
+  </div>
  </div>
  <div class="cadet_right">
-   <p>[Beta] Robo Cadet<a class="cadet_close">X</a></p>
+   <p>Robo Cadet<a class="cadet_close">X</a></p>
    <div class="cadet_spacer"></div>
 
 <div class="cadet_mainstage">
@@ -59,6 +64,32 @@ drag: function(event, ui) {
      </table>
    </div>
 
+   <div class="cadet_files_menu cadet_menu" style="display:none;">
+     <table>
+       <tr>
+         <td>
+           <a class="files_css cadet_action">Bold-CSS</a>
+         </td>
+         <td>
+           <a class="files_jsboldhelpers cadet_action">Bold Helper Functions</a>
+         </td>
+       </tr>
+     </table>
+   </div>
+
+   <div class="cadet_snippets_menu cadet_menu" style="display:none;">
+     <table>
+       <tr>
+         <td>
+           <a class="snippets_qb_got_cart cadet_action">qb_got_cart</a>
+         </td>
+         <td>
+           <a class="snippets_qb_main cadet_action">qb_main</a>
+         </td>
+       </tr>
+     </table>
+   </div>
+
    <div class="cadet_report_wrap cadet_menu">
      <div class="cadet_report_content">
        This is the report
@@ -72,6 +103,7 @@ drag: function(event, ui) {
    </div>
  </div>
 </div>
+<xmp class="cadet_text_dump" style="display: none;"></xmp>
 <div class="cadet_peek" style="display: none;">
   <img/>
 </div>
