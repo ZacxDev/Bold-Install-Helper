@@ -2,7 +2,7 @@
 .cadet_modal {
   width: 450px;
   height: 200px;
-  background-color: darkgray;
+  background-color: rgba(0,0,0,0.8);
   border-radius: 10%;
   border-width: 2px;
   border-style: solid;
@@ -36,13 +36,20 @@
   font-size: large;
   display: inline-block;
   width: 100%;
+  color: darkred;
+  font-weight: 700;
 }
 
 .cadet_close {
   display: inline-block;
   float: right;
   margin-right: 4%;
-  color: red;
+  color: darkred;
+  font-weight: 400;
+}
+
+.cadet_close:hover {
+  color: darkred;
 }
 
 .cadet_spacer {
@@ -60,6 +67,10 @@
 }
 
 .cadet_action {
+  color: rgba(255, 0, 0, 0.7);
+}
+
+.cadet_action:hover {
   color: red;
 }
 
@@ -72,18 +83,21 @@
   width: 100%;
 }
 
-.cadet_undo {
-  display: none;
-}
-
 .cadet_apps_tools a {
   margin-right: 4%;
+}
+
+div.cadet_menu {
+  border-style: solid;
+  border-width: 0;
+  border-top-width: 1px;
+  border-color: red;
 }
 
 div.cadet_mainstage {
   width: 98%;
   height: 10em;
-  margin-top: 5%;
+  margin-top: 2%;
 }
 
 div.cadet_report_content {
@@ -115,6 +129,14 @@ span.cadet_report_false {
   color: red;
 }
 
+.cadet_menu_toggle {
+  color: white;
+}
+
+.cadet_menu_toggle:hover {
+  color: #f2f2f2;
+}
+
 input.cadet-btn {
   height: auto;
   display: inline-block;
@@ -125,20 +147,19 @@ input.cadet-btn {
   border-radius: 0;
   width: 100%;
   font-size: 12px;
-  border-left-width: 1px;
+  color: lightgray;
 }
 
 .cadet-btn:focus {
   border-width: 0;
   border-bottom-width: 1px;
-  border-left-width: 1px;
-  border-color: red;
+  border-color: rgba(255,0,0,0.4);
   color: red;
 }
 
 .cadet-btn:hover {
-  border-color: red;
-  transition : border 750ms ease-out;
+  color: red;
+  transition : all 750ms ease-out;
 }
 
 .cadet_expandable {
@@ -149,6 +170,7 @@ input.cadet-btn {
 
 .cadet_expand {
   width: 100%;
+  color: white;
   background: none;
   border-width: 0px;
   border-bottom-width: 1px;

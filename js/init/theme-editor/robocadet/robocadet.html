@@ -26,8 +26,8 @@ drag: function(event, ui) {
  </div>
  <button class="cadet_expand" data-expands="cadet_docs">Documentation</button>
   <div class="cadet_docs cadet_expandable" style="display: none;">
-   <input type="button" class="cadet-btn" value="Recurring Orders" />
-   <input type="button" class="cadet-btn" value="Quantity Breaks" />
+   <input type="button" class="cadet-btn" data-opens="cadet_docs_ro_menu" value="Recurring Orders" />
+   <input type="button" class="cadet-btn" data-opens="cadet_docs_qb_menu" value="Quantity Breaks" />
   </div>
  </div>
  <div class="cadet_right">
@@ -81,10 +81,31 @@ drag: function(event, ui) {
      <table>
        <tr>
          <td>
-           <a class="snippets_qb_got_cart cadet_action">qb_got_cart</a>
+           <a class="cadet_action cadet_snip" data-app="qb" data-snip="shappify_qb_got_cart">qb_got_cart</a>
          </td>
          <td>
-           <a class="snippets_qb_main cadet_action">qb_main</a>
+           <a class="cadet_action cadet_snip" data-app="qb" data-snip="shappify_qb_main">qb_main</a>
+         </td>
+       </tr>
+     </table>
+   </div>
+
+   <div class="cadet_docs_ro_menu cadet_menu" style="display:none;">
+     <table>
+       <tr>
+         <td>
+           <a class="cadet_action" href="https://docs.google.com/document/d/1MZs7un51Zcnk9a7-PKhyUJqctiRBzeY-npVM-WVelaQ/edit">Genaric Ajax</a>
+         </td>
+         <td>
+           <a class="cadet_action" href="https://docs.google.com/document/d/10vdfvnh1-eo0DK1IFlrmDI3d840fiTkgItQvdRMgw0Q/edit">Jasper</a>
+         </td>
+         <td>
+           <a class="cadet_action" href="https://www.evernote.com/shard/s582/sh/b6f9714d-423c-406c-9f7e-4768e433368c/5c2ee2bd05e1fb15">Handy</a>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a class="cadet_action" href="https://docs.google.com/document/d/1LZ4HFwfGsUOgdsotKS7Z9l5USs--nbOnFzWyRCgAsmg/edit">District</a>
          </td>
        </tr>
      </table>
@@ -98,7 +119,7 @@ drag: function(event, ui) {
  </div>
    <div class="cadet_apps_tools">
      <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Functions</a>
-    <a class="cadet_undo">Undo</a>
+    <a class="cadet_undo" style="display:none;">Undo</a>
     <a class="cadet_menu_toggle cadet_report_toggle" data-opens="cadet_report_wrap">View Report</a>
    </div>
  </div>

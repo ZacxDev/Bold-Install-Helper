@@ -78,6 +78,18 @@ function loadCadetListeners()
     uploadAndIncludeFile('/snippets/bold-helper-functions.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
   });
 
+  $(document).on('click', '.cadet_snip', function() {
+    var snipname = $(this).data('snip');
+    var app = $(this).data('app');
+    getSnippet(app, snipname, function(snip) {
+      $('.cadet_text_dump').text(snip);
+      $('.cadet_text_dump').css('display', 'block');
+      SelectText('.cadet_text_dump');
+      document.execCommand("Copy");
+      $('.cadet_text_dump').hide();
+    });
+  });
+
   window.onbeforeunload = function() {
     saveOpenTabs();
   }
@@ -132,5 +144,14 @@ function uploadAndIncludeFile(relPath, key, name, include, includeCheck)
         });
       });
     }, [key, name, include, includeCheck]);
+  });
+}
+
+function getSnippet(app, snipname, callback)
+{
+  readTextFile(chrome.extension.getURL('snippets/' + app + "_snips.txt"), function(data) {
+    // extract snippet data from file
+    var s = data.substring(data.indexOf('^begin:' + snipname) + 7 + snipname.length, data.indexOf('^end:' + snipname));
+    callback(s);
   });
 }

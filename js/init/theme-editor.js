@@ -4,10 +4,6 @@ $(document).ready(function() {
   loadThemeEditorListeners();
   // check customers/account.liquid for manage subs button
   getFile("templates", "customers/account.liquid", checkManageSubs);
-  // refreshThemeEditor();
-  // addObserver('.theme-asset-name strong', function() {
-  //   refreshThemeEditor();
-  // });
 
   openSavedTabs();
 });
@@ -86,19 +82,6 @@ function loadThemeEditor()
 
 }
 
-// function refreshThemeEditor()
-// {
-//   var file = $('[data-bind="currentTab.basename"]:not(input)').text();
-//
-// //  if (roAjaxFiles.indexOf(file) == -1)
-// if (file.indexOf('.js') == -1)
-//   {
-//     $('.bh-ajax, .bh-ajax-menu').hide();
-//   } else {
-//     $('.bh-ajax').show();
-//   }
-// }
-
 function loadThemeEditorListeners() {
 
   //ro-cart install btn listener
@@ -123,20 +106,22 @@ function loadThemeEditorListeners() {
         getFile('assets', 'theme.min.js.liquid', buildCartIndex);
     });
 
-    $('.asset-listing-theme-file').click(function(e)
-    {
-      setTimeout(function() {
-        //loadThemeEditor();
-      //  refreshThemeEditor();
-      }, 300);
+        // select the target node
+    var target = document.querySelector('.theme-asset-name strong');
+
+    // create an observer instance
+    var observer = new MutationObserver(function(mutations) {
+        injectScript(function() {
+          updateUndoButton();
+        });
+        //observer.disconnect();
     });
-    $(document).on('click', '.template-editor-tab-filename', function(e)
-    {
-      setTimeout(function() {
-        //loadThemeEditor();
-      //  refreshThemeEditor();
-      }, 300);
-    });
+
+    // configuration of the observer:
+    var config = { childList: true }
+
+    // pass in the target node, as well as the observer options
+    observer.observe(target, config);
 
     //hide menus when click html
     $('html').click(function()
@@ -212,12 +197,15 @@ function doROAjaxInstalll()
 
 function undoCadetAction()
 {
-  $('.cadet_undo').hide();
   injectScript(function() {
     var name = GetCurrentFileName();
     if (file_history[name] != undefined)
     {
-      pushFile(GetCurrentFileKey(), name, file_history[name], refreshCodeTab);
+      pushFile(GetCurrentFileKey(), name, file_history[name], function(key, name)
+      {
+        refreshCodeTab(key, name);
+        file_history[name] = undefined;
+      });
     }
   });
 }

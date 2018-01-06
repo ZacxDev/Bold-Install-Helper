@@ -18,14 +18,18 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "savethemetabs")
   {
-    saveThemeEditorTabs(request.tabs);
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+    saveThemeEditorTabs(request.tabs, tabs[0].url);
+    });
   }
   else if (request.command == "getthemetabs")
   {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      getThemeEditorTabs(function(tablist) {
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
+      getThemeEditorTabs(function(items) {
+        var store = "tabs_" + tabs[0].url.substring(0, tabs[0].url.indexOf('?') != -1 ? tabs[0].url.indexOf('?') : tabs[0].url.length);
+        var tablist = items[store];
         chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
-      });
+      }, tabs[0].url);
     });
   }
   else if (request.command == "init")
@@ -118,20 +122,21 @@ $(document).ready(function() {
 
 });
 
-function saveThemeEditorTabs(tabs)
+function saveThemeEditorTabs(tabs, store)
 {
-  chrome.storage.sync.set({
-    theme_editor_tabs: tabs
-  }, function() {
+  store = "tabs_" + store.substring(0, store.indexOf('?')  != -1 ? store.indexOf('?') : store.length);
+  var obj = {};
+  obj[store] = tabs;
+  chrome.storage.sync.set(obj, function() {
     console.log('Saved tabs');
   });
 }
 
-function getThemeEditorTabs(callback)
+function getThemeEditorTabs(callback, store)
 {
-  chrome.storage.sync.get({
-    theme_editor_tabs: []
-  }, function(items) {
-    callback(items.theme_editor_tabs);
+  store = "tabs_" + store.substring(0, store.indexOf('?') != -1 ? store.indexOf('?') : store.length);
+  var obj = {};
+  chrome.storage.sync.get(obj[store], function(items) {
+    callback(items);
   });
 }

@@ -333,3 +333,12 @@ function GetCurrentFileName()
   value = kv.substring(kv.indexOf('/') + 1, kv.length);
   return value;
 }
+
+function updateUndoButton()
+{
+  var file = document.querySelector('.theme-asset-name strong').textContent;
+  if (file_history[file] != undefined)
+    document.querySelector('.cadet_undo').style.display = 'inline';
+    else
+      document.querySelector('.cadet_undo').style.display = 'none';
+}
