@@ -34,9 +34,11 @@ function loadCadetListeners()
   });
   $(document).on('click', 'a.ro_cartpage', function() {
     doROCartInstall();
+    document.querySelector('[data-opens="cadet_report_wrap"]').style.display = "inline";
   });
   $(document).on('click', 'a.ro_ajax', function() {
     doROAjaxInstalll();
+    document.querySelector('[data-opens="cadet_report_wrap"]').style.display = "inline";
   });
   $(document).on('click', '.cadet_close', function() {
     $('.cadet_modal').hide();
@@ -61,7 +63,7 @@ function loadCadetListeners()
     undoCadetAction();
   });
 
-  $(document).on('click', '.cadet_action', function() {
+  $(document).on('click', '.cadet_robo', function() {
     $('.cadet_undo').show();
   });
 

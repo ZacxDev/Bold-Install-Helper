@@ -23,6 +23,7 @@ drag: function(event, ui) {
   <div class="cadet_files cadet_expandable" style="display: none;">
     <input type="button" class="cadet-btn" data-opens="cadet_files_menu" value="Files" />
     <input type="button" class="cadet-btn" data-opens="cadet_snippets_menu" value="Snippets" />
+    <input type="button" class="cadet-btn" data-opens="cadet_coppy_menu" value="Coppy Jr." />
  </div>
  <button class="cadet_expand" data-expands="cadet_docs">Documentation</button>
   <div class="cadet_docs cadet_expandable" style="display: none;">
@@ -39,10 +40,10 @@ drag: function(event, ui) {
      <table>
        <tr>
          <td>
-           <a class="ro_ajax cadet_action">Ajax</a>
+           <a class="ro_ajax cadet_action cadet_robo">Ajax</a>
          </td>
          <td>
-           <a class="ro_cartpage cadet_action">Cart Page</a>
+           <a class="ro_cartpage cadet_action cadet_robo">Cart Page</a>
          </td>
        </tr>
      </table>
@@ -52,13 +53,13 @@ drag: function(event, ui) {
      <table>
        <tr>
          <td>
-           <a class="lp_theme cadet_action">Theme</a>
+           <a class="lp_theme cadet_action cadet_robo">Theme</a>
          </td>
          <td>
-           <a class="lp_theme cadet_action">Header</a>
+           <a class="lp_theme cadet_action cadet_robo">Header</a>
          </td>
          <td>
-           <a class="lp_theme cadet_action">Cart</a>
+           <a class="lp_theme cadet_action cadet_robo">Cart</a>
          </td>
        </tr>
      </table>
@@ -94,18 +95,18 @@ drag: function(event, ui) {
      <table>
        <tr>
          <td>
-           <a class="cadet_action" href="https://docs.google.com/document/d/1MZs7un51Zcnk9a7-PKhyUJqctiRBzeY-npVM-WVelaQ/edit">Genaric Ajax</a>
+           <a class="cadet_action" target="_blank" href="https://docs.google.com/document/d/1MZs7un51Zcnk9a7-PKhyUJqctiRBzeY-npVM-WVelaQ/edit">Genaric Ajax</a>
          </td>
          <td>
-           <a class="cadet_action" href="https://docs.google.com/document/d/10vdfvnh1-eo0DK1IFlrmDI3d840fiTkgItQvdRMgw0Q/edit">Jasper</a>
+           <a class="cadet_action" target="_blank" href="https://docs.google.com/document/d/10vdfvnh1-eo0DK1IFlrmDI3d840fiTkgItQvdRMgw0Q/edit">Jasper</a>
          </td>
          <td>
-           <a class="cadet_action" href="https://www.evernote.com/shard/s582/sh/b6f9714d-423c-406c-9f7e-4768e433368c/5c2ee2bd05e1fb15">Handy</a>
+           <a class="cadet_action" target="_blank" href="https://www.evernote.com/shard/s582/sh/b6f9714d-423c-406c-9f7e-4768e433368c/5c2ee2bd05e1fb15">Handy</a>
          </td>
        </tr>
        <tr>
          <td>
-           <a class="cadet_action" href="https://docs.google.com/document/d/1LZ4HFwfGsUOgdsotKS7Z9l5USs--nbOnFzWyRCgAsmg/edit">District</a>
+           <a class="cadet_action" target="_blank" href="https://docs.google.com/document/d/1LZ4HFwfGsUOgdsotKS7Z9l5USs--nbOnFzWyRCgAsmg/edit">District</a>
          </td>
        </tr>
      </table>
@@ -118,9 +119,9 @@ drag: function(event, ui) {
    </div>
  </div>
    <div class="cadet_apps_tools">
-     <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Functions</a>
+     <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
     <a class="cadet_undo" style="display:none;">Undo</a>
-    <a class="cadet_menu_toggle cadet_report_toggle" data-opens="cadet_report_wrap">View Report</a>
+    <a class="cadet_menu_toggle" data-opens="cadet_report_wrap" style="display:none;">View Report</a>
    </div>
  </div>
 </div>

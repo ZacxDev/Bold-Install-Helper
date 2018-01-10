@@ -27,7 +27,7 @@ function(request, sender, sendResponse) {
     chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
       getThemeEditorTabs(function(items) {
         var store = "tabs_" + tabs[0].url.substring(0, tabs[0].url.indexOf('?') != -1 ? tabs[0].url.indexOf('?') : tabs[0].url.length);
-        var tablist = items[store];
+        var tablist = items.cadet[store];
         chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
       }, tabs[0].url);
     });
@@ -67,11 +67,9 @@ function(request, sender, sendResponse) {
           case (url.indexOf("recurring_settings/product_recurring") != -1 && recurring_orders_install || url.indexOf('subscription_box_settings/box_settings/') != -1 && recurring_orders_install):
             loadROWidget(sender.tab);
             break;
-          case (url.indexOf('myshopify.com/admin/themes/') != -1 && theme_editor_buttons && customer_account_highlight):
+          case (url.indexOf('myshopify.com/admin/themes/') != -1):
             loadThemeEditor(sender.tab);
-          case (url.indexOf('myshopify.com/admin/themes/') != -1 && bold_file_buttons):
-              loadCreationButtons(sender.tab);
-              break;
+            break;
           case (url.indexOf('util.boldapps.net/admin/liquid/requests') != -1 && customer_lookup):
             loadCusLookup(sender.tab);
             break;
@@ -127,7 +125,9 @@ function saveThemeEditorTabs(tabs, store)
   store = "tabs_" + store.substring(0, store.indexOf('?')  != -1 ? store.indexOf('?') : store.length);
   var obj = {};
   obj[store] = tabs;
-  chrome.storage.sync.set(obj, function() {
+  chrome.storage.sync.set({
+    cadet: obj
+  }, function() {
     console.log('Saved tabs');
   });
 }
