@@ -80,9 +80,14 @@ function loadCadetListeners()
     uploadAndIncludeFile('/snippets/bold-helper-functions.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
   });
 
+  $(document).on('click', '.files_jsboldhelpers', function() {
+    uploadAndIncludeFile('/snippets/bold-helper-functions-ro.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
+  });
+
   $(document).on('click', '.cadet_snip', function() {
-    var snipname = $(this).data('snip');
-    var app = $(this).data('app');
+    var $this = $(this);
+    var snipname = $this.data('snip');
+    var app = $this.closest('table[data-app]').data('app');
     getSnippet(app, snipname, function(snip) {
       $('.cadet_text_dump').text(snip);
       $('.cadet_text_dump').css('display', 'block');
@@ -90,6 +95,26 @@ function loadCadetListeners()
       document.execCommand("Copy");
       $('.cadet_text_dump').hide();
     });
+    var text = $this.text();
+    $this.text('Copied!');
+    setTimeout(function() {
+        $this.text(text);
+    }, 700);
+  });
+
+  $(document).on('click', '[data-opens="cadet_snippets_menu"]', function() {
+    $('.cadet_menu_app_select').show();
+  });
+
+  $(document).on('change', '.cadet_menu_app_select', function() {
+    var app = $(this).find(':selected').data('app');
+    $('.cadet_snip_table').hide();
+    $('.cadet_snip_table[data-app="' + app + '"]').show();
+
+    if (app === "all")
+    {
+      $('.cadet_snip_table').show();
+    }
   });
 
   window.onbeforeunload = function() {
@@ -117,6 +142,9 @@ function toggleMenu(tar)
   $(tar).show();
   $(tar).addClass('cadet_menu_open');
   $(tar).css('transform', 'scale(1,1)');
+  // Hide app selector, will be shown if button is snippets
+  if (!$(tar).hasClass('cadet_snippets_menu'))
+    $('.cadet_menu_app_select').hide();
 }
 
 function hideDropdown(ele)

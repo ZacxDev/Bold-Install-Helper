@@ -23,6 +23,7 @@
   border-color: #cccccc;
   border-width: 0;
   border-right-width: 1px;
+  overflow: auto;
 }
 
 .cadet_right {
@@ -138,6 +139,22 @@ span.cadet_report_false {
   color: #f2f2f2;
 
 }
+
+.cadet_menu_app_select {
+  background: none;
+  color: white;
+  border-color: red;
+}
+
+.cadet_menu_app_select:focus {
+  border-color: red;
+}
+
+.cadet_menu_app_select option{
+  background-color: rgba(0,0,0,0.8);
+  color: red;
+}
+
 
 input.cadet-btn {
   height: auto;

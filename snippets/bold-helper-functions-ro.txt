@@ -49,7 +49,8 @@ BOLD.helpers.cleanCart = function(cart){
 
     /* Adjust the count of items in the cart appropriately */
     cart_items += BOLD.helpers.getDisplayQuantity(cart.items[item]);
-
+  if (cart.items[item].formatted_recurring_desc === undefined)
+    cart.items[item].formatted_recurring_desc = "";
   }
 
   /* Second pass: Calculate price with options, set the true price */
@@ -620,23 +621,29 @@ BOLD.helpers.addItemFromForm = function(form, success_callback, error_callback, 
     }
   }
 
-  if(!hasUsableFormData){
-    var formElements = form.length;
-    data = '';
-    for(var i=0; i < formElements; i++){
-      var fieldType = (typeof form[i].type === 'string' ? form[i].type.toLowerCase() : null);
-      if(fieldType === 'file'){
-        //No usable FormData object - we will need to do a manual submit
-        formObj.submit();
-        return false;
-      }
-
-      var fieldValue = ((fieldType !== 'radio' && fieldType !== 'checkbox') || form[i].checked ? form[i].value : null);
-      var fieldName = form[i].name || '';
-      if(!fieldValue || !fieldName) continue;
-      data += (data.length ? '&' : '' ) + fieldName + '=' + fieldValue;
+if(!hasUsableFormData){
+// Bold:PO - Changed from form.length to formObj.length.
+  var formElements = formObj.length;
+  data = '';
+  for(var i=0; i < formElements; i++){
+    // Bold:PO - Changed from referencing form to formObj. var fieldType = (typeof form[i].type === 'string' ? form[i].type.toLowerCase() : null);
+    var fieldType = (typeof formObj[i].type === 'string' ? formObj[i].type.toLowerCase() : null);
+    // Bold:PO
+    if(fieldType === 'file'){
+      //No usable FormData object - we will need to do a manual submit
+      formObj.submit();
+      return false;
     }
+    // Bold:PO - Use formObj instead of form. form[i].checked ? form[i].value : null;
+    var fieldValue = ((fieldType !== 'radio' && fieldType !== 'checkbox') || formObj[i].checked ? formObj[i].value : null);
+    // Bold:PO - Use formObj instead of form. formObj[i].name;
+    var fieldName = formObj[i].name || '';
+    // Bold:PO
+    if(!fieldValue || !fieldName) continue;
+    data += (data.length ? '&' : '' ) + fieldName + '=' + encodeURIComponent(fieldValue);
   }
+  // Bold:PO
+}
 
   //Make the XHR post
   var request = new XMLHttpRequest();
@@ -646,6 +653,7 @@ BOLD.helpers.addItemFromForm = function(form, success_callback, error_callback, 
     request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   }
   request.onload = function (response) {
+    response = $.parseJSON(response.target.response);
 
     if(typeof success_callback === 'function'){
       success_callback(response);
@@ -823,7 +831,38 @@ if (![].includes) {
     return false;
   };
 }
+BOLD.helpers.cleanItem = function(item){
+  /* Make sure we have an object to clean. If the is_clean flag is set, our work is already done and we don't need to re-scrub */
+  if(typeof(item)!=='object' || item.is_clean) return item;
 
+  /* Hold on to a copy of the base cart, just in case. We don't care about any functions or other extensions stuffed into the object, so stringify/parse is a fast way to deep-clone the object. */
+  BOLD.rawItem = JSON.parse(JSON.stringify(item));
+
+  item.bold_original_price = item.price;
+
+  var item_total = 0
+    /* Set the item's line property */
+    item.line = parseInt(item) + 1;
+
+    /* For consistency, clean all properties first (moving all interesting property fields out of the item.properties object and into an item.Bold object). */
+    BOLD.helpers.cleanProperties(item);
+
+    /* Check for RO discount. Requires V2 RO to get the discount percentage for Options */
+    BOLD.helpers.setMultiplier(item);
+
+    /* Check for a quantity multiplier. This could come from BTM or Builder.  */
+    BOLD.helpers.setRatio(item);
+
+    /* Apply any discounts */
+    BOLD.helpers.setPriceSingle(item);
+  item.is_clean = true;
+
+  BOLD.item = item;
+
+  if (item.formatted_recurring_desc === undefined)
+    item.formatted_recurring_desc = "";
+  return(item);
+};
 BOLD.helpers.getProduct = function(handle, success_callback, options){
 options = options || {};
 var url = '/products/' + handle;
@@ -863,52 +902,52 @@ xmlhttp.open("GET", url, true);
 xmlhttp.send();
 
 };
-
-BOLD.helpers.cleanItem = function(item){
-  /* Move all hidden properties into a Bold sub-object for later reference, then create the formatted properties display */
-  item.Bold = item.Bold || {};
-  item.formatted_properties = "";
-  if(item.properties) {
-    for(var property in item.properties){
-      if( (property.slice(0,1) == '_' && property.slice(1,2) !='_' ) || property == 'master_builder' || property == 'builder_id' || property == 'builder_info' || property == 'frequency_type' || property == 'frequency_type_text' || property == 'frequency_num' || property == 'group_id' || property == 'discounted_price' || item.properties[property] == ""){
-        var clean_prop_name = property;
-        if(clean_prop_name.slice(0,1) == '_') clean_prop_name = clean_prop_name.replace('_', '');
-
-        /* Save the property to a Bold object on the item so that we can reference it if we need to, then delete the property. */
-        item.Bold[clean_prop_name] = item.properties[property];
-
-        /* Was the builder_id/master_builder/builder_info prefixed with an underscore? Take note, in case we need to rebuild the real properties object later */
-        if(property === 'builder_id' || property === 'master_builder' || property === 'builder_info'){
-          item.builder_id_in_checkout = true;
-        }
-
-        delete item.properties[property];
+document.addEventListener('DOMContentLoaded', function() {
+    jQuery(document).on('click', '[name="checkout"]', function(){bold_ro_checkout(this)});
+    function bold_ro_checkout(target) {
+      var ro_from = jQuery(target).closest('form');
+      if (typeof mixed_cart != "undefined" && mixed_cart)
+      {
+        jQuery.ajax({
+          type: 'GET',
+          url: '/cart.json',
+          dataType: 'jsonp',
+          async: false,
+          success: function (data) {
+            if (data.hasOwnProperty("items")) {
+              for (var key in data.items) {
+                if (data.items[key].hasOwnProperty('product_description')) {
+                  data.items[key].product_description = '';
+                }
+              }
+            }
+            ro_from.append('<input type="hidden" name="shopify_cart" value="' + encodeURIComponent(JSON.stringify(data)) + '">');
+            ro_from.append('<input type="hidden" name="csrf_bold_token" value="775e4634405371661f03beaac36d1c1b" />');
+            ro_from.attr('action', "https://recurringcheckout.com/s/{{ shop.permanent_domain | remove: '.myshopify.com' }}/checkout/recurring/" + data.token + "?shop_url={{ shop.permanent_domain }}" + google_analytics_get_param_string());
+          }
+        });
       }
     }
-    /* Set the formatted variables based on the item's properties */
-    item.formatted_properties = BOLD.helpers.propertiesDisplay(item.properties);
-    item.bold_recurring_desc = BOLD.helpers.recurringDisplay(item.Bold);
-    item.formatted_recurring_desc = BOLD.helpers.recurringFormattedDisplay(item.Bold);
-
-    /* If the item has a builder_id, set up shorthands for our Product Options/Builder properties */
-    if(item.Bold.builder_id){
-      item.builder_id = item.Bold.builder_id;
-      item.builder_type = (item.Bold.master_builder ? 'bold-master' : 'bold-hidden');
-      item.is_master = (item.Bold.master_builder ? true : false);
-      item.is_hidden = (item.Bold.master_builder ? false : true);
+    function show_promotional_modal() {
+      $('.hover_modal').tooltip({
+        title: "<div align=\"left\">\n<div><strong>Subscription Details<\/strong><\/div>\n<div>\n<ul>\n<li>Set it and forget it!<\/li>\n<li>Pause, edit or cancel anytime.<\/li>\n<\/ul>\n<\/div>\n<\/div>",
+        html: true,
+        placement: "bottom"
+      });
     }
-    if(item.Bold.builder_info){
-      item.builder_info = item.Bold.builder_info.split('~~');
-      item.builder_image_alt = item.builder_info[0];
-      item.builder_image_src = item.builder_info[1];
-      item.url = '/apps/productbuilder/' + item.builder_info[2];
+    function google_analytics_get_param_string() {
+      var google_analytics_get_param_string = '';
+      var get_param_string = decodeURIComponent(window.location.search.substring(1));
+      var get_param_array = get_param_string.split('&');
+      for (var i = 0; i < get_param_array.length; i++) {
+        var get_param_pair = get_param_array[i].split('=');
+        if (get_param_pair[0] === 'utm_source' || get_param_pair[0] === 'utm_medium' || get_param_pair[0] === 'utm_term' || get_param_pair[0] === 'utm_content' || get_param_pair[0] === 'utm_campaign') {
+          google_analytics_get_param_string = google_analytics_get_param_string + "&" + get_param_pair[0] + '=' + get_param_pair[1];
+        }
+      }
+      return google_analytics_get_param_string;
     }
-  }
-
-  return item;
-};
-
-
+  });
 {% comment %}
 /* Below are sample script blocks that can be copied and pasted into the theme's AJAX file   */
 

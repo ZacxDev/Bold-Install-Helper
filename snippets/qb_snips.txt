@@ -1,3 +1,7 @@
 ^begin:shappify_qb_got_cart
 this is the function shappapsodfapsojfoa
 ^end:shappify_qb_got_cart
+
+^begin:shappify_qb_main
+this is the function mainnn
+^end:shappify_qb_main

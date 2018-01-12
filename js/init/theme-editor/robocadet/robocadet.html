@@ -75,17 +75,22 @@ drag: function(event, ui) {
            <a class="files_jsboldhelpers cadet_action">Bold Helper Functions</a>
          </td>
        </tr>
+       <tr>
+         <td>
+           <a class="files_jsboldhelpers_ro cadet_action">Bold Helper Functions (RO)</a>
+         </td>
+       </tr>
      </table>
    </div>
 
    <div class="cadet_snippets_menu cadet_menu" style="display:none;">
-     <table>
+     <table class="cadet_snip_table" data-app="qb">
        <tr>
          <td>
-           <a class="cadet_action cadet_snip" data-app="qb" data-snip="shappify_qb_got_cart">qb_got_cart</a>
+           <a class="cadet_action cadet_snip" data-snip="shappify_qb_got_cart">qb_got_cart</a>
          </td>
          <td>
-           <a class="cadet_action cadet_snip" data-app="qb" data-snip="shappify_qb_main">qb_main</a>
+           <a class="cadet_action cadet_snip" data-snip="shappify_qb_main">qb_main</a>
          </td>
        </tr>
      </table>
@@ -119,6 +124,11 @@ drag: function(event, ui) {
    </div>
  </div>
    <div class="cadet_apps_tools">
+     <select class="cadet_menu_app_select" style="display: none;">
+       <option data-app="all">All Apps</option>
+       <option data-app="ro">Recurring Orders</option>
+       <option data-app="qb">Quantity Breaks</option>
+     </select>
      <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
     <a class="cadet_undo" style="display:none;">Undo</a>
     <a class="cadet_menu_toggle" data-opens="cadet_report_wrap" style="display:none;">View Report</a>
