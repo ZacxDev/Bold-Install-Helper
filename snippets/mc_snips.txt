@@ -1,0 +1,10 @@
+^begin:mc_event_emitter
+if (window.BOLD && BOLD.common && BOLD.common.eventEmitter &&
+         typeof BOLD.common.eventEmitter.emit === 'function'){
+       BOLD.common.eventEmitter.emit('BOLD_CURRENCY_double_check');
+     }
+^end:mc_event_emitter
+
+^begin:mc_prod_price_hook
+<span class="Bold-theme-hook-DO-NOT-DELETE bold_product_page_price" style="display:none !important;"></span>
+^end:mc_prod_price_hook

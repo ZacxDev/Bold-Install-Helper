@@ -1,0 +1,19 @@
+^begin:pd_product_css
+margin-top: 20px !important;
+margin-right: 0px !important;
+margin-bottom: -53px !important;
+margin-left: 20px !important;
+position: relative !important;
+float: left;
+z-index: 1000 !important;
+^end:pd_product_css
+
+^begin:pd_collection_css
+margin-right: 0px !important;
+margin-bottom: -73px !important;
+margin-top: 20px !important;
+margin-left: 20px !important;
+position: relative !important;
+float: left;
+z-index: 1000 !important;
+^end:pd_collection_css

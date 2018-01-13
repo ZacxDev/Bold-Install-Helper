@@ -1,0 +1,14 @@
+^begin:bold_prod_json
+{% include 'bold-product' | output: 'json' %}
+^end:bold_prod_json
+
+^begin:bold_force_buildcart
+var target = this;
+             $.getJSON("/cart.js", function(cart){
+               target.update(cart);
+             });
+^end:bold_force_buildcart
+
+^begin:bold_dupe_and_hide
+{% include 'bold-product' with item, hide_action: 'skip' %}
+^end:bold_dupe_and_hide

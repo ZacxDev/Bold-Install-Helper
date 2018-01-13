@@ -16,14 +16,15 @@ drag: function(event, ui) {
  <div class="cadet_left">
    <button class="cadet_expand" data-expands="cadet_apps">[Beta]Apps</button>
    <div class="cadet_apps cadet_expandable" style="display: none;">
-     <input type="button" class="cadet-btn" data-app="ro" data-opens="cadet_ro" value="Recurring Orders" />
-    <input type="button" class="cadet-btn" data-app="lp" data-opens="cadet_lp" value="Loyalty Points" />
+     <input type="button" class="cadet-btn" data-app="ro" data-opens="cadet_ro" data-title="Robo Cadet" value="Recurring Orders" />
+    <input type="button" class="cadet-btn" data-app="lp" data-opens="cadet_lp" data-title="Robo Cadet" value="Loyalty Points" />
   </div>
   <button class="cadet_expand" data-expands="cadet_files">Utility</button>
   <div class="cadet_files cadet_expandable" style="display: none;">
     <input type="button" class="cadet-btn" data-opens="cadet_files_menu" value="Files" />
-    <input type="button" class="cadet-btn" data-opens="cadet_snippets_menu" value="Snippets" />
-    <input type="button" class="cadet-btn" data-opens="cadet_coppy_menu" value="Coppy Jr." />
+    <input type="button" class="cadet-btn" data-opens="cadet_snippets_menu" data-title="Snippets" value="Snippets" />
+    <input type="button" class="cadet-btn" data-opens="cadet_coppy_menu" data-title="Coppy Jr." value="Coppy Jr." />
+    <input type="button" class="cadet-btn" data-opens="cadet_tabz_menu" value="Tabz" />
  </div>
  <button class="cadet_expand" data-expands="cadet_docs">Documentation</button>
   <div class="cadet_docs cadet_expandable" style="display: none;">
@@ -32,7 +33,7 @@ drag: function(event, ui) {
   </div>
  </div>
  <div class="cadet_right">
-   <p>Robo Cadet<a class="cadet_close">X</a></p>
+   <p class="cadet_title">Install Helper<a class="cadet_close">X</a></p>
    <div class="cadet_spacer"></div>
 
 <div class="cadet_mainstage">
@@ -93,6 +94,84 @@ drag: function(event, ui) {
            <a class="cadet_action cadet_snip" data-snip="shappify_qb_main">qb_main</a>
          </td>
        </tr>
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="qb_update_cart_form">Update Cart on Checkout</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="qb_update_grid">Update Grid on Variant</a>
+         </td>
+       </tr>
+     </table>
+     <table class="cadet_snip_table" data-app="ro">
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="ro_manage_subs">Manage Subs Button</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="ro_cache_params">Cache Params</a>
+         </td>
+       </tr>
+     </table>
+     <table class="cadet_snip_table" data-app="general">
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="bold_prod_json">Bold Product Json</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="bold_force_buildcart">Force Ajax Buildcart</a>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="bold_dupe_and_hide">Dupe and Hide Include</a>
+         </td>
+       </tr>
+     </table>
+     <table class="cadet_snip_table" data-app="pu">
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="pu_event_emitter">Event Emitter</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="pu_save_product">Common Save Product</a>
+         </td>
+       </tr>
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="pu_default_css">Default Modal CSS</a>
+         </td>
+       </tr>
+     </table>
+     <table class="cadet_snip_table" data-app="pd">
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="pd_product_css">Product CSS</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="pd_collection_css">Collection CSS</a>
+         </td>
+       </tr>
+     </table>
+     <table class="cadet_snip_table" data-app="cp">
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="cp_cartdoctor">Cart Doctor</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="cp_fix_item">Fix Item</a>
+         </td>
+       </tr>
+     </table>
+     <table class="cadet_snip_table" data-app="mc">
+       <tr>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="mc_event_emitter">Event Emitter</a>
+         </td>
+         <td>
+           <a class="cadet_action cadet_snip" data-snip="mc_prod_price_hook">Product Price Hook</a>
+         </td>
+       </tr>
      </table>
    </div>
 
@@ -126,8 +205,12 @@ drag: function(event, ui) {
    <div class="cadet_apps_tools">
      <select class="cadet_menu_app_select" style="display: none;">
        <option data-app="all">All Apps</option>
+       <option data-app="general">General</option>
        <option data-app="ro">Recurring Orders</option>
        <option data-app="qb">Quantity Breaks</option>
+       <option data-app="pu">Upsell</option>
+       <option data-app="cp">Customer Pricing</option>
+       <option data-app="mc">Multi Currency</option>
      </select>
      <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
     <a class="cadet_undo" style="display:none;">Undo</a>

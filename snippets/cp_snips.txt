@@ -1,0 +1,14 @@
+^begin:cp_cartdoctor
+if(typeof BOLD === 'object' && BOLD.common && BOLD.common.cartDoctor && typeof BOLD.common.cartDoctor.fix === 'function'){
+               cart = BOLD.common.cartDoctor.fix(cart);
+             }
+^end:cp_cartdoctor
+
+^begin:cp_fix_item
+if(typeof window.BOLD !== 'undefined'
+        && typeof window.BOLD.common !== 'undefined'
+        && typeof window.BOLD.common.cartDoctor !== 'undefined') {
+       // NOTE: "item" should be the variable containing the item json data from the cart/add.js response
+       productData = window.BOLD.common.cartDoctor.fixItem(productData);
+     }
+^end:cp_fix_item

@@ -131,10 +131,10 @@ function refreshCadetModal(ele)
   var opens = ele.data('opens');
   $('.cadet_functions').data('opens', opens);
 
-  toggleMenu($('.' + opens));
+  toggleMenu($('.' + opens), ele);
 }
 
-function toggleMenu(tar)
+function toggleMenu(tar, button)
 {
   $('.cadet_menu_open').hide();
   $('.cadet_menu_open').css('transform', 'scale(1,0)');
@@ -142,6 +142,13 @@ function toggleMenu(tar)
   $(tar).show();
   $(tar).addClass('cadet_menu_open');
   $(tar).css('transform', 'scale(1,1)');
+
+  if (button.data('title') != undefined)
+  {
+    $('.cadet_title').text(button.data('title'));
+  } else {
+    $('.cadet_title').text('Install Helper');
+  }
   // Hide app selector, will be shown if button is snippets
   if (!$(tar).hasClass('cadet_snippets_menu'))
     $('.cadet_menu_app_select').hide();

@@ -1,7 +1,51 @@
 ^begin:shappify_qb_got_cart
-this is the function shappapsodfapsojfoa
+var bold_qb_ajax = function(cart) {
+
+}
+if (typeof shappify_qb_got_cart == "function")
+{
+  shappify_qb_got_cart(cart, bold_qb_ajax);
+} else {
+  bold_qb_ajax(cart);
+}
 ^end:shappify_qb_got_cart
 
 ^begin:shappify_qb_main
-this is the function mainnn
+var bold_qb_ajax = function(cart) {
+
+}
+if (typeof shappify_qb_main == "function")
+{
+  shappify_qb_main(bold_qb_ajax);
+} else {
+  bold_qb_ajax(cart);
+}
 ^end:shappify_qb_main
+
+^begin:qb_update_cart_form
+updateCartNoForm = function(e)
+{
+e.preventDefault();
+ jQuery.getJSON("/cart.js", function(t) {
+   shappify_qb_got_cart(t, function(cart){
+       shappify_qb_got_cart(cart, function(finalcart){
+         console.log("Breaks thoroughly checked now");
+         window.location = "/checkout";
+       })
+     })
+});
+}
+// attach to checkout buttons on load and in buildcart
+$(document).ready(function() {
+ jQuery('[name="checkout"]:not(.bold_clone)').on('click',
+updateCartNoForm);
+})
+^end:qb_update_cart_form
+
+^begin:qb_update_grid
+<script>
+  $(document).on('change', '.single-option-selector', function() {
+      $('.shappify-qty-msg').html($('#variant_html_'+$('[name=id]').val()).html())
+  });
+</script>
+^end:qb_update_grid

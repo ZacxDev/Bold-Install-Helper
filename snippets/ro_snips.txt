@@ -1,0 +1,35 @@
+^begin:ro_manage_subs
+<p><a href="/tools/checkout/front_end/login" class="text-link">Manage Subscription</a></p>
+^end:ro_manage_subs
+
+^begin:ro_cache_params
+window.BOLD.common.cacheParams = window.BOLD.common.cacheParams || {};
+   window.BOLD.common.cacheParams.recurring_orders = 1499784249;
+^end:ro_cache_params
+
+^begin:ro_bab_css
+input.bold-product__quantity-val{
+    padding: 10px 15px;
+}
+.bold-ro__choice-header{
+  margin-right: 2em;
+}
+
+
+.bold-ro__products-list{
+    width:100% !important;
+      margin:0 auto% !important;
+      text-align:center !important;
+}
+
+@media only screen and (min-width: 499px){
+  .bold-grid__column.bold-grid__column--quarter{
+    display:inline-block !important;
+    float:none;
+  }
+}
+.bold-product__quantity-wrapper .bold-product__quantity .bold-product__quantity-val
+{
+  width: 55px !important;
+}
+^end:ro_bab_css
