@@ -10,6 +10,7 @@ $(document).ready(function() {
     // set image on cadet peek
     var src = chrome.extension.getURL('resources/icon.png');
     $('.cadet_peek img').attr('src', src);
+    $('.cadet_peek').prependTo('.theme-asset-actions');
 
     // inject stylesheet for robocadet
     var cadetstyle = $('<link rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/robocadet.css') + '">');
@@ -117,8 +118,23 @@ function loadCadetListeners()
     }
   });
 
+  // select the target node
+  var target = document.querySelector('.theme-asset-name strong');
+  // create an observer instance
+  var observer = new MutationObserver(function(mutations) {
+    injectScript(function() {
+      updateUndoButton();
+    });
+    //observer.disconnect();
+  });
+  // configuration of the observer:
+  var config = { childList: true }
+  // pass in the target node, as well as the observer options
+  observer.observe(target, config);
+
+  var pathChanged = false;
   window.onbeforeunload = function() {
-    saveOpenTabs();
+      saveOpenTabs();
   }
 
 }
@@ -126,7 +142,7 @@ function loadCadetListeners()
 function refreshCadetModal(ele)
 {
   $('.cadet_selected').removeClass('cadet_selected');
-  ele.addClass('cadet_selected')
+  ele.addClass('cadet_selected');
 
   var opens = ele.data('opens');
   $('.cadet_functions').data('opens', opens);

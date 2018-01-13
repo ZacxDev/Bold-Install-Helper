@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
-  loadThemeEditor();
-  loadThemeEditorListeners();
+  //loadThemeEditor();
+  //loadThemeEditorListeners();
   // check customers/account.liquid for manage subs button
   getFile("templates", "customers/account.liquid", checkManageSubs);
 
@@ -105,23 +105,6 @@ function loadThemeEditorListeners() {
       if ($(this).val() === "Genaric")
         getFile('assets', 'theme.min.js.liquid', buildCartIndex);
     });
-
-        // select the target node
-    var target = document.querySelector('.theme-asset-name strong');
-
-    // create an observer instance
-    var observer = new MutationObserver(function(mutations) {
-        injectScript(function() {
-          updateUndoButton();
-        });
-        //observer.disconnect();
-    });
-
-    // configuration of the observer:
-    var config = { childList: true }
-
-    // pass in the target node, as well as the observer options
-    observer.observe(target, config);
 
     //hide menus when click html
     $('html').click(function()
