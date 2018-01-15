@@ -24,6 +24,11 @@ $(document).ready(function() {
     $('.cadet_menu').hide();
     // load listeners
     loadCadetListeners();
+
+    var viewSnip = $('<img class="cadet_snip_view" data-opens="cadet_view_snip_menu_js" src="' + chrome.extension.getURL('resources/viewsnip.png') + '"/>');
+    viewSnip.prependTo($('.cadet_snip').parent());
+
+    populateCoppy();
   });
 });
 
@@ -33,6 +38,15 @@ function loadCadetListeners()
   $(document).on('click', '.cadet-btn', function() {
     refreshCadetModal($(this));
   });
+
+  $(document).on('click', '.cadet_snip_view', function() {
+    var $this = $(this);
+    prepareViewSnipMenu($this, function() {
+      // Use toggle menu so that the menu button takes you back to snips menu
+      toggleMenu($('.' + $this.data('opens')), $this);
+    });
+  });
+
   $(document).on('click', 'a.ro_cartpage', function() {
     doROCartInstall();
     document.querySelector('[data-opens="cadet_report_wrap"]').style.display = "inline";
@@ -118,24 +132,24 @@ function loadCadetListeners()
     }
   });
 
-  // select the target node
   var target = document.querySelector('.theme-asset-name strong');
-  // create an observer instance
   var observer = new MutationObserver(function(mutations) {
     injectScript(function() {
       updateUndoButton();
     });
-    //observer.disconnect();
   });
-  // configuration of the observer:
-  var config = { childList: true }
-  // pass in the target node, as well as the observer options
-  observer.observe(target, config);
-
+  observer.observe(target, { childList: true });
   var pathChanged = false;
+
+
   window.onbeforeunload = function() {
       saveOpenTabs();
   }
+
+  $(document).on('click', '.cadet_new_coppy_tab input[name="create"]', function() {
+    var name = $('input[name="coppy_tab_name"]').val();
+    chrome.runtime.sendMessage({command: "newcoppytab", name: name});
+  });
 
 }
 
@@ -159,15 +173,47 @@ function toggleMenu(tar, button)
   $(tar).addClass('cadet_menu_open');
   $(tar).css('transform', 'scale(1,1)');
 
-  if (button.data('title') != undefined)
+  if (button != undefined && button.data('title') != undefined)
   {
     $('.cadet_title').text(button.data('title'));
   } else {
     $('.cadet_title').text('Install Helper');
   }
   // Hide app selector, will be shown if button is snippets
-  if (!$(tar).hasClass('cadet_snippets_menu'))
-    $('.cadet_menu_app_select').hide();
+  // if (!$(tar).hasClass('cadet_snippets_menu'))
+  //   $('.cadet_menu_app_select').hide();
+  // else
+  //   $('.cadet_menu_app_select').show();
+  updateToolbar();
+}
+
+function prepareViewSnipMenu(ele, callback)
+{
+  var snip = ele.next('a');
+  var table = snip.closest('table');
+  var title = snip.text();
+  $('.snip_title_js').text(title);
+  getSnippet(table.data('app'), snip.data('snip'), function(data) {
+    $('.snip_content_js').text(data);
+    callback();
+  });
+}
+
+function updateToolbar()
+{
+  var menu = $('.cadet_menu_open');
+
+  // Hide all toolbar buttons
+  $('.cadet_menu_app_select').hide();
+  $('.cadet_coppy_tool').hide();
+
+  if (menu.hasClass('cadet_snippets_menu'))
+  {
+    $('.cadet_menu_app_select').show();
+  }
+  else if (menu.hasClass('cadet_coppy_menu')) {
+    $('.cadet_coppy_tool').show();
+  }
 }
 
 function hideDropdown(ele)
@@ -207,4 +253,19 @@ function getSnippet(app, snipname, callback)
     var s = data.substring(data.indexOf('^begin:' + snipname) + 7 + snipname.length, data.indexOf('^end:' + snipname));
     callback(s);
   });
+}
+
+function populateCoppy()
+{
+  chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.command == "setcoppy"){
+      for (e in request.coppy.coppyjr)
+      {
+        var o = $('<option>' + e + "</option>")
+        o.appendTo('.cadet_coppy_tab_select');
+      }
+    }
+  });
+  chrome.runtime.sendMessage({command: "getcoppydata"});
 }

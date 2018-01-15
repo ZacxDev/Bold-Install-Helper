@@ -12,8 +12,8 @@ function(request, sender, sendResponse) {
 
       // send app string back to tab
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, {app: items.selected_app});
-});
+        chrome.tabs.sendMessage(tabs[0].id, {app: items.selected_app});
+      });
     });
   }
   else if (request.command == "savethemetabs")
@@ -30,6 +30,18 @@ function(request, sender, sendResponse) {
         var tablist = items.cadet[store];
         chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
       }, tabs[0].url);
+    });
+  }
+  else if (request.command == "newcoppytab")
+  {
+    createCoppyTab(request.name);
+  }
+  else if (request.command == "getcoppydata")
+  {
+    getCoppyData(function(data) {
+      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
+      });
     });
   }
   else if (request.command == "init")
@@ -122,14 +134,19 @@ $(document).ready(function() {
 
 function saveThemeEditorTabs(tabs, store)
 {
-  store = "tabs_" + store.substring(0, store.indexOf('?')  != -1 ? store.indexOf('?') : store.length);
-  var obj = {};
-  obj[store] = tabs;
-  chrome.storage.sync.set({
-    cadet: obj
-  }, function() {
-    console.log('Saved tabs');
-  });
+  chrome.storage.sync.get({cadet: {}}, function(items) {
+    store = "tabs_" + store.substring(0, store.indexOf('?')  != -1 ? store.indexOf('?') : store.length);
+    // set map tp current tabs map
+    var obj = items.cadet;
+    // add new tabs map
+    obj[store] = tabs;
+    // update tabs map
+    chrome.storage.sync.set({
+      cadet: obj
+    }, function() {
+      console.log('Saved tabs');
+    });
+});
 }
 
 function getThemeEditorTabs(callback, store)
@@ -137,6 +154,37 @@ function getThemeEditorTabs(callback, store)
   store = "tabs_" + store.substring(0, store.indexOf('?') != -1 ? store.indexOf('?') : store.length);
   var obj = {};
   chrome.storage.sync.get(obj[store], function(items) {
+    callback(items);
+  });
+}
+
+function createCoppyTab(name)
+{
+//get coppy data
+  chrome.storage.sync.get({coppyjr: {}}, function(items) {
+    // set map to current tabs map
+    var obj = items.coppyjr;
+    // add new tab to map
+    obj[name] = {'key':'value'};
+    // update tabs map
+    chrome.storage.sync.set({
+      coppyjr: obj
+    });
+  });
+}
+
+function saveCoppyData(data)
+{
+  chrome.storage.sync.set({
+    coppyjr: data
+  });
+}
+
+function getCoppyData(callback)
+{
+  chrome.storage.sync.get({
+    coppyjr: {}
+  }, function(items) {
     callback(items);
   });
 }

@@ -33,7 +33,7 @@ drag: function(event, ui) {
   </div>
  </div>
  <div class="cadet_right">
-   <p class="cadet_title">Install Helper<a class="cadet_close">X</a></p>
+   <p class="cadet_title">Install Helper</p><a class="cadet_close">X</a>
    <div class="cadet_spacer"></div>
 
 <div class="cadet_mainstage">
@@ -82,6 +82,12 @@ drag: function(event, ui) {
          </td>
        </tr>
      </table>
+   </div>
+
+   <div class="cadet_view_snip_menu_js cadet_menu" style="display:none;">
+     <h2 class="snip_title_js"></h2>
+     <p class="snip_desc_js"></p>
+     <textarea class="snip_content_js"></textarea>
    </div>
 
    <div class="cadet_snippets_menu cadet_menu" style="display:none;">
@@ -175,6 +181,18 @@ drag: function(event, ui) {
      </table>
    </div>
 
+   <div class="cadet_coppy_menu cadet_menu" style="display:none;">
+   </div>
+
+   <div class="cadet_new_coppy cadet_menu" style="display:none;">
+   </div>
+
+   <div class="cadet_new_coppy_tab cadet_menu" style="display:none;">
+     <h3>Name:</h3>
+     <input name="coppy_tab_name" type="text" placeholder="New Tab" />
+     <input type="button" class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable" name="create" value="Create" />
+   </div>
+
    <div class="cadet_docs_ro_menu cadet_menu" style="display:none;">
      <table>
        <tr>
@@ -212,7 +230,10 @@ drag: function(event, ui) {
        <option data-app="cp">Customer Pricing</option>
        <option data-app="mc">Multi Currency</option>
      </select>
-     <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
+    <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy" style="display:none;">+New</a>
+    <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy_tab" style="display:none;">+New Tab</a>
+    <select class="cadet_coppy_tool cadet_coppy_tab_select" style="display:none;"></select>
+    <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
     <a class="cadet_undo" style="display:none;">Undo</a>
     <a class="cadet_menu_toggle" data-opens="cadet_report_wrap" style="display:none;">View Report</a>
    </div>

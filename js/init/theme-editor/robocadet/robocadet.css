@@ -12,6 +12,11 @@
   position: absolute;
   z-index: 1000;
   overflow: hidden;
+  color: white;
+}
+
+label {
+  color: white;
 }
 
 
@@ -29,20 +34,20 @@
 .cadet_right {
   float: right;
   width: 69%;
+  text-align: center;
 }
 
 .cadet_right p {
-  text-align: center;
   font-weight: 600;
   font-size: large;
-  display: inline-block;
+  display: inline;
   width: 100%;
   color: darkred;
   font-weight: 700;
 }
 
 .cadet_close {
-  display: inline-block;
+  display: inline;
   float: right;
   margin-right: 4%;
   color: darkred;
@@ -141,17 +146,17 @@ span.cadet_report_false {
 
 }
 
-.cadet_menu_app_select {
+.cadet_modal select {
   background: none;
   color: white;
   border-color: red;
 }
 
-.cadet_menu_app_select:focus {
+.cadet_modal select:focus {
   border-color: red;
 }
 
-.cadet_menu_app_select option{
+.cadet_modal select option{
   background-color: rgba(0,0,0,0.8);
   color: red;
 }
@@ -217,4 +222,51 @@ input.cadet-btn {
 
 .cadet_peek img {
   border-radius: 5%;
+}
+
+.cadet_snip_view {
+  width: 16px;
+  display: inline;
+  cursor: help;
+}
+
+.snip_title_js {
+  color: white;
+  padding-bottom: 2%;
+  font-size: 16px;
+}
+
+.snip_content_js {
+  font-size: 12px;
+  height: 70%;
+  background-color: rgba(0,0,0,0);
+  color: red;
+  border-color: rgba(255,0,0,0.2);
+}
+
+input[name="coppy_tab_name"] {
+  width: 50%;
+  height: 15%;
+  background-color: rgba(0, 0, 0, 0);
+  color: red;
+}
+
+.cadet_new_coppy_tab input:focus {
+  border-color: rgba(255, 0, 0, 0.2);
+}
+
+.cadet_new_coppy_tab input[name="create"] {
+  padding: 0;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-top: 2%;
+  width: 30%;
+  font-size: 16px;
+  background-color: transparent;
+  transition: border .5s ease-out;
+}
+
+.cadet_new_coppy_tab input[name="create"]:hover {
+  border-color: rgba(255, 0, 0, 0.4);
 }
