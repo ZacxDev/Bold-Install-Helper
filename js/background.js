@@ -34,13 +34,28 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "newcoppytab")
   {
-    createCoppyTab(request.name);
+    createCoppyTab(request.name, function()
+    {
+      getCoppyData(function(data) {
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
+        });
+      });
+    });
   }
   else if (request.command == "getcoppydata")
   {
     getCoppyData(function(data) {
       chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
+      });
+    });
+  }
+  else if (request.command == "getcoppytab")
+  {
+    getCoppyTab(request.tab, function(data) {
+      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {command: "returncoppytab", tab: data});
       });
     });
   }
@@ -158,7 +173,7 @@ function getThemeEditorTabs(callback, store)
   });
 }
 
-function createCoppyTab(name)
+function createCoppyTab(name, callback)
 {
 //get coppy data
   chrome.storage.sync.get({coppyjr: {}}, function(items) {
@@ -169,6 +184,8 @@ function createCoppyTab(name)
     // update tabs map
     chrome.storage.sync.set({
       coppyjr: obj
+    }, function() {
+      callback();
     });
   });
 }
@@ -186,5 +203,14 @@ function getCoppyData(callback)
     coppyjr: {}
   }, function(items) {
     callback(items);
+  });
+}
+
+function getCoppyTab(tab, callback)
+{
+  chrome.storage.sync.get({
+    coppyjr: {}
+  }, function(items) {
+    callback(items.coppyjr[tab]);
   });
 }

@@ -181,16 +181,20 @@ drag: function(event, ui) {
      </table>
    </div>
 
-   <div class="cadet_coppy_menu cadet_menu" style="display:none;">
-   </div>
-
    <div class="cadet_new_coppy cadet_menu" style="display:none;">
+     <h3>Name:</h3>
+     <input name="coppy_item_name" type="text" placeholder="New Coppy Item" />
+     <input type="button" class="cadet_menu_toggle cadet_functions" data-opens="cadet_coppy_menu" name="create" value="Create" />
    </div>
 
    <div class="cadet_new_coppy_tab cadet_menu" style="display:none;">
      <h3>Name:</h3>
      <input name="coppy_tab_name" type="text" placeholder="New Tab" />
-     <input type="button" class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable" name="create" value="Create" />
+     <input type="button" class="cadet_menu_toggle cadet_functions" data-opens="cadet_coppy_menu" name="create" value="Create" />
+   </div>
+
+   <div class="cadet_coppy_menu cadet_menu" style="display:none;">
+     <div class="cadet_coppy_wrap"></div>
    </div>
 
    <div class="cadet_docs_ro_menu cadet_menu" style="display:none;">

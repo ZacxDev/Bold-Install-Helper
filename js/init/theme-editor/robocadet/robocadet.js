@@ -28,6 +28,7 @@ $(document).ready(function() {
     var viewSnip = $('<img class="cadet_snip_view" data-opens="cadet_view_snip_menu_js" src="' + chrome.extension.getURL('resources/viewsnip.png') + '"/>');
     viewSnip.prependTo($('.cadet_snip').parent());
 
+    loadCoppyListeners();
     populateCoppy();
   });
 });
@@ -151,6 +152,10 @@ function loadCadetListeners()
     chrome.runtime.sendMessage({command: "newcoppytab", name: name});
   });
 
+  $(document).on('change', '.cadet_coppy_tab_select', function() {
+    beginUpdateCoppyMenu();
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -255,17 +260,43 @@ function getSnippet(app, snipname, callback)
   });
 }
 
-function populateCoppy()
+function loadCoppyListeners()
 {
   chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.command == "setcoppy"){
+      $('.cadet_coppy_tab_select').empty();
       for (e in request.coppy.coppyjr)
       {
         var o = $('<option>' + e + "</option>")
         o.appendTo('.cadet_coppy_tab_select');
       }
     }
+    else if (request.command == "returncoppytab")
+    {
+      updateCoppyMenu(request.tab);
+    }
   });
+}
+
+function populateCoppy()
+{
   chrome.runtime.sendMessage({command: "getcoppydata"});
+}
+
+function beginUpdateCoppyMenu()
+{
+  var tabname = $('.cadet_coppy_tab_select').val();
+  chrome.runtime.sendMessage({command: "getcoppytab", tab: tabname});
+}
+
+function updateCoppyMenu(tab)
+{
+  $('.cadet_coppy_wrap').empty();
+
+  for (t in tab)
+  {
+    var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item">' + t + '</a></div>';
+    $(item).appendTo('.cadet_coppy_wrap');
+  }
 }
