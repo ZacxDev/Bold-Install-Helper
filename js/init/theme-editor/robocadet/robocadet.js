@@ -271,6 +271,12 @@ function loadCoppyListeners()
         var o = $('<option>' + e + "</option>")
         o.appendTo('.cadet_coppy_tab_select');
       }
+
+      // Send message to get the first coppy tab so that the menu isn't empty
+      if (Object.keys(request.coppy.coppyjr)[0] != undefined)
+      {
+        chrome.runtime.sendMessage({command: "getcoppytab", tab: Object.keys(request.coppy.coppyjr)[0]});
+      }
     }
     else if (request.command == "returncoppytab")
     {
@@ -292,11 +298,11 @@ function beginUpdateCoppyMenu()
 
 function updateCoppyMenu(tab)
 {
-  $('.cadet_coppy_wrap').empty();
+  $('.cadet_coppy_table').empty();
 
   for (t in tab)
   {
-    var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item">' + t + '</a></div>';
-    $(item).appendTo('.cadet_coppy_wrap');
+    var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item">' + tab[t].name + '</a></div>';
+    $(item).appendTo('.cadet_coppy_table');
   }
 }

@@ -180,7 +180,7 @@ function createCoppyTab(name, callback)
     // set map to current tabs map
     var obj = items.coppyjr;
     // add new tab to map
-    obj[name] = {'key':'value'};
+    obj[name] = [{'name' : 'Item1', 'description' : 'Item1 Desc'}];
     // update tabs map
     chrome.storage.sync.set({
       coppyjr: obj
