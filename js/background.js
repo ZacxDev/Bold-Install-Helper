@@ -34,7 +34,18 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "newcoppytab")
   {
-    createCoppyTab(request.name, function()
+    createCoppyTab(request.name, function(tab)
+    {
+    //  getCoppyData(function(data) {
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {command: "newtabcallback", tab: tab, name: request.name});
+        });
+      //});
+    });
+  }
+  else if (request.command == "newcoppyitem")
+  {
+    createCoppyItem(request, function()
     {
       getCoppyData(function(data) {
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
@@ -55,7 +66,7 @@ function(request, sender, sendResponse) {
   {
     getCoppyTab(request.tab, function(data) {
       chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "returncoppytab", tab: data});
+        chrome.tabs.sendMessage(tabs[0].id, {command: "returncoppytab", tab: data, name: request.tab});
       });
     });
   }
@@ -180,10 +191,30 @@ function createCoppyTab(name, callback)
     // set map to current tabs map
     var obj = items.coppyjr;
     // add new tab to map
-    obj[name] = [{'name' : 'Item1', 'description' : 'Item1 Desc'}];
+    obj[name] = {"Item1" : {'description' : 'Item1 Desc'}};
     // update tabs map
     chrome.storage.sync.set({
       coppyjr: obj
+    }, function() {
+      callback(obj[name]);
+    });
+  });
+}
+
+function createCoppyItem(request, callback)
+{
+  chrome.storage.sync.get({
+    coppyjr:{}
+  }, function(data) {
+    var obj = data.coppyjr;
+    // Get the item's parent tab object and insert the new item
+    var parent = obj[request.parenttab];
+    parent[request.name] = request.data;
+    // update the parent tab in the coppyjr object
+    obj[request.parenttab] = parent;
+    // update the coppyjr object in storage
+    chrome.storage.sync.set({
+      coppyjr : obj
     }, function() {
       callback();
     });

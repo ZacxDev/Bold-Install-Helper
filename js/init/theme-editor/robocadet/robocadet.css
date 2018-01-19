@@ -272,10 +272,18 @@ input[name="coppy_tab_name"] {
 }
 
 .coppy_item_wrap {
+  padding:  1%;
+  padding-right:  5%;
+  padding-left: 5%;
   display: inline-block;
   width: auto;
-  padding:  5%;
   background-color: rgba(255, 0, 0, 0.2);
   margin-right:  3%;
   margin-top: 2%;
+  max-width:  100px;
+  overflow:  hidden;
+}
+
+.cadet_coppy_wrap {
+  overflow-x: hidden;
 }

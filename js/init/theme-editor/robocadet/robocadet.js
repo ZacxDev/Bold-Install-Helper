@@ -1,3 +1,5 @@
+var OPEN_COPPY_TAB;
+
 $(document).ready(function() {
 
 // Check if on theme editor page
@@ -156,6 +158,11 @@ function loadCadetListeners()
     beginUpdateCoppyMenu();
   });
 
+  $(document).on('click', '.coppy_create_item', function() {
+    var name = $('input[name="coppy_item_name"]').val();
+    chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data: {description: "Desccc"}});
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -277,10 +284,15 @@ function loadCoppyListeners()
       {
         chrome.runtime.sendMessage({command: "getcoppytab", tab: Object.keys(request.coppy.coppyjr)[0]});
       }
+    } else if (request.command == "newtabcallback")
+    {
+      var o = $('<option>' + request.name + "</option>")
+      o.appendTo('.cadet_coppy_tab_select');
+      updateCoppyMenu(request);
     }
     else if (request.command == "returncoppytab")
     {
-      updateCoppyMenu(request.tab);
+      updateCoppyMenu(request);
     }
   });
 }
@@ -296,13 +308,18 @@ function beginUpdateCoppyMenu()
   chrome.runtime.sendMessage({command: "getcoppytab", tab: tabname});
 }
 
-function updateCoppyMenu(tab)
+function updateCoppyMenu(request)
 {
-  $('.cadet_coppy_table').empty();
+  var tab = request.tab;
+  $('.cadet_coppy_wrap').empty();
+  var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item"></a></div>';
 
   for (t in tab)
   {
-    var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item">' + tab[t].name + '</a></div>';
-    $(item).appendTo('.cadet_coppy_table');
+    var $item = $(item);
+    $item.find('a').text(t);
+    $item.appendTo('.cadet_coppy_wrap');
   }
+
+  OPEN_COPPY_TAB = request.name;
 }
