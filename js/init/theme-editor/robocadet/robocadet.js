@@ -160,7 +160,21 @@ function loadCadetListeners()
 
   $(document).on('click', '.coppy_create_item', function() {
     var name = $('input[name="coppy_item_name"]').val();
-    chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data: {description: "Desccc"}});
+    var content = $('textarea.coppy_item_content').val();
+    chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data: {description: "Desccc", content: content}});
+  });
+
+  $(document).on('click', '.coppy_item', function() {
+
+    var name = $(this).text();
+    chrome.runtime.sendMessage({command: "getcoppyitem", name: name, parenttab: OPEN_COPPY_TAB});
+
+    var $this = $(this);
+    var text = $this.text();
+    $this.text('Copied!');
+    setTimeout(function() {
+        $this.text(text);
+    }, 700);
   });
 
 }
@@ -218,6 +232,7 @@ function updateToolbar()
   // Hide all toolbar buttons
   $('.cadet_menu_app_select').hide();
   $('.cadet_coppy_tool').hide();
+  $('.coppy_item_tool').hide();
 
   if (menu.hasClass('cadet_snippets_menu'))
   {
@@ -225,6 +240,8 @@ function updateToolbar()
   }
   else if (menu.hasClass('cadet_coppy_menu')) {
     $('.cadet_coppy_tool').show();
+  } else if (menu.hasClass('cadet_new_coppy')) {
+    $('.coppy_item_tool').show();
   }
 }
 
@@ -294,6 +311,14 @@ function loadCoppyListeners()
     {
       updateCoppyMenu(request);
     }
+    else if (request.command == "returncoppyitem")
+    {
+      $('.cadet_text_dump').text(request.item.content);
+      $('.cadet_text_dump').css('display', 'block');
+      SelectText('.cadet_text_dump');
+      document.execCommand("Copy");
+      $('.cadet_text_dump').hide();
+    }
   });
 }
 
@@ -312,8 +337,8 @@ function updateCoppyMenu(request)
 {
   var tab = request.tab;
   $('.cadet_coppy_wrap').empty();
-  var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item"></a></div>';
-
+  var item = '<div class="coppy_item_wrap"><img src="' + chrome.extension.getURL('resources/gear.png') + '" /><a class="cadet_action coppy_item"></a></div>';
+  $('.coppy_gear').attr('src', chrome.extension.getURL('resources/gear.png'));
   for (t in tab)
   {
     var $item = $(item);

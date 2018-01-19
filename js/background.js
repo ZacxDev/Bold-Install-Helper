@@ -70,6 +70,14 @@ function(request, sender, sendResponse) {
       });
     });
   }
+  else if (request.command == "getcoppyitem")
+  {
+    getCoppyItem(request.name, request.parenttab, function(data) {
+      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {command: "returncoppyitem", item: data, name: request.tab});
+      });
+    });
+  }
   else if (request.command == "init")
     {
       url = sender.tab.url;
@@ -191,7 +199,7 @@ function createCoppyTab(name, callback)
     // set map to current tabs map
     var obj = items.coppyjr;
     // add new tab to map
-    obj[name] = {"Item1" : {'description' : 'Item1 Desc'}};
+    obj[name] = {"Item1" : {'description' : 'Item1 Desc', 'content' : 'item1 content'}};
     // update tabs map
     chrome.storage.sync.set({
       coppyjr: obj
@@ -243,5 +251,15 @@ function getCoppyTab(tab, callback)
     coppyjr: {}
   }, function(items) {
     callback(items.coppyjr[tab]);
+  });
+}
+
+function getCoppyItem(name, parenttab, callback)
+{
+  chrome.storage.sync.get({
+    coppyjr : {}
+  }, function(items) {
+    var tab = items.coppyjr[parenttab];
+    callback(tab[name]);
   });
 }

@@ -244,14 +244,14 @@ input.cadet-btn {
   border-color: rgba(255,0,0,0.2);
 }
 
-input[name="coppy_tab_name"] {
+input[name="coppy_tab_name"], input[name="coppy_item_name"] {
   width: 50%;
   height: 15%;
   background-color: rgba(0, 0, 0, 0);
   color: red;
 }
 
-.cadet_mainstage input:focus {
+.cadet_mainstage input:focus, .coppy_item_content:focus {
   border-color: rgba(255, 0, 0, 0.2);
 }
 
@@ -271,13 +271,16 @@ input[name="coppy_tab_name"] {
   border-color: rgba(255, 0, 0, 0.4);
 }
 
+.cadet_new_coppy {
+  overflow-y: auto;
+}
+
 .coppy_item_wrap {
   padding:  1%;
   padding-right:  5%;
   padding-left: 5%;
   display: inline-block;
   width: auto;
-  background-color: rgba(255, 0, 0, 0.2);
   margin-right:  3%;
   margin-top: 2%;
   max-width:  100px;
@@ -286,4 +289,21 @@ input[name="coppy_tab_name"] {
 
 .cadet_coppy_wrap {
   overflow-x: hidden;
+}
+
+.coppy_item_wrap img, .coppy_gear {
+  max-width: 32px;
+  max-width: 16px;
+  display: inline-block;
+  padding-right: 5px;
+}
+
+.coppy_item_content {
+  font-size: 12px;
+  height: auto;
+  min-height: 20px;
+  background-color: rgba(0,0,0,0);
+  color: red;
+  border-color: rgba(255,0,0,0.2);
+  width: 80%;
 }

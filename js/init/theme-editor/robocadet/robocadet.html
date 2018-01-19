@@ -181,9 +181,15 @@ drag: function(event, ui) {
      </table>
    </div>
 
+   <div class="coppy_item_advanced cadet_menu" style="display:none;">
+     <h3>ye</h3>
+   </div>
+
    <div class="cadet_new_coppy cadet_menu" style="display:none;">
      <h3>Name:</h3>
      <input name="coppy_item_name" type="text" placeholder="New Coppy Item" />
+     <h3>Content:</h3>
+     <textarea class="coppy_item_content"></textarea>
      <input type="button" class="cadet_menu_toggle cadet_functions coppy_create_item" data-opens="cadet_coppy_menu" name="create" value="Create" />
    </div>
 
@@ -234,8 +240,10 @@ drag: function(event, ui) {
        <option data-app="cp">Customer Pricing</option>
        <option data-app="mc">Multi Currency</option>
      </select>
+     <img class="coppy_gear" />
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy" style="display:none;">+New</a>
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy_tab" style="display:none;">+New Tab</a>
+    <a class="cadet_menu_toggle coppy_item_tool" data-opens="coppy_item_advanced" style="display:none;">Advanced</a>
     <select class="cadet_coppy_tool cadet_coppy_tab_select" style="display:none;"></select>
     <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
     <a class="cadet_undo" style="display:none;">Undo</a>
