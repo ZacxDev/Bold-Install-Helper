@@ -182,7 +182,21 @@ drag: function(event, ui) {
    </div>
 
    <div class="coppy_item_advanced cadet_menu" style="display:none;">
-     <h3>ye</h3>
+     <h3>Files:</h3>
+     <p>Please type files in key/name format such as: templates/theme.liquid</p>
+     <input type="text" name="coppy_item_files" placeholder="templates/theme.liquid,snippets/product.liquid" />
+     <h3>Hooks:</h3>
+     <p>The code will be inserted under these hooks, can be partial, will be inserted on a new line, spaces are ignored. ex. content_for_header will insert code under {% content_for_header %}, buildCart(){ under buildCart() {</p>
+     <input type="text" name="coppy_item_hooks" placeholder="content_for_header,buildCart(){" />
+     <input type="button" class="cadet_menu_toggle" name="coppy_item_advaced_done" value="Done" data-opens="cadet_new_coppy" />
+     <div class="coppy_item_advanced_options">
+       <label>
+         <input type="checkbox" id="per_file_hooks" />Per file hooks
+       </label>
+       <label>
+         <input type="checkbox" />Try to insert at end of function
+       </label>
+     </div>
    </div>
 
    <div class="cadet_new_coppy cadet_menu" style="display:none;">
@@ -201,6 +215,10 @@ drag: function(event, ui) {
 
    <div class="cadet_coppy_menu cadet_menu" style="display:none;">
      <div class="cadet_coppy_wrap"></div>
+   </div>
+
+   <div class="coppy_bulk_edit cadet_menu" style="display:none;">
+     <h3>ye</h3>
    </div>
 
    <div class="cadet_docs_ro_menu cadet_menu" style="display:none;">
@@ -240,10 +258,11 @@ drag: function(event, ui) {
        <option data-app="cp">Customer Pricing</option>
        <option data-app="mc">Multi Currency</option>
      </select>
-     <img class="coppy_gear" />
+     <img class="coppy_gear cadet_coppy_tool cadet_menu_toggle" data-opens="coppy_bulk_edit" style="display:none;" />
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy" style="display:none;">+New</a>
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy_tab" style="display:none;">+New Tab</a>
     <a class="cadet_menu_toggle coppy_item_tool" data-opens="coppy_item_advanced" style="display:none;">Advanced</a>
+    <a class="cadet_menu_toggle coppy_advanced_tool" data-opens="cadet_new_coppy" style="display:none;">Hide Advanced</a>
     <select class="cadet_coppy_tool cadet_coppy_tab_select" style="display:none;"></select>
     <a class="cadet_menu_toggle cadet_functions" data-opens="cadet_visable">Menu</a>
     <a class="cadet_undo" style="display:none;">Undo</a>

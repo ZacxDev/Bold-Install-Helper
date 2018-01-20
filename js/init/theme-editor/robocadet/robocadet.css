@@ -16,6 +16,7 @@
 }
 
 label {
+  display: inline;
   color: white;
 }
 
@@ -141,7 +142,7 @@ span.cadet_report_false {
   color: white;
 }
 
-.cadet_menu_toggle:hover {
+a.cadet_menu_toggle:hover {
   color: #f2f2f2;
 
 }
@@ -244,11 +245,11 @@ input.cadet-btn {
   border-color: rgba(255,0,0,0.2);
 }
 
-input[name="coppy_tab_name"], input[name="coppy_item_name"] {
+input[name*="coppy"] {
   width: 50%;
   height: 15%;
   background-color: rgba(0, 0, 0, 0);
-  color: red;
+  color: rgba(255, 0, 0, 0.6);
 }
 
 .cadet_mainstage input:focus, .coppy_item_content:focus {
@@ -291,11 +292,9 @@ input[name="coppy_tab_name"], input[name="coppy_item_name"] {
   overflow-x: hidden;
 }
 
-.coppy_item_wrap img, .coppy_gear {
-  max-width: 32px;
+.coppy_item_wrap img {
   max-width: 16px;
-  display: inline-block;
-  padding-right: 5px;
+  display: inline;
 }
 
 .coppy_item_content {
@@ -307,3 +306,36 @@ input[name="coppy_tab_name"], input[name="coppy_item_name"] {
   border-color: rgba(255,0,0,0.2);
   width: 80%;
 }
+
+.coppy_gear {
+  max-width: 22px;
+  display: inline;
+  float:  left;
+  margin-left:  3%;
+  cursor:  pointer;
+  transition: transform .5s ease-in-out;
+}
+
+.coppy_gear:hover {
+  transform: rotate(180deg);
+}
+
+.coppy_item_advanced input[type="text"] {
+  width: 80%;
+  font-size: 14px;
+}
+
+.coppy_item_advanced p {
+  font-size: 10px;
+  line-height: 1;
+  display:  inline-block;
+  color: #a6a6a6;
+}
+ .coppy_item_advanced input[type="checkbox"] {
+   display: inline;
+   width:  12px;
+ }
+
+ .coppy_item_advanced label {
+   display: block;
+ }

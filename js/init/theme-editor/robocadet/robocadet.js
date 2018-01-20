@@ -158,10 +158,55 @@ function loadCadetListeners()
     beginUpdateCoppyMenu();
   });
 
+  $(document).on('click', '#per_file_hooks', function() {
+    var $this = $(this);
+
+    if ($this.prop('checked') == true)
+    {
+      var files = $('[name="coppy_item_files"]').val().split(',');
+      var ele = $('[name="coppy_item_hooks"]');
+      ele.remove();
+      // create a new hooks input for each file and set it's data-file attr to that file
+      for (f in files)
+      {
+        ele = ele.clone();
+        ele.val('');
+        ele.attr('data-file', files[f]);
+        $('<span class="file_hook_span">' + files[f] + '</span>').insertBefore('[name="coppy_item_advaced_done"]');
+        ele.insertBefore('[name="coppy_item_advaced_done"]');
+      }
+    } else {
+      // remove the extra hooks inputs, except the first one, and remove it's data-file attr
+      var ele = $($('[name="coppy_item_hooks"]')[0]);
+      $('[name="coppy_item_hooks"]').remove();
+      $('.file_hook_span').remove();
+      ele.removeAttr('data-file');
+      ele.insertBefore('[name="coppy_item_advaced_done"]');
+    }
+  });
+
   $(document).on('click', '.coppy_create_item', function() {
+    // gather name, content, files, and hooks for the item
     var name = $('input[name="coppy_item_name"]').val();
     var content = $('textarea.coppy_item_content').val();
-    chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data: {description: "Desccc", content: content}});
+    var files = $('[name="coppy_item_files"]').val();
+    files = files.split(',');
+    var hooks = $('[name="coppy_item_hooks"]').val();
+    hooks = hooks.split(',');
+
+    // if they selected per file hooks, match each set of hooks to their file
+    var files_hooks = {};
+    var per_file_hooks = $('#per_file_hooks').prop('checked');
+    if (per_file_hooks)
+    {
+      for (f in files)
+      {
+        files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val();
+      }
+    }
+debugger;
+    chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data:
+    {description: "Desccc", content: content, files: files, hooks: hooks, file_hooks_link: files_hooks}});
   });
 
   $(document).on('click', '.coppy_item', function() {
@@ -233,6 +278,7 @@ function updateToolbar()
   $('.cadet_menu_app_select').hide();
   $('.cadet_coppy_tool').hide();
   $('.coppy_item_tool').hide();
+  $('.coppy_advanced_tool').hide();
 
   if (menu.hasClass('cadet_snippets_menu'))
   {
@@ -242,6 +288,9 @@ function updateToolbar()
     $('.cadet_coppy_tool').show();
   } else if (menu.hasClass('cadet_new_coppy')) {
     $('.coppy_item_tool').show();
+  } else if (menu.hasClass('coppy_item_advanced'))
+  {
+    $('.coppy_advanced_tool').show();
   }
 }
 
@@ -337,7 +386,7 @@ function updateCoppyMenu(request)
 {
   var tab = request.tab;
   $('.cadet_coppy_wrap').empty();
-  var item = '<div class="coppy_item_wrap"><img src="' + chrome.extension.getURL('resources/gear.png') + '" /><a class="cadet_action coppy_item"></a></div>';
+  var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item"></a></div>';
   $('.coppy_gear').attr('src', chrome.extension.getURL('resources/gear.png'));
   for (t in tab)
   {
