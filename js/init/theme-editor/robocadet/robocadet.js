@@ -203,7 +203,7 @@ function loadCadetListeners()
     {
       for (f in files)
       {
-        files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val();
+        files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
       }
     }
 debugger;
@@ -377,7 +377,14 @@ function loadCoppyListeners()
       $('.cadet_text_dump').hide();
     } else if (request.command == "execute_coppy_item")
     {
-      debugger;
+      // Dump the item json into dom so that install.js can grab it
+      var dump = document.createElement('xmp');
+      dump.classList.add('coppy_dump');
+      dump.textContent = JSON.stringify(request.item);
+      document.body.appendChild(dump);
+      injectScript(function() {
+        injectCoppyItem();
+      });
     }
   });
 }

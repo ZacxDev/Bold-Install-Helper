@@ -41,7 +41,6 @@ function getFile(key, name, callback)
   });
 }
 
-
 function pushFile(key, name, data, callback)
 {
   var id = $('.action-bar__top-links a').attr('href');
@@ -339,6 +338,68 @@ function updateUndoButton()
   var file = document.querySelector('.theme-asset-name strong').textContent;
   if (file_history[file] != undefined)
     document.querySelector('.cadet_undo').style.display = 'inline';
-    else
-      document.querySelector('.cadet_undo').style.display = 'none';
+  else
+    document.querySelector('.cadet_undo').style.display = 'none';
+}
+
+function injectCoppyItem()
+{
+  var data = $('.coppy_dump').text();
+  this.item = JSON.parse(data);
+  var per_file_hooks = this.item.file_hooks_link != undefined;
+
+  var key, name;
+  if (per_file_hooks)
+  {
+    var line = "";
+    var insertMap = {};
+
+    for (f in this.item.file_hooks_link)
+    {
+      key = f.substring(0, f.indexOf('/'));
+      name = f.substring(f.indexOf('/') + 1);
+      //grab the coppy item's file
+      getFile(key, name, function(key, name, data) {
+        var asset = key + '\/' + name;
+        data = data.split('\n');
+        // iterate file's data
+        for (var i = 0; i < data.length; i++)
+        {
+          line = data[i];
+          var hooks = this.item.file_hooks_link[asset];
+          //look for hooks in the file
+          for (var h = 0; h < hooks.length; h++)
+          {
+            if (line.indexOf(hooks[h]) != -1)
+            {
+              // Save to insertMap object, key = hook, val = index in file
+              insertMap[hooks[h]] = i;
+            }
+          }
+        }
+
+        // if no hooks were found, insertMap will be empty
+        if ($.isEmptyObject(insertMap))
+        {
+          return;
+        }
+
+        // iterate insertMap to see which hook is closest to start of array
+        var using_hook = Object.keys(insertMap)[0];
+        for (a in insertMap)
+        {
+          if (this.item.file_hooks_link[asset].indexOf(a) < this.item.file_hooks_link[asset].indexOf(using_hook))
+          {
+            using_hook = a;
+          }
+        }
+
+        // insert the coppy item content under the preferred hook
+        data.splice(insertMap[using_hook] + 1, 0, this.item.content + '\n');
+        // join array, string is the sperator
+        pushFile(key, name, data.join('\n'), function(){});
+      });
+    }
+  }
+  $('.coppy_dump').remove();
 }
