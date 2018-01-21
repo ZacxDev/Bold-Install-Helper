@@ -74,7 +74,12 @@ function(request, sender, sendResponse) {
   {
     getCoppyItem(request.name, request.parenttab, function(data) {
       chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "returncoppyitem", item: data, name: request.tab});
+        var command = 'returncoppyitem';
+        if (request.response != undefined)
+        {
+          command = request.response;
+        }
+        chrome.tabs.sendMessage(tabs[0].id, {command: command, item: data, name: request.tab});
       });
     });
   }

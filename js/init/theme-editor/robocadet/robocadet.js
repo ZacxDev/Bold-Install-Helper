@@ -30,6 +30,8 @@ $(document).ready(function() {
     var viewSnip = $('<img class="cadet_snip_view" data-opens="cadet_view_snip_menu_js" src="' + chrome.extension.getURL('resources/viewsnip.png') + '"/>');
     viewSnip.prependTo($('.cadet_snip').parent());
 
+    $('.coppy_gear').attr('src', chrome.extension.getURL('resources/gear.png'));
+
     loadCoppyListeners();
     populateCoppy();
   });
@@ -222,6 +224,12 @@ debugger;
     }, 700);
   });
 
+  $(document).on('click', '[data-triggers]', function() {
+    var $this = $(this);
+    var snipName = $this.next('.coppy_item').text();
+    chrome.extension.sendMessage({command:"getcoppyitem", name: snipName, parenttab: OPEN_COPPY_TAB, response: "execute_coppy_item"});
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -367,6 +375,9 @@ function loadCoppyListeners()
       SelectText('.cadet_text_dump');
       document.execCommand("Copy");
       $('.cadet_text_dump').hide();
+    } else if (request.command == "execute_coppy_item")
+    {
+      debugger;
     }
   });
 }
@@ -386,11 +397,13 @@ function updateCoppyMenu(request)
 {
   var tab = request.tab;
   $('.cadet_coppy_wrap').empty();
-  var item = '<div class="coppy_item_wrap"><a class="cadet_action coppy_item"></a></div>';
-  $('.coppy_gear').attr('src', chrome.extension.getURL('resources/gear.png'));
+  var item = '<div class="coppy_item_wrap"><img/><a class="cadet_action coppy_item"></a></div>';
+
   for (t in tab)
   {
     var $item = $(item);
+    $item.find('img').attr('src', chrome.extension.getURL('resources/runcoppy.png'));
+    $item.find('img').attr('data-triggers', t);
     $item.find('a').text(t);
     $item.appendTo('.cadet_coppy_wrap');
   }
