@@ -88,7 +88,7 @@ label {
 
 .cadet_apps_tools {
   text-align: right;
-  width: 100%;
+  width: 95%;
 }
 
 .cadet_apps_tools a {
@@ -347,6 +347,28 @@ img.cadet_coppy_tool {
 
  .loading {
    max-width: 56px;
-  margin: 0 auto;
-  margin-top: 15%;
+   margin: 0 auto;
+   margin-top: 15%;
+ }
+
+ .coppy_bulk_tab {
+   cursor: pointer;
+ }
+
+ .coppy_bulk_item input[type="checkbox"] {
+   display: inline;
+   width: auto;
+ }
+
+ .coppy_bulk_item span {
+   padding-left: 1%;
+ }
+
+ .coppy_bulk_item_wrap {
+   transition: all .25s ease-out;
+   transform: scale(1,0);
+   border-width: 0;
+   border-bottom-width: 1px;
+   border-style: solid;
+   border-color: gray;
  }

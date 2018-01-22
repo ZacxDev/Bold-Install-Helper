@@ -238,6 +238,22 @@ function loadCadetListeners()
     chrome.extension.sendMessage({command:"getcoppyitem", name: snipName, parenttab: OPEN_COPPY_TAB, response: "execute_coppy_item"});
   });
 
+  $(document).on('click', '[data-opens="coppy_bulk_edit"]', function() {
+    chrome.extension.sendMessage({command: "getcoppydata", response:"returncoppybulk"});
+  });
+
+  $(document).on('click', '.coppy_bulk_tab', function() {
+    var $this = $(this);
+    if ($this.hasClass('coppy_bulk_tab_open'))
+    {
+      $this.removeClass('coppy_bulk_tab_open');
+      $this.siblings('.coppy_bulk_item_wrap').css('transform', 'scale(1,0)');
+    } else {
+      $this.addClass('coppy_bulk_tab_open');
+      $this.siblings('.coppy_bulk_item_wrap').css('transform', 'scale(1,1)');
+    }
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -393,6 +409,23 @@ function loadCoppyListeners()
       injectScript(function() {
         injectCoppyItem();
       });
+    } else if (request.command == "returncoppybulk")
+    {
+      $('.coppy_bulk_list_wrap').empty();
+      var trow = "<div class='coppy_bulk_tab_wrap'><div class='coppy_bulk_tab'><span></span></div><div class='coppy_bulk_item_wrap'></div></div>";
+      var titem = "<div class='coppy_bulk_item'><input type='checkbox'/><span></span></div>";
+      for (tab in request.coppy.coppyjr)
+      {
+        row = $(trow);
+        row.find('span')[0].textContent = tab;
+        for (i in request.coppy.coppyjr[tab])
+        {
+          item = $(titem)
+          item.find('span').text(i);
+          item.appendTo(row.find('.coppy_bulk_item_wrap'));
+        }
+        row.appendTo('.coppy_bulk_list_wrap');
+      }
     }
   });
 }

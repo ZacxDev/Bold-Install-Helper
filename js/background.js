@@ -56,9 +56,14 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "getcoppydata")
   {
+    var command = "setcoppy";
+    if (request.response != undefined)
+    {
+      command = request.response;
+    }
     getCoppyData(function(data) {
       chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
+        chrome.tabs.sendMessage(tabs[0].id, {command: command, coppy: data});
       });
     });
   }
