@@ -31,6 +31,8 @@ $(document).ready(function() {
     viewSnip.prependTo($('.cadet_snip').parent());
 
     $('.coppy_gear').attr('src', chrome.extension.getURL('resources/gear.png'));
+    $('.coppy_execute_all').attr('src', chrome.extension.getURL('resources/runallcoppy.png'));
+    $('.loading').attr('src', chrome.extension.getURL('resources/loading.gif'));
 
     loadCoppyListeners();
     populateCoppy();
@@ -199,16 +201,22 @@ function loadCadetListeners()
     // if they selected per file hooks, match each set of hooks to their file
     var files_hooks = {};
     var per_file_hooks = $('#per_file_hooks').prop('checked');
+    // if per file hooks, set each file their specific hooks, other wise give each file the same ones
     if (per_file_hooks)
     {
       for (f in files)
       {
         files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
       }
+    } else {
+      for (f in files)
+      {
+        files_hooks[files[f]] = hooks;
+      }
     }
-debugger;
+
     chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data:
-    {description: "Desccc", content: content, files: files, hooks: hooks, file_hooks_link: files_hooks}});
+    {description: "Desccc", content: content, file_hooks_link: files_hooks}});
   });
 
   $(document).on('click', '.coppy_item', function() {
@@ -405,6 +413,7 @@ function updateCoppyMenu(request)
   var tab = request.tab;
   $('.cadet_coppy_wrap').empty();
   var item = '<div class="coppy_item_wrap"><img/><a class="cadet_action coppy_item"></a></div>';
+  var max = 0;
 
   for (t in tab)
   {
@@ -413,6 +422,17 @@ function updateCoppyMenu(request)
     $item.find('img').attr('data-triggers', t);
     $item.find('a').text(t);
     $item.appendTo('.cadet_coppy_wrap');
+    if (tab[t].index != undefined)
+    {
+      $item.attr('data-index', tab[t].index);
+      if (tab[t].index > max)
+        max = tab[t].index;
+    }
+  }
+
+  for (var i = max; i > 0; i--)
+  {
+    $('[data-index="' + i + '"]').prependTo('.cadet_coppy_wrap');
   }
 
   OPEN_COPPY_TAB = request.name;

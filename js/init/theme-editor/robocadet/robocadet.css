@@ -307,7 +307,7 @@ input[name*="coppy"] {
   width: 80%;
 }
 
-.coppy_gear {
+img.cadet_coppy_tool {
   max-width: 22px;
   display: inline;
   float:  left;
@@ -338,4 +338,15 @@ input[name*="coppy"] {
 
  .coppy_item_advanced label {
    display: block;
+ }
+
+ .coppy_execute_confirm p {
+   font-size: 12px;
+   color: gray;
+ }
+
+ .loading {
+   max-width: 56px;
+  margin: 0 auto;
+  margin-top: 15%;
  }
