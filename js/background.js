@@ -88,6 +88,18 @@ function(request, sender, sendResponse) {
       });
     });
   }
+  else if (request.command == "deletecoppydata")
+  {
+    deleteCoppyItems(request.items, function() {
+      deleteCoppyTabs(request.tabs, function() {
+        getCoppyData(function(data) {
+          chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {command: 'setcoppy', coppy: data});
+          });
+        });
+      });
+    });
+  }
   else if (request.command == "init")
     {
       url = sender.tab.url;
@@ -272,5 +284,43 @@ function getCoppyItem(name, parenttab, callback)
   }, function(items) {
     var tab = items.coppyjr[parenttab];
     callback(tab[name]);
+  });
+}
+
+function deleteCoppyItems(items, callback)
+{
+  chrome.storage.sync.get({
+    coppyjr: {}
+  }, function(data) {
+    var obj = data.coppyjr;
+    var tab;
+    for (i in items)
+    {
+      tab = items[i];
+      delete obj[tab][i];
+    }
+    chrome.storage.sync.set({
+      coppyjr: obj
+    }, function() {
+      callback();
+    });
+  });
+}
+
+function deleteCoppyTabs(tabs, callback)
+{
+  chrome.storage.sync.get({
+    coppyjr: {}
+  }, function(data) {
+    var obj = data.coppyjr;
+    for (i in tabs)
+    {
+      delete obj[tabs[i]];
+    }
+    chrome.storage.sync.set({
+      coppyjr: obj
+    }, function() {
+      callback();
+    });
   });
 }

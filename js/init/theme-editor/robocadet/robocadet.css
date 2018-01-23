@@ -311,7 +311,7 @@ img.cadet_coppy_tool {
   max-width: 22px;
   display: inline;
   float:  left;
-  margin-left:  3%;
+  margin-left: 4px;
   cursor:  pointer;
   transition: transform .5s ease-in-out;
 }
@@ -351,13 +351,28 @@ img.cadet_coppy_tool {
    margin-top: 15%;
  }
 
+ .coppy_bulk_list_wrap img {
+   display: inline;
+   margin-right: 5px;
+   max-width: 15px;
+   cursor:  pointer;
+ }
+
  .coppy_bulk_tab {
    cursor: pointer;
  }
 
- .coppy_bulk_item input[type="checkbox"] {
+ .coppy_bulk_list_wrap input[type="checkbox"] {
    display: inline;
    width: auto;
+ }
+
+ div.coppy_bulk_tab {
+   display: inline;
+ }
+
+ .coppy_bulk_item {
+   margin-left: 5%;
  }
 
  .coppy_bulk_item span {
@@ -365,10 +380,16 @@ img.cadet_coppy_tool {
  }
 
  .coppy_bulk_item_wrap {
+   height: 0;
    transition: all .25s ease-out;
    transform: scale(1,0);
+   transform-origin: top;
    border-width: 0;
    border-bottom-width: 1px;
    border-style: solid;
    border-color: gray;
+ }
+
+ input[type='button'] {
+   color: white;
  }

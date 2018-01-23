@@ -248,10 +248,40 @@ function loadCadetListeners()
     {
       $this.removeClass('coppy_bulk_tab_open');
       $this.siblings('.coppy_bulk_item_wrap').css('transform', 'scale(1,0)');
+      $this.find('img').attr('src', chrome.extension.getURL('resources/dropdown-up.png'));
+      // settimeout so that animation doesn't look like trash
+      setTimeout(function() {
+        $this.siblings('.coppy_bulk_item_wrap').css('height', '0');
+      }, 150);
     } else {
       $this.addClass('coppy_bulk_tab_open');
       $this.siblings('.coppy_bulk_item_wrap').css('transform', 'scale(1,1)');
+      $this.siblings('.coppy_bulk_item_wrap').css('height', 'auto');
+      $this.find('img').attr('src', chrome.extension.getURL('resources/dropdown-down.png'));
     }
+  });
+
+  $(document).on('click', '.coppy_tab_check', function() {
+    var $this = $(this);
+    if ($this.prop('checked'))
+    {
+    $this.parent().find('.coppy_bulk_item_wrap').find('input').prop('checked', true);
+  } else {
+    $this.parent().find('.coppy_bulk_item_wrap').find('input').prop('checked', false);
+  }
+  });
+
+  $(document).on('click', '[name="confim_delete"]', function() {
+
+    var items = {};
+    $('.coppy_item_check:checked').each(function() {
+      items[$(this).data('item')] = $(this).data('parent');
+    });
+    var tabs = [];
+    $('.coppy_tab_check:checked').each(function() {
+      tabs.push($(this).data('tab'));
+    });
+    chrome.extension.sendMessage({command: "deletecoppydata", items: items, tabs: tabs});
   });
 
 }
@@ -311,6 +341,7 @@ function updateToolbar()
   $('.cadet_coppy_tool').hide();
   $('.coppy_item_tool').hide();
   $('.coppy_advanced_tool').hide();
+  $('.cadet_coppy_bulk_tool').hide();
 
   if (menu.hasClass('cadet_snippets_menu'))
   {
@@ -323,6 +354,9 @@ function updateToolbar()
   } else if (menu.hasClass('coppy_item_advanced'))
   {
     $('.coppy_advanced_tool').show();
+  } else if (menu.hasClass('coppy_bulk_edit'))
+  {
+    $('.cadet_coppy_bulk_tool').show();
   }
 }
 
@@ -412,16 +446,21 @@ function loadCoppyListeners()
     } else if (request.command == "returncoppybulk")
     {
       $('.coppy_bulk_list_wrap').empty();
-      var trow = "<div class='coppy_bulk_tab_wrap'><div class='coppy_bulk_tab'><span></span></div><div class='coppy_bulk_item_wrap'></div></div>";
-      var titem = "<div class='coppy_bulk_item'><input type='checkbox'/><span></span></div>";
+      var trow = "<div class='coppy_bulk_tab_wrap'><input class='coppy_tab_check' type='checkbox'/><div class='coppy_bulk_tab'><span></span><img/></div><div class='coppy_bulk_item_wrap'></div></div>";
+      var titem = "<div class='coppy_bulk_item'><input class='coppy_item_check' type='checkbox'/><span></span><img class='cadet_menu_toggle' data-opens='coppy_item_edit' /></div>";
       for (tab in request.coppy.coppyjr)
       {
         row = $(trow);
         row.find('span')[0].textContent = tab;
+        row.find('img').attr('src', chrome.extension.getURL('resources/dropdown-up.png'));
+        row.find('.coppy_tab_check').attr('data-tab', tab);
         for (i in request.coppy.coppyjr[tab])
         {
           item = $(titem)
           item.find('span').text(i);
+          item.find('img').attr('src', chrome.extension.getURL('resources/edit.png'));
+          item.find('.coppy_item_check').attr('data-item', i);
+          item.find('.coppy_item_check').attr('data-parent', tab);
           item.appendTo(row.find('.coppy_bulk_item_wrap'));
         }
         row.appendTo('.coppy_bulk_list_wrap');
