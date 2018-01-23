@@ -163,40 +163,32 @@ function loadCadetListeners()
   });
 
   $(document).on('click', '#per_file_hooks', function() {
-    var $this = $(this);
-
-    if ($this.prop('checked') == true)
-    {
-      var files = $('[name="coppy_item_files"]').val().split(',');
-      var ele = $('[name="coppy_item_hooks"]');
-      ele.remove();
-      // create a new hooks input for each file and set it's data-file attr to that file
-      for (f in files)
-      {
-        ele = ele.clone();
-        ele.val('');
-        ele.attr('data-file', files[f]);
-        $('<span class="file_hook_span">' + files[f] + '</span>').insertBefore('[name="coppy_item_advaced_done"]');
-        ele.insertBefore('[name="coppy_item_advaced_done"]');
-      }
-    } else {
-      // remove the extra hooks inputs, except the first one, and remove it's data-file attr
-      var ele = $($('[name="coppy_item_hooks"]')[0]);
-      $('[name="coppy_item_hooks"]').remove();
-      $('.file_hook_span').remove();
-      ele.removeAttr('data-file');
-      ele.insertBefore('[name="coppy_item_advaced_done"]');
-    }
+    updatePerFileHooks();
   });
 
-  $(document).on('click', '.coppy_create_item', function() {
+  $(document).on('change', '[name="coppy_item_files"]', function() {
+    updatePerFileHooks();
+  });
+
+  $(document).on('click', '.coppy_create_item, .coppy_update_item', function() {
     // gather name, content, files, and hooks for the item
+    var parenttab = OPEN_COPPY_TAB;
     var name = $('input[name="coppy_item_name"]').val();
     var content = $('textarea.coppy_item_content').val();
     var files = $('[name="coppy_item_files"]').val();
     files = files.split(',');
     var hooks = $('[name="coppy_item_hooks"]').val();
     hooks = hooks.split(',');
+    var command = "newcoppyitem";
+    var oldname = "";
+
+    if ($(this).hasClass('coppy_update_item'))
+    {
+      var name = $('input[name="coppy_item_name_edit"]').val();
+      var content = $('textarea.coppy_item_content_edit').val();
+      command = "updatecoppyitem"
+      oldname = $('input[name="coppy_item_name_edit"]').data('oldname');
+    }
 
     // if they selected per file hooks, match each set of hooks to their file
     var files_hooks = {};
@@ -215,7 +207,12 @@ function loadCadetListeners()
       }
     }
 
-    chrome.runtime.sendMessage({command: "newcoppyitem", parenttab: OPEN_COPPY_TAB, name: name, data:
+    if ($(this).data('parent') != undefined)
+    {
+      parenttab = $(this).data('parent');
+    }
+
+    chrome.runtime.sendMessage({command: command, oldname: oldname, parenttab: parenttab, name: name, data:
     {description: "Desccc", content: content, file_hooks_link: files_hooks}});
   });
 
@@ -265,10 +262,11 @@ function loadCadetListeners()
     var $this = $(this);
     if ($this.prop('checked'))
     {
-    $this.parent().find('.coppy_bulk_item_wrap').find('input').prop('checked', true);
-  } else {
-    $this.parent().find('.coppy_bulk_item_wrap').find('input').prop('checked', false);
-  }
+      $this.parent().find('.coppy_bulk_item_wrap').find('input').prop('checked', true);
+    }
+    else {
+      $this.parent().find('.coppy_bulk_item_wrap').find('input').prop('checked', false);
+    }
   });
 
   $(document).on('click', '[name="confim_delete"]', function() {
@@ -282,6 +280,13 @@ function loadCadetListeners()
       tabs.push($(this).data('tab'));
     });
     chrome.extension.sendMessage({command: "deletecoppydata", items: items, tabs: tabs});
+  });
+
+  $(document).on('click', "[data-opens='coppy_item_edit']", function() {
+    var item = $(this).siblings('.coppy_item_check').data('item');
+    var parent = $(this).siblings('.coppy_item_check').data('parent');
+
+    chrome.extension.sendMessage({command: "getcoppyitem", name:item ,parenttab: parent, response: "editcoppyitem"})
   });
 
 }
@@ -349,7 +354,8 @@ function updateToolbar()
   }
   else if (menu.hasClass('cadet_coppy_menu')) {
     $('.cadet_coppy_tool').show();
-  } else if (menu.hasClass('cadet_new_coppy')) {
+    $('[name="coppy_item_advaced_done"]').attr('data-opens', 'cadet_new_coppy');
+  } else if (menu.hasClass('cadet_new_coppy') || menu.hasClass('coppy_item_edit')) {
     $('.coppy_item_tool').show();
   } else if (menu.hasClass('coppy_item_advanced'))
   {
@@ -465,6 +471,22 @@ function loadCoppyListeners()
         }
         row.appendTo('.coppy_bulk_list_wrap');
       }
+    } else if (request.command == 'editcoppyitem')
+    {
+      var menu = $('.coppy_item_edit');
+      var advmenu = $('.coppy_item_advanced');
+      var item = request.item;
+      menu.find('[name="coppy_item_name_edit"]').val(request.name);
+      menu.find('[name="coppy_item_name_edit"]').attr('data-oldname', request.name);
+      menu.find('.coppy_item_content_edit').text(item.content);
+      advmenu.find('[name="coppy_item_files"]').val(Object.keys(item.file_hooks_link).join(','));
+      advmenu.find('[name="coppy_item_advaced_done"]').attr('data-opens', 'coppy_item_edit');
+      $('#per_file_hooks').prop('checked', true);
+      updatePerFileHooks();
+      for (f in item.file_hooks_link)
+      {
+        $('[data-file="' + f + '"]').val(item.file_hooks_link[f]);
+      }
     }
   });
 }
@@ -508,4 +530,33 @@ function updateCoppyMenu(request)
   }
 
   OPEN_COPPY_TAB = request.name;
+}
+
+function updatePerFileHooks()
+{
+    var $this = $('#per_file_hooks');
+
+    if ($this.prop('checked') == true)
+    {
+      var files = $('[name="coppy_item_files"]').val().split(',');
+      var ele = $('[name="coppy_item_hooks"]');
+      ele.remove();
+      $('.file_hook_span').remove();
+      // create a new hooks input for each file and set it's data-file attr to that file
+      for (f in files)
+      {
+        ele = ele.first().clone();
+        ele.val('');
+        ele.attr('data-file', files[f]);
+        $('<span class="file_hook_span">' + files[f] + '</span>').insertBefore('[name="coppy_item_advaced_done"]');
+        ele.insertBefore('[name="coppy_item_advaced_done"]');
+      }
+    } else {
+      // remove the extra hooks inputs, except the first one, and remove it's data-file attr
+      var ele = $($('[name="coppy_item_hooks"]')[0]);
+      $('[name="coppy_item_hooks"]').remove();
+      $('.file_hook_span').remove();
+      ele.removeAttr('data-file');
+      ele.insertBefore('[name="coppy_item_advaced_done"]');
+    }
 }

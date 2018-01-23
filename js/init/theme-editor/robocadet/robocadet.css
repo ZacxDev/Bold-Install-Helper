@@ -72,6 +72,7 @@ label {
   transition: all .3s ease-out;
   text-align: center;
   overflow: auto;
+  overflow-x: hidden;
 }
 
 .cadet_action {

@@ -237,6 +237,14 @@ drag: function(event, ui) {
      <input type="button" class="cadet_menu_toggle" data-opens="coppy_bulk_edit" value="No" />
    </div>
 
+   <div class="coppy_item_edit cadet_menu" style="display:none;">
+     <h3>Name:</h3>
+     <input name="coppy_item_name_edit" type="text" placeholder="New Coppy Item" />
+     <h3>Content:</h3>
+     <textarea class="coppy_item_content_edit"></textarea>
+     <input type="button" class="cadet_menu_toggle cadet_functions coppy_update_item" data-opens="coppy_bulk_edit" name="update" value="Update" />
+   </div>
+
    <div class="cadet_docs_ro_menu cadet_menu" style="display:none;">
      <table>
        <tr>

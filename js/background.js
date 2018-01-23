@@ -84,7 +84,7 @@ function(request, sender, sendResponse) {
         {
           command = request.response;
         }
-        chrome.tabs.sendMessage(tabs[0].id, {command: command, item: data, name: request.tab});
+        chrome.tabs.sendMessage(tabs[0].id, {command: command, item: data, name: request.name});
       });
     });
   }
@@ -96,6 +96,17 @@ function(request, sender, sendResponse) {
           chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {command: 'setcoppy', coppy: data});
           });
+        });
+      });
+    });
+  }
+  else if (request.command == "updatecoppyitem")
+  {
+    updateCoppyItem(request, function()
+    {
+      getCoppyData(function(data) {
+        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
         });
       });
     });
@@ -319,6 +330,28 @@ function deleteCoppyTabs(tabs, callback)
     }
     chrome.storage.sync.set({
       coppyjr: obj
+    }, function() {
+      callback();
+    });
+  });
+}
+
+function updateCoppyItem(request, callback)
+{
+  chrome.storage.sync.get({
+    coppyjr:{}
+  }, function(data) {
+    var obj = data.coppyjr;
+    // Get the item's parent tab object and insert the new item
+    var parent = obj[request.parenttab];
+    request.data.index = Object.keys(obj[request.parenttab]).length + 1;
+    delete parent[request.oldname];
+    parent[request.name] = request.data;
+    // update the parent tab in the coppyjr object
+    obj[request.parenttab] = parent;
+    // update the coppyjr object in storage
+    chrome.storage.sync.set({
+      coppyjr : obj
     }, function() {
       callback();
     });
