@@ -398,3 +398,20 @@ img.cadet_coppy_tool {
  .execute_list_item {
    display: block;
  }
+
+.coppy_batch_done p {
+  font-size: 12px;
+  color: gray;
+}
+
+.coppy_batch_done input {
+  font-size: 12px;
+}
+
+.coppy_batch_done img {
+  display: inline;
+  padding-right: 1%;
+  vertical-align: middle;
+  width: 16px;
+  height: auto;
+}

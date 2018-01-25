@@ -491,7 +491,7 @@ function loadCoppyListeners()
       }
     } else if (request.command == "populateexecutetab")
     {
-      $('.execute_list_wrap');
+      $('.execute_list_wrap').empty();
       for (var f in request.tab)
       {
         $('<span class="execute_list_item">' + f + '</span>').appendTo('.execute_list_wrap')
@@ -513,7 +513,7 @@ function loadCoppyListeners()
       }
       else {
         //done batch callback here
-        debugger;
+        doneCoppyBatchCallback();
       }
      }
   });
@@ -606,3 +606,18 @@ function beginCoppybatch(tab)
   chrome.extension.sendMessage({command: 'getcoppytab', tab: tab, response: "injectcoppybatch"});
 }
 // send a message to do the first tab (store in var), in listener inject exectue coppy from install js, in callback from that, call this funciton again
+
+function doneCoppyBatchCallback()
+{
+  var item = "<div><img/><span></span></div>";
+  var $item;
+  $('.coppy_report_wrap').empty();
+  for (var f in COPPY_BATCH.queue)
+  {
+    $item = $(item);
+    $item.find('span').text(COPPY_BATCH.queue[f]);
+    $item.find('img').attr('src', chrome.extension.getURL('resources/checkmark_green.png'))
+    $item.appendTo('.coppy_report_wrap');
+  }
+  toggleMenu('.coppy_batch_done');
+}

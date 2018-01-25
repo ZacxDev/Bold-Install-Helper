@@ -353,14 +353,20 @@ function injectCoppyItem()
   {
     var line = "";
     var insertMap = {};
+    var asset;
+    var done_injection = false;
 
     for (f in this.item.file_hooks_link)
     {
+      if (done_injection)
+      {
+        break;
+      }
       key = f.substring(0, f.indexOf('/'));
       name = f.substring(f.indexOf('/') + 1);
       //grab the coppy item's file
       getFile(key, name, function(key, name, data) {
-        var asset = key + '\/' + name;
+        asset = key + '\/' + name;
         data = data.split('\n');
         var hooks = this.item.file_hooks_link[asset];
         if (hooks == undefined)
@@ -383,30 +389,37 @@ function injectCoppyItem()
         }
 
         // if no hooks were found, insertMap will be empty
-        if ($.isEmptyObject(insertMap))
+        if (!$.isEmptyObject(insertMap))
         {
-          return;
-        }
-
-        // iterate insertMap to see which hook is closest to start of array
-        var using_hook = Object.keys(insertMap)[0];
-        for (a in insertMap)
-        {
-          if (this.item.file_hooks_link[asset].indexOf(a) < this.item.file_hooks_link[asset].indexOf(using_hook))
+          // iterate insertMap to see which hook is closest to start of array
+          var using_hook = Object.keys(insertMap)[0];
+          for (a in insertMap)
           {
-            using_hook = a;
+            if (this.item.file_hooks_link[asset].indexOf(a) < this.item.file_hooks_link[asset].indexOf(using_hook))
+            {
+              using_hook = a;
+            }
           }
-        }
 
-        // insert the coppy item content under the preferred hook
-        data.splice(insertMap[using_hook] + 1, 0, this.item.content + '\n');
-        // join array, string is the sperator
-        pushFile(key, name, data.join('\n'), function(){
-          // send message to background script to start next injection
-          chrome.runtime.sendMessage('fflbhdlogmfhdfechoigbkgipomfcfog', {command: 'continue_coppy_batch', lastasset: asset})
-        });
+          // insert the coppy item content under the preferred hook
+          data.splice(insertMap[using_hook] + 1, 0, this.item.content + '\n');
+          //reset insertMap to prevent the next file from using the same hooks
+          insertMap = {};
+          if (!done_injection)
+          {
+            // join array, string is the sperator
+            pushFile(key, name, data.join('\n'), function(){
+              // send message to background script to start next injection
+              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset});
+              // if option is set to only insert in one file
+              done_injection = true;
+          });
+      }
+    }
       });
     }
+    // if no hooks were found in any files, got to next injection
+    chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset});
   }
   $('.coppy_dump').remove();
 }

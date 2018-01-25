@@ -194,19 +194,19 @@ drag: function(event, ui) {
          <input type="checkbox" id="per_file_hooks" />Per file hooks
        </label>
        <label>
-         <input type="checkbox" />Try to insert at end of function
+         <input type="checkbox" disabled="disabled" />Try to insert at end of function
        </label>
        <label>
-         <input type="checkbox" />Insert on new line
+         <input type="checkbox" disabled="disabled" />Insert on new line
        </label>
        <label>
-         <input type="checkbox" />Insert under all instances of hook
+         <input type="checkbox" disabled="disabled" />Insert under all instances of hook
        </label>
        <label>
-         <input type="checkbox" />Replace Hook
+         <input type="checkbox" disabled="disabled" />Replace Hook
        </label>
        <label>
-         <input type="checkbox" />Insert under all instances of all hooks
+         <input type="checkbox" disabled="disabled" />Insert under all instances of all hooks
        </label>
      </div>
    </div>
@@ -231,6 +231,13 @@ drag: function(event, ui) {
 
    <div class="coppy_bulk_edit cadet_menu" style="display:none;">
      <div class="coppy_bulk_list_wrap"></div>
+   </div>
+
+   <div class="coppy_batch_done cadet_menu" style="display:none;">
+     <h2>Injection Complete!</h2>
+     <p>The Following Files Were Changed:</p>
+     <div class="coppy_report_wrap"></div>
+     <input type="button" value="View Full Report"/>
    </div>
 
    <div class="coppy_execute_confirm cadet_menu" style="display:none;">

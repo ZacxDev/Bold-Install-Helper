@@ -27,7 +27,8 @@
     "tabs",
     "clipboardWrite",
     "storage",
-    "*://*/*"
+    "*://*/*",
+    "unlimitedStorage"
   ],
   "externally_connectable": {
   "matches": ["*://*.myshopify.com/*"]

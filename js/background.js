@@ -8,7 +8,7 @@ function(request, sender, sendResponse) {
   else if (request.command == "getapp")
   {
     // grab app string from storage
-    chrome.storage.sync.get({selected_app: ""}, function(items) {
+    chrome.storage.local.get({selected_app: ""}, function(items) {
 
       // send app string back to tab
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -27,8 +27,11 @@ function(request, sender, sendResponse) {
     chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
       getThemeEditorTabs(function(items) {
         var store = "tabs_" + tabs[0].url.substring(0, tabs[0].url.indexOf('?') != -1 ? tabs[0].url.indexOf('?') : tabs[0].url.length);
-        var tablist = items.cadet[store];
-        chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
+        if (items.cadet[store] != undefined)
+        {
+          var tablist = items.cadet[store];
+          chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
+        }
       }, tabs[0].url);
     });
   }
@@ -126,7 +129,7 @@ function(request, sender, sendResponse) {
         return;
       }
 
-        chrome.storage.sync.get({
+        chrome.storage.local.get({
           customer_lookup_option: false,
           theme_editor_buttons_option: false,
           recurring_orders_install_option: false,
@@ -217,14 +220,14 @@ $(document).ready(function() {
 
 function saveThemeEditorTabs(tabs, store)
 {
-  chrome.storage.sync.get({cadet: {}}, function(items) {
+  chrome.storage.local.get({cadet: {}}, function(items) {
     store = "tabs_" + store.substring(0, store.indexOf('?')  != -1 ? store.indexOf('?') : store.length);
     // set map tp current tabs map
     var obj = items.cadet;
     // add new tabs map
     obj[store] = tabs;
     // update tabs map
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       cadet: obj
     }, function() {
       console.log('Saved tabs');
@@ -236,7 +239,7 @@ function getThemeEditorTabs(callback, store)
 {
   store = "tabs_" + store.substring(0, store.indexOf('?') != -1 ? store.indexOf('?') : store.length);
   var obj = {};
-  chrome.storage.sync.get(obj[store], function(items) {
+  chrome.storage.local.get(obj[store], function(items) {
     callback(items);
   });
 }
@@ -244,13 +247,13 @@ function getThemeEditorTabs(callback, store)
 function createCoppyTab(name, callback)
 {
 //get coppy data
-  chrome.storage.sync.get({coppyjr: {}}, function(items) {
+  chrome.storage.local.get({coppyjr: {}}, function(items) {
     // set map to current tabs map
     var obj = items.coppyjr;
     // add new tab to map
     obj[name] = {};
     // update tabs map
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       coppyjr: obj
     }, function() {
       callback(obj[name]);
@@ -260,7 +263,7 @@ function createCoppyTab(name, callback)
 
 function createCoppyItem(request, callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr:{}
   }, function(data) {
     var obj = data.coppyjr;
@@ -271,7 +274,7 @@ function createCoppyItem(request, callback)
     // update the parent tab in the coppyjr object
     obj[request.parenttab] = parent;
     // update the coppyjr object in storage
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       coppyjr : obj
     }, function() {
       callback();
@@ -281,14 +284,14 @@ function createCoppyItem(request, callback)
 
 function saveCoppyData(data)
 {
-  chrome.storage.sync.set({
+  chrome.storage.local.set({
     coppyjr: data
   });
 }
 
 function getCoppyData(callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr: {}
   }, function(items) {
     callback(items);
@@ -297,7 +300,7 @@ function getCoppyData(callback)
 
 function getCoppyTab(tab, callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr: {}
   }, function(items) {
     callback(items.coppyjr[tab]);
@@ -306,7 +309,7 @@ function getCoppyTab(tab, callback)
 
 function getCoppyItem(name, parenttab, callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr : {}
   }, function(items) {
     var tab = items.coppyjr[parenttab];
@@ -316,7 +319,7 @@ function getCoppyItem(name, parenttab, callback)
 
 function deleteCoppyItems(items, callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr: {}
   }, function(data) {
     var obj = data.coppyjr;
@@ -326,7 +329,7 @@ function deleteCoppyItems(items, callback)
       tab = items[i];
       delete obj[tab][i];
     }
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       coppyjr: obj
     }, function() {
       callback();
@@ -336,7 +339,7 @@ function deleteCoppyItems(items, callback)
 
 function deleteCoppyTabs(tabs, callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr: {}
   }, function(data) {
     var obj = data.coppyjr;
@@ -344,7 +347,7 @@ function deleteCoppyTabs(tabs, callback)
     {
       delete obj[tabs[i]];
     }
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       coppyjr: obj
     }, function() {
       callback();
@@ -354,7 +357,7 @@ function deleteCoppyTabs(tabs, callback)
 
 function updateCoppyItem(request, callback)
 {
-  chrome.storage.sync.get({
+  chrome.storage.local.get({
     coppyjr:{}
   }, function(data) {
     var obj = data.coppyjr;
@@ -366,7 +369,7 @@ function updateCoppyItem(request, callback)
     // update the parent tab in the coppyjr object
     obj[request.parenttab] = parent;
     // update the coppyjr object in storage
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
       coppyjr : obj
     }, function() {
       callback();
