@@ -69,9 +69,14 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "getcoppytab")
   {
+    var command = "returncoppytab";
+    if (request.response != undefined)
+    {
+      command = request.response;
+    }
     getCoppyTab(request.tab, function(data) {
       chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "returncoppytab", tab: data, name: request.tab});
+        chrome.tabs.sendMessage(tabs[0].id, {command: command, tab: data, name: request.tab});
       });
     });
   }
@@ -160,6 +165,17 @@ function(request, sender, sendResponse) {
         }
         });
     }
+});
+
+// Listen for messages from the page
+chrome.runtime.onMessageExternal.addListener(
+function(request, sender, sendResponse) {
+  if (request.command == "continue_coppy_batch")
+  {
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {command: "continue_coppy_batch"});
+    });
+  }
 });
 
 function loadRecoverButtons(tab) {

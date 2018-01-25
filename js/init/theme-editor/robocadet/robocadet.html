@@ -184,7 +184,7 @@ drag: function(event, ui) {
    <div class="coppy_item_advanced cadet_menu" style="display:none;">
      <h3>Files:</h3>
      <p>Please type files in key/name format such as: templates/theme.liquid</p>
-     <input type="text" name="coppy_item_files" placeholder="templates/theme.liquid,snippets/product.liquid" />
+     <input type="text" name="coppy_item_files" placeholder="layout/theme.liquid,templates/product.liquid" />
      <h3>Hooks:</h3>
      <p>The code will be inserted under the first of these hooks that is found, can be partial, will be inserted on a new line, spaces are ignored. ex. content_for_header will insert code under {% content_for_header %}, buildCart(){ under buildCart() {</p>
      <input type="text" name="coppy_item_hooks" placeholder="content_for_header,buildCart(){" />
@@ -195,6 +195,18 @@ drag: function(event, ui) {
        </label>
        <label>
          <input type="checkbox" />Try to insert at end of function
+       </label>
+       <label>
+         <input type="checkbox" />Insert on new line
+       </label>
+       <label>
+         <input type="checkbox" />Insert under all instances of hook
+       </label>
+       <label>
+         <input type="checkbox" />Replace Hook
+       </label>
+       <label>
+         <input type="checkbox" />Insert under all instances of all hooks
        </label>
      </div>
    </div>
@@ -224,7 +236,8 @@ drag: function(event, ui) {
    <div class="coppy_execute_confirm cadet_menu" style="display:none;">
      <h3>Confirm Action</h3>
      <p>You are about to inject the following items:</p>
-     <input type="button" class="cadet_menu_toggle" data-opens="cadet_coppy_loading" name="continue" value="Continue" />
+     <div class="execute_list_wrap"></div>
+     <input type="button" class="cadet_menu_toggle cadet_execute_confirm" data-opens="cadet_coppy_loading" name="continue" value="Continue" />
    </div>
 
    <div class="cadet_coppy_loading cadet_menu" style="display:none;">
@@ -298,6 +311,7 @@ drag: function(event, ui) {
  </div>
 </div>
 <xmp class="cadet_text_dump" style="display: none;"></xmp>
+<input type="text" class="coppy_trigger" style="display:none !important;" />
 <div class="cadet_peek">
   <img/>
 </div>

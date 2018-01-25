@@ -29,6 +29,9 @@
     "storage",
     "*://*/*"
   ],
+  "externally_connectable": {
+  "matches": ["*://*.myshopify.com/*"]
+},
   "content_scripts": [
   {
     "matches": ["*://ro.boldapps.net/*/*/recurring_settings/product_recurring*",

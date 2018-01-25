@@ -1,4 +1,5 @@
 var OPEN_COPPY_TAB;
+var COPPY_BATCH = {};
 
 $(document).ready(function() {
 
@@ -289,6 +290,14 @@ function loadCadetListeners()
     chrome.extension.sendMessage({command: "getcoppyitem", name:item ,parenttab: parent, response: "editcoppyitem"})
   });
 
+  $(document).on('click', '[data-opens="coppy_execute_confirm"]', function() {
+    chrome.extension.sendMessage({command: "getcoppytab", tab:OPEN_COPPY_TAB , response: "populateexecutetab"});
+  });
+
+  $(document).on('click', '.cadet_execute_confirm', function() {
+    beginCoppybatch(OPEN_COPPY_TAB);
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -441,14 +450,7 @@ function loadCoppyListeners()
       $('.cadet_text_dump').hide();
     } else if (request.command == "execute_coppy_item")
     {
-      // Dump the item json into dom so that install.js can grab it
-      var dump = document.createElement('xmp');
-      dump.classList.add('coppy_dump');
-      dump.textContent = JSON.stringify(request.item);
-      document.body.appendChild(dump);
-      injectScript(function() {
-        injectCoppyItem();
-      });
+      executeCoppyItem(request.item);
     } else if (request.command == "returncoppybulk")
     {
       $('.coppy_bulk_list_wrap').empty();
@@ -487,7 +489,33 @@ function loadCoppyListeners()
       {
         $('[data-file="' + f + '"]').val(item.file_hooks_link[f]);
       }
-    }
+    } else if (request.command == "populateexecutetab")
+    {
+      $('.execute_list_wrap');
+      for (var f in request.tab)
+      {
+        $('<span class="execute_list_item">' + f + '</span>').appendTo('.execute_list_wrap')
+      }
+    } else if (request.command == "injectcoppybatch")
+    {
+        COPPY_BATCH.queue = Object.keys(request.tab);
+        COPPY_BATCH.index = 0;
+        COPPY_BATCH.max = COPPY_BATCH.queue.length;
+        COPPY_BATCH.tab = request.tab;
+        executeCoppyItem(request.tab[COPPY_BATCH.queue[0]]);
+
+     }else if (request.command == 'continue_coppy_batch')
+     {
+       if (COPPY_BATCH.index + 1 < COPPY_BATCH.max)
+       {
+         COPPY_BATCH.index++;
+        executeCoppyItem(COPPY_BATCH.tab[COPPY_BATCH.queue[COPPY_BATCH.index]]);
+      }
+      else {
+        //done batch callback here
+        debugger;
+      }
+     }
   });
 }
 
@@ -560,3 +588,21 @@ function updatePerFileHooks()
       ele.insertBefore('[name="coppy_item_advaced_done"]');
     }
 }
+
+function executeCoppyItem(item)
+{
+  // Dump the item json into dom so that install.js can grab it
+  var dump = document.createElement('xmp');
+  dump.classList.add('coppy_dump');
+  dump.textContent = JSON.stringify(item);
+  document.body.appendChild(dump);
+  injectScript(function() {
+    injectCoppyItem();
+  });
+}
+
+function beginCoppybatch(tab)
+{
+  chrome.extension.sendMessage({command: 'getcoppytab', tab: tab, response: "injectcoppybatch"});
+}
+// send a message to do the first tab (store in var), in listener inject exectue coppy from install js, in callback from that, call this funciton again

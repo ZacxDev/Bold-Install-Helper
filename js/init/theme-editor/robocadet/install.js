@@ -362,11 +362,15 @@ function injectCoppyItem()
       getFile(key, name, function(key, name, data) {
         var asset = key + '\/' + name;
         data = data.split('\n');
+        var hooks = this.item.file_hooks_link[asset];
+        if (hooks == undefined)
+        {
+          return;
+        }
         // iterate file's data
         for (var i = 0; i < data.length; i++)
         {
           line = data[i];
-          var hooks = this.item.file_hooks_link[asset];
           //look for hooks in the file
           for (var h = 0; h < hooks.length; h++)
           {
@@ -397,7 +401,10 @@ function injectCoppyItem()
         // insert the coppy item content under the preferred hook
         data.splice(insertMap[using_hook] + 1, 0, this.item.content + '\n');
         // join array, string is the sperator
-        pushFile(key, name, data.join('\n'), function(){});
+        pushFile(key, name, data.join('\n'), function(){
+          // send message to background script to start next injection
+          chrome.runtime.sendMessage('fflbhdlogmfhdfechoigbkgipomfcfog', {command: 'continue_coppy_batch', lastasset: asset})
+        });
       });
     }
   }
