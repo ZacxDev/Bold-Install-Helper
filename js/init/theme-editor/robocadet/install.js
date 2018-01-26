@@ -347,7 +347,7 @@ function injectCoppyItem()
   var data = $('.coppy_dump').text();
   this.item = JSON.parse(data);
   var per_file_hooks = this.item.file_hooks_link != undefined;
-
+console.log('starting injection ')
   var key, name;
   if (per_file_hooks)
   {
@@ -355,6 +355,7 @@ function injectCoppyItem()
     var insertMap = {};
     var asset;
     var done_injection = false;
+    var finished_all_iteration = false;
 
     for (f in this.item.file_hooks_link)
     {
@@ -366,6 +367,7 @@ function injectCoppyItem()
       name = f.substring(f.indexOf('/') + 1);
       //grab the coppy item's file
       getFile(key, name, function(key, name, data) {
+        console.log(key + "/" + name);
         asset = key + '\/' + name;
         data = data.split('\n');
         var hooks = this.item.file_hooks_link[asset];
@@ -409,17 +411,24 @@ function injectCoppyItem()
           {
             // join array, string is the sperator
             pushFile(key, name, data.join('\n'), function(){
+              console.log(key + "/" + name);
               // send message to background script to start next injection
-              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset});
+              chrome.runtime.sendMessage('fflbhdlogmfhdfechoigbkgipomfcfog', {command: 'continue_coppy_batch', lastasset: asset});
               // if option is set to only insert in one file
               done_injection = true;
           });
       }
     }
+    // no hooks
+    else {
+      if (finished_all_iteration)
+      {
+        chrome.runtime.sendMessage('fflbhdlogmfhdfechoigbkgipomfcfog', {command: 'continue_coppy_batch', lastasset: asset});
+      }
+    }
       });
     }
-    // if no hooks were found in any files, got to next injection
-    chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset});
+    finished_all_iteration = true;
   }
   $('.coppy_dump').remove();
 }

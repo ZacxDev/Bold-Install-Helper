@@ -450,6 +450,9 @@ function loadCoppyListeners()
       $('.cadet_text_dump').hide();
     } else if (request.command == "execute_coppy_item")
     {
+      COPPY_BATCH.queue = [request.name];
+      COPPY_BATCH.index = 0;
+      COPPY_BATCH.max = COPPY_BATCH.queue.length;
       executeCoppyItem(request.item);
     } else if (request.command == "returncoppybulk")
     {
