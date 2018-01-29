@@ -368,16 +368,26 @@ function injectCoppyItem()
     var databackup;
     var done_injection = false;
     var finished_all_iteration = false;
+    var files_hooks_index = 0;
+    var f;
 
-    for (f in this.item.file_hooks_link)
-    {
+    //for (f in this.item.file_hooks_link)
+    //{
+    var contine_files_hooks = function() {
+      if (files_hooks_index >= this.item.file_hooks_link.length)
+      {
+        console.log('saying injection failed - ' + asset)
+        chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: false});
+        return;
+      }
+      f = Object.keys(this.item.file_hooks_link)[files_hooks_index];
       if (done_injection)
       {
-        break;
+        return;
       }
       key = f.substring(0, f.indexOf('/'));
       name = f.substring(f.indexOf('/') + 1);
-      var search_and_push_asset = function(key, name, data) {
+      var search_and_push_asset = function(key, name, data, callback) {
         databackup = data;
         console.log("[Install Bot] Starting " + key + "/" + name + " injection..");
         asset = key + '\/' + name;
@@ -403,6 +413,7 @@ function injectCoppyItem()
             }
           }
         }
+        console.log('done searching ' + asset)
 
         // if no hooks were found, insertMap will be empty
         if (!$.isEmptyObject(insertMap))
@@ -431,30 +442,33 @@ function injectCoppyItem()
             pushFile(key, name, data, function(){
               console.log("[Install Bot] Done injecting " + key + "/" + name);
               // send message to background script to start next injection
-              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup});
+              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: true});
               // if option is set to only insert in one file
               done_injection = true;
+              callback();
           });
       }
-    }
-    // no hooks
-    else {
-      if (finished_all_iteration)
-      {
-        chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup});
-      }
+    } else {
+      callback();
     }
   }
   //grab the coppy item's file
   if (file_cache[key + '\/' + name] == undefined) {
     getFile(key, name, function(key, name, data) {
-      search_and_push_asset(key, name, data);
+      search_and_push_asset(key, name, data, function() {
+        files_hooks_index++;
+        contine_files_hooks();
+      });
         });
     } else {
-      search_and_push_asset(key, name, file_cache[key + '\/' + name]);
+      search_and_push_asset(key, name, file_cache[key + '\/' + name], function() {
+        files_hooks_index++;
+        contine_files_hooks();
+      });
     }
-    }
-    finished_all_iteration = true;
+    //}
+  }
+    contine_files_hooks();
   }
   $('.coppy_dump').remove();
 }

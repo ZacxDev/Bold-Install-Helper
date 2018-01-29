@@ -477,6 +477,7 @@ function loadCoppyListeners()
     {
       COPPY_BATCH.queue = [request.name];
       COPPY_BATCH.backup = {};
+      COPPY_BATCH.report = {};
       COPPY_BATCH.index = 0;
       COPPY_BATCH.max = COPPY_BATCH.queue.length;
       executeCoppyItem(request.item);
@@ -529,6 +530,7 @@ function loadCoppyListeners()
     {
         COPPY_BATCH.queue = Object.keys(request.tab);
         COPPY_BATCH.backup = {};
+        COPPY_BATCH.report = {};
         COPPY_BATCH.index = 0;
         COPPY_BATCH.max = COPPY_BATCH.queue.length;
         COPPY_BATCH.tab = request.tab;
@@ -537,6 +539,7 @@ function loadCoppyListeners()
      }else if (request.command == 'continue_coppy_batch')
      {
        COPPY_BATCH.backup[request.lastasset] = request.assetbackup;
+       COPPY_BATCH.report[COPPY_BATCH.queue[COPPY_BATCH.index]] = request.inserted;
        if (COPPY_BATCH.index + 1 < COPPY_BATCH.max)
        {
          COPPY_BATCH.index++;
@@ -649,12 +652,19 @@ function doneCoppyBatchCallback()
 {
   var item = "<div><img/><span></span></div>";
   var $item;
+  var asset;
   $('.coppy_report_wrap').empty();
   for (var f in COPPY_BATCH.queue)
   {
+    asset = COPPY_BATCH.queue[f];
     $item = $(item);
-    $item.find('span').text(COPPY_BATCH.queue[f]);
-    $item.find('img').attr('src', chrome.extension.getURL('resources/checkmark_green.png'))
+    $item.find('span').text(asset);
+    if (COPPY_BATCH.report[asset])
+    {
+      $item.find('img').attr('src', chrome.extension.getURL('resources/checkmark_green.png'));
+    } else {
+      $item.find('img').attr('src', chrome.extension.getURL('resources/failed.png'));
+    }
     $item.appendTo('.coppy_report_wrap');
   }
   toggleMenu('.coppy_batch_done');
