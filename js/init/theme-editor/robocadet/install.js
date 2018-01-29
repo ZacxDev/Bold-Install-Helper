@@ -36,9 +36,16 @@ function getFile(key, name, callback)
   var url = id + "/assets?asset%5Bkey%5D=" + key + "%2F" + name;
 
   $.get(id + '/assets.json?asset[key]=' + key + '/' + name + '&theme_id=' + id, function(data) {
-    file_history[name] = data.asset.value;
+    file_history[key + "\/" + name] = data.asset.value;
     callback(key, name, data.asset.value);
   });
+}
+
+function pushAsset(asset, data, callback)
+{
+  key = asset.substring(0, asset.indexOf('/'));
+  name = asset.substring(asset.indexOf('/') + 1);
+  pushFile(key, name, data, callback);
 }
 
 function pushFile(key, name, data, callback)
@@ -335,6 +342,7 @@ function GetCurrentFileName()
 
 function updateUndoButton()
 {
+  return;
   var file = document.querySelector('.theme-asset-name strong').textContent;
   if (file_history[file] != undefined)
     document.querySelector('.cadet_undo').style.display = 'inline';
@@ -342,18 +350,22 @@ function updateUndoButton()
     document.querySelector('.cadet_undo').style.display = 'none';
 }
 
+// file cache is used to store assets locally incase another item in batch needs the same file. (must be global so that other injections can access data inserted from old ones)
+var file_cache = {};
 function injectCoppyItem()
 {
   var data = $('.coppy_dump').text();
   this.item = JSON.parse(data);
   var per_file_hooks = this.item.file_hooks_link != undefined;
-console.log('starting injection ')
+  console.log('[Install Bot] Starting injection..');
   var key, name;
   if (per_file_hooks)
   {
     var line = "";
     var insertMap = {};
     var asset;
+    // databackup is the original file so they can rollback if needed
+    var databackup;
     var done_injection = false;
     var finished_all_iteration = false;
 
@@ -365,10 +377,12 @@ console.log('starting injection ')
       }
       key = f.substring(0, f.indexOf('/'));
       name = f.substring(f.indexOf('/') + 1);
-      //grab the coppy item's file
-      getFile(key, name, function(key, name, data) {
-        console.log(key + "/" + name);
+      var search_and_push_asset = function(key, name, data) {
+        databackup = data;
+        console.log("[Install Bot] Starting " + key + "/" + name + " injection..");
         asset = key + '\/' + name;
+        file_cache[asset] = data;
+
         data = data.split('\n');
         var hooks = this.item.file_hooks_link[asset];
         if (hooks == undefined)
@@ -404,16 +418,21 @@ console.log('starting injection ')
           }
 
           // insert the coppy item content under the preferred hook
-          data.splice(insertMap[using_hook] + 1, 0, this.item.content + '\n');
+          data.splice(insertMap[using_hook] + 1, 0, this.item.content);
+          data = data.join('\n');
           //reset insertMap to prevent the next file from using the same hooks
           insertMap = {};
           if (!done_injection)
           {
-            // join array, string is the sperator
-            pushFile(key, name, data.join('\n'), function(){
-              console.log(key + "/" + name);
+            file_cache[asset] = data;
+            console.log('storing asset')
+            // update the code mirror if they have the file open
+            updateCodeMirror(key, name, data);
+            // push updated file
+            pushFile(key, name, data, function(){
+              console.log("[Install Bot] Done injecting " + key + "/" + name);
               // send message to background script to start next injection
-              chrome.runtime.sendMessage('fflbhdlogmfhdfechoigbkgipomfcfog', {command: 'continue_coppy_batch', lastasset: asset});
+              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup});
               // if option is set to only insert in one file
               done_injection = true;
           });
@@ -423,12 +442,54 @@ console.log('starting injection ')
     else {
       if (finished_all_iteration)
       {
-        chrome.runtime.sendMessage('fflbhdlogmfhdfechoigbkgipomfcfog', {command: 'continue_coppy_batch', lastasset: asset});
+        chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup});
       }
     }
-      });
+  }
+  //grab the coppy item's file
+  console.log('checking asset')
+  if (file_cache[key + '\/' + name] == undefined) {
+    getFile(key, name, function(key, name, data) {
+      search_and_push_asset(key, name, data);
+        });
+    } else {
+      search_and_push_asset(key, name, file_cache[key + '\/' + name]);
+    }
     }
     finished_all_iteration = true;
   }
   $('.coppy_dump').remove();
+}
+
+function updateCodeMirror(key, name, data)
+{
+  // if they have the file open, click it and update the content after a timeout (to make sure it's open)
+  if ($('.template-editor-tabs li:contains(' + name + ')').length > 0)
+  {
+    $('[data-asset-key="' + key + "\/" + name + '"]').click();
+    $('.CodeMirror')[0].CodeMirror.setValue(data);
+  }
+}
+
+// this function sends the message to dump the last coppy batch into the dom
+function undoLastInstallBotAction()
+{
+  console.log('[Install Bot] Begining injection reversal');
+  chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'undo_last_coppy_batch'});
+}
+
+// this function pushes the old file data to undo the coppy batch
+function undoLastCoppy()
+{
+  var batch = JSON.parse($('.coppy_batch_undo').text());
+  for (f in batch)
+  {
+    console.log('[Install Bot] Reversing ' + f + "..");
+    pushAsset(f, batch[f], function(key, name){
+      $('.coppy_batch_undo').remove();
+      updateCodeMirror(key, name, batch[f]);
+      console.log('[Install Bot] Done ' + f);
+    });
+  }
+  console.log('[Install Bot] Injection reversal complete!');
 }

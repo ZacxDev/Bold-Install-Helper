@@ -298,6 +298,10 @@ function loadCadetListeners()
     beginCoppybatch(OPEN_COPPY_TAB);
   });
 
+  $(document).on('click', '.coppy_reverse_injection', function() {
+    undoLastCoppyBatch();
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -451,6 +455,7 @@ function loadCoppyListeners()
     } else if (request.command == "execute_coppy_item")
     {
       COPPY_BATCH.queue = [request.name];
+      COPPY_BATCH.backup = {};
       COPPY_BATCH.index = 0;
       COPPY_BATCH.max = COPPY_BATCH.queue.length;
       executeCoppyItem(request.item);
@@ -502,6 +507,7 @@ function loadCoppyListeners()
     } else if (request.command == "injectcoppybatch")
     {
         COPPY_BATCH.queue = Object.keys(request.tab);
+        COPPY_BATCH.backup = {};
         COPPY_BATCH.index = 0;
         COPPY_BATCH.max = COPPY_BATCH.queue.length;
         COPPY_BATCH.tab = request.tab;
@@ -509,6 +515,7 @@ function loadCoppyListeners()
 
      }else if (request.command == 'continue_coppy_batch')
      {
+       COPPY_BATCH.backup[request.lastasset] = request.assetbackup;
        if (COPPY_BATCH.index + 1 < COPPY_BATCH.max)
        {
          COPPY_BATCH.index++;
@@ -518,7 +525,10 @@ function loadCoppyListeners()
         //done batch callback here
         doneCoppyBatchCallback();
       }
-     }
+    } else if (request.command == "undo_last_coppy_batch")
+    {
+      undoLastCoppyBatch();
+    }
   });
 }
 
@@ -623,4 +633,14 @@ function doneCoppyBatchCallback()
     $item.appendTo('.coppy_report_wrap');
   }
   toggleMenu('.coppy_batch_done');
+  console.log('[Install Bot] %cInjection Complete! %cIf you need to rollback these changes use the undoLastInstallBotAction() function.', 'color:green;font-weight:700;', 'color:black;font-weight:100;');
+  console.log('[Install Bot] If you have any issues or find any bugs, please Slack Zach Lowden the details.')
+}
+
+function undoLastCoppyBatch()
+{
+  $('<xmp class="coppy_batch_undo">' + JSON.stringify(COPPY_BATCH.backup) + '</xmp>').appendTo('body');
+  injectScript(function() {
+    undoLastCoppy();
+  });
 }

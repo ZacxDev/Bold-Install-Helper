@@ -176,7 +176,12 @@ function(request, sender, sendResponse) {
   if (request.command == "continue_coppy_batch")
   {
     chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {command: "continue_coppy_batch"});
+      // forward request map to content script
+      chrome.tabs.sendMessage(tabs[0].id, request);
+    });
+  } else if (request.command == "undo_last_coppy_batch") {
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, request);
     });
   }
 });

@@ -301,11 +301,12 @@ input[name*="coppy"] {
 .coppy_item_content {
   font-size: 12px;
   height: auto;
-  min-height: 20px;
+  min-height: 80px;
   background-color: rgba(0,0,0,0);
   color: red;
   border-color: rgba(255,0,0,0.2);
   width: 80%;
+  white-space:  nowrap;
 }
 
 img.cadet_coppy_tool {
@@ -406,6 +407,7 @@ img.cadet_coppy_tool {
 
 .coppy_batch_done input {
   font-size: 12px;
+  display:  inline-block;
 }
 
 .coppy_batch_done img {
