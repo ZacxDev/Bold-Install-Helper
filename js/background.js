@@ -37,7 +37,7 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "newcoppytab")
   {
-    createCoppyTab(request.name, function(tab)
+    createCoppyTab(request, function(tab)
     {
     //  getCoppyData(function(data) {
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
@@ -249,14 +249,14 @@ function getThemeEditorTabs(callback, store)
   });
 }
 
-function createCoppyTab(name, callback)
+function createCoppyTab(tab, callback)
 {
 //get coppy data
   chrome.storage.local.get({coppyjr: {}}, function(items) {
     // set map to current tabs map
     var obj = items.coppyjr;
     // add new tab to map
-    obj[name] = {};
+    obj[tab.name] = tab.data != undefined ? tab.data : {};
     // update tabs map
     chrome.storage.local.set({
       coppyjr: obj

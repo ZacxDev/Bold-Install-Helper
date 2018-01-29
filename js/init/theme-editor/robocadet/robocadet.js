@@ -143,7 +143,10 @@ function loadCadetListeners()
   var target = document.querySelector('.theme-asset-name strong');
   var observer = new MutationObserver(function(mutations) {
     injectScript(function() {
-      updateUndoButton();
+      if (typeof updateUndoButton == "function")
+      {
+        updateUndoButton();
+      }
     });
   });
   observer.observe(target, { childList: true });
@@ -300,6 +303,24 @@ function loadCadetListeners()
 
   $(document).on('click', '.coppy_reverse_injection', function() {
     undoLastCoppyBatch();
+  });
+
+  $(document).on('click', '[data-opens="coppy_export"]', function() {
+    var tab = $('.coppy_tab_check:checked').first().data('tab');
+    chrome.extension.sendMessage({command: "getcoppytab", tab:tab , response: "populateexport"});
+  });
+
+  $(document).on('click', '.coppy_copy_export', function() {
+    document.querySelector('.coppy_export_dump').select();
+    document.execCommand('Copy');
+  });
+
+  $(document).on('click', '.coppy_trigger_import', function() {
+    var obj = JSON.parse($('.coppy_import_dump').val());
+    if (obj.tab != undefined)
+    {
+      chrome.runtime.sendMessage({command: "newcoppytab", name: obj.name, data: obj.tab});
+    }
   });
 
 }
@@ -528,6 +549,10 @@ function loadCoppyListeners()
     } else if (request.command == "undo_last_coppy_batch")
     {
       undoLastCoppyBatch();
+    } else if (request.command == "populateexport")
+    {
+      delete request.command;
+      $('.coppy_export_dump').text(JSON.stringify(request));
     }
   });
 }
@@ -634,7 +659,11 @@ function doneCoppyBatchCallback()
   }
   toggleMenu('.coppy_batch_done');
   console.log('[Install Bot] %cInjection Complete! %cIf you need to rollback these changes use the undoLastInstallBotAction() function.', 'color:green;font-weight:700;', 'color:black;font-weight:100;');
-  console.log('[Install Bot] If you have any issues or find any bugs, please Slack Zach Lowden the details.')
+  console.log('[Install Bot] If you have any issues or find any bugs, please Slack Zach Lowden the details.');
+  // clear file cache so that next batch won't use it
+  injectScript(function() {
+    file_cache = {};
+  });
 }
 
 function undoLastCoppyBatch()

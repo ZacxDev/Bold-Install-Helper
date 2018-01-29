@@ -425,7 +425,6 @@ function injectCoppyItem()
           if (!done_injection)
           {
             file_cache[asset] = data;
-            console.log('storing asset')
             // update the code mirror if they have the file open
             updateCodeMirror(key, name, data);
             // push updated file
@@ -447,7 +446,6 @@ function injectCoppyItem()
     }
   }
   //grab the coppy item's file
-  console.log('checking asset')
   if (file_cache[key + '\/' + name] == undefined) {
     getFile(key, name, function(key, name, data) {
       search_and_push_asset(key, name, data);

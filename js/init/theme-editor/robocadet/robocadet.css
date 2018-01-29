@@ -285,7 +285,9 @@ input[name*="coppy"] {
   width: auto;
   margin-right:  3%;
   margin-top: 2%;
-  max-width:  100px;
+  max-width: 120px;
+  max-height:  20px;
+  white-space:  nowrap;
   overflow:  hidden;
 }
 
@@ -298,7 +300,7 @@ input[name*="coppy"] {
   display: inline;
 }
 
-.coppy_item_content {
+.cadet_menu textarea {
   font-size: 12px;
   height: auto;
   min-height: 80px;
