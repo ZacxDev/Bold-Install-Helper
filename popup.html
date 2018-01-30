@@ -6,39 +6,24 @@
  -->
 <html>
   <head>
-
-    <title>Robo Test Extension</title>
+    <title>Installl Bot</title>
     <style>
       body {
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
         font-size: 100%;
       }
       #status {
-        /* avoid an excessively wide status text */
         white-space: pre;
         text-overflow: ellipsis;
         overflow: hidden;
         max-width: 800px;
       }
     </style>
-
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-     -->
   </head>
   <body>
     <div class="ih-logo">
       <img src="resources/bold-install-helper-icon128.png" />
       <h1>Bold Install Helper</h1>
-      <select class="app_selector">
-        <option value="ro" >Recurring Orders</option>
-        <option value="po" >Product Options</option>
-        <option value="qb" >Quantity Breaks</option>
-      </select>
-      <button id="options_button" type="button">Options</button>
     </div>
     <link rel="stylesheet" type="text/css" href="popup.css">
     <script src="js/jquery-3.2.1.min.js"></script>

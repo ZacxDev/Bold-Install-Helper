@@ -55,14 +55,6 @@ function loadCadetListeners()
     });
   });
 
-  $(document).on('click', 'a.ro_cartpage', function() {
-    doROCartInstall();
-    document.querySelector('[data-opens="cadet_report_wrap"]').style.display = "inline";
-  });
-  $(document).on('click', 'a.ro_ajax', function() {
-    doROAjaxInstalll();
-    document.querySelector('[data-opens="cadet_report_wrap"]').style.display = "inline";
-  });
   $(document).on('click', '.cadet_close', function() {
     $('.cadet_modal').hide();
     $('.cadet_peek').show();
@@ -139,19 +131,6 @@ function loadCadetListeners()
       $('.cadet_snip_table').show();
     }
   });
-
-  var target = document.querySelector('.theme-asset-name strong');
-  var observer = new MutationObserver(function(mutations) {
-    injectScript(function() {
-      if (typeof updateUndoButton == "function")
-      {
-        updateUndoButton();
-      }
-    });
-  });
-  observer.observe(target, { childList: true });
-  var pathChanged = false;
-
 
   window.onbeforeunload = function() {
       saveOpenTabs();

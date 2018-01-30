@@ -1,133 +1,18 @@
 
 $(document).ready(function() {
-  //loadThemeEditor();
-  //loadThemeEditorListeners();
+
   // check customers/account.liquid for manage subs button
   getFile("templates", "customers/account.liquid", checkManageSubs);
 
   openSavedTabs();
 });
 
-var bhAjax;
-var bhInstallMenu;
-var bhROCartInstall, popup;
-var bhCacheBusterToggle;
-function loadThemeEditor()
-{
-  // button to open ajax menu
-  bhAjax = $('.bh-ajax');
-  if (bhAjax.length === 0)
-    {
-   bhAjax = $('<input type="button" value="RO Ajax" class="btn bh-btn bh-ajax" />');
-   bhAjax.prependTo($('.theme-asset-actions'));
-  }
-
-//ajax install menu
-  bhAjaxMenu = $('.bh-ajax-menu');
-  if (bhAjaxMenu.length === 0)
-    {
-   bhAjaxMenu = $('<div class="bh-ajax-menu" />');
-   bhAjaxMenu.appendTo($('body'));
-  }
-
-  //ajax button
-  bhAjaxBtn = $('.bh-ajax-btn');
-  if (bhAjaxBtn.length === 0)
-    {
-   bhAjaxBtn = $('<input type="button" value="Narrative" class="btn bh-ajax-btn" />');
-   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
-   bhAjaxBtn = bhAjaxBtn.clone().attr('disabled', 'disabled');
-   bhAjaxBtn.val('Supply');
-   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
-   bhAjaxBtn = bhAjaxBtn.clone();
-   bhAjaxBtn.val('Turbo');
-   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
-   bhAjaxBtn = bhAjaxBtn.clone().removeAttr('disabled');;
-   bhAjaxBtn.val('Genaric');
-   bhAjaxBtn.appendTo($('.bh-ajax-menu'));
-  }
-
-
-//ro cart install btn
- bhROCartInstall = $('.bh-ro-cart');
- if (bhROCartInstall.length === 0)
-   {
-  bhROCartInstall = $('<input type="button" value="RO Cart Install" class="btn bh-btn bh-ro-cart" />');
-  bhROCartInstall.prependTo($('.theme-asset-actions'));
- }
-
-//ro cart code popup
- var popup = $('.bh-codepopup');
- if (popup.length === 0)
-   {
-     var popup = $('<div id="text-select" class="bh-codepopup"><xmp></xmp></div>')
-     popup.appendTo($('.file-overview'));
-   }
-
-// ro cart install log
-   var log = $('.bh-rocart-log');
-   if (log.length === 0)
-     {
-       var log = $('<div class="bh-rocart-log"></div>')
-       log.prependTo($('.theme-asset-actions'));
-     }
-
-// check if a cart file is open to append ro-cart btn
-  // if ($.inArray($('.theme-asset-name strong').text(), cartFiles) != -1)
-  // {
-  //     bhROCartInstall.css('display', 'block');
-  // } else {
-  //   bhROCartInstall.css('display', 'none');
-  // }
-
-}
-
-function loadThemeEditorListeners() {
-
-  //ro-cart install btn listener
-  $(document).on('click', '.bh-ro-cart', function() {
-    doROCartInstall();
-  });
-
-  //ajax btn listener
-     $(document).on('click', '.bh-ajax', function(e) {
-      $('.bh-ajax-menu').css('display','block');
-      e.stopPropagation();
-    });
-
-    $(document).on('click', '.bh-ajax-menu', function(e) {
-      e.stopPropagation();
-    });
-
-    $(document).on('click', '.bh-ajax-btn', function(e) {
-      if ($(this).val() === "Narrative")
-        getFile('assets', 'theme.min.js.liquid', narrativeAjaxThemeMinJs);
-      if ($(this).val() === "Genaric")
-        getFile('assets', 'theme.min.js.liquid', buildCartIndex);
-    });
-
-    //hide menus when click html
-    $('html').click(function()
-    {
-        $('.bh-codepopup').css('display', 'none');
-        $('.bh-rocart-log').css('display', 'none');
-        $('.bh-ajax-menu').css('display', 'none');
-    });
-
-}
-
 function checkManageSubs(data) {
-
-  //var lines = parseValueFromXML(data).split("\n");
-
-//  for (var i = 0; i < lines.length; ++i)
-//  {
     if (data.indexOf('/tools/checkout/front_end/login') != -1)
     {
       // if we find the code in the file, don't highlight
       return;
     }
-  //}
   //if we don't find it, then highlight and append the clipboard button
 
   $('a[data-asset-key="templates/customers/account.liquid"]').css('background-color', 'rgba(255, 0, 0, 0.5)');
@@ -152,45 +37,6 @@ function checkManageSubs(data) {
         document.execCommand('copy');
         $('.clipboard-hover').css('display', 'none');
       });
-}
-
-function doROCartInstall()
-{
-  injectScript(function() {
-    var kv, key, name, tar = $('.theme-asset-name strong').text();
-    kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
-
-    key = kv.substring(0, kv.indexOf('/'));
-    value = kv.substring(kv.indexOf('/') + 1, kv.length);
-    getFile(key, value, cartInstall);
-  });
-}
-
-function doROAjaxInstalll()
-{
-    injectScript(function() {
-      var kv, key, value, tar = $('.theme-asset-name strong').text();
-      kv = $('.ppb li:contains(' + tar + ') a').attr('data-asset-key');
-
-      key = kv.substring(0, kv.indexOf('/'));
-      value = kv.substring(kv.indexOf('/') + 1, kv.length);
-      getFile(key, value, narrativeAjaxThemeMinJs);
-    });
-}
-
-function undoCadetAction()
-{
-  injectScript(function() {
-    var name = GetCurrentFileName();
-    if (file_history[name] != undefined)
-    {
-      pushFile(GetCurrentFileKey(), name, file_history[name], function(key, name)
-      {
-        refreshCodeTab(key, name);
-        file_history[name] = undefined;
-      });
-    }
-  });
 }
 
 function saveOpenTabs()

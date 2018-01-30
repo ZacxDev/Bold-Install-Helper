@@ -4,7 +4,6 @@
   "name": "Install Helper",
   "description": "Get installs done faster",
   "version": "1.1.18",
-  "options_page": "options.html",
   "web_accessible_resources": ["js/init/theme-editor/robocadet/robocadet.html", "js/init/theme-editor/robocadet/style/*",
      "resources/*", "js/init/theme-editor/robocadet/install.js", "snippets/*"],
   "background":
@@ -45,7 +44,7 @@
 "*://*.myshopify.com/admin/apps/recurring-orders/s/*/subscription_box_settings/box_settings*",
 "file:///E:/File%20Dump/Bold%20Commerce%20Admin%20-.html"],
     "css": ["style.css"],
-    "js": ["js/jquery-3.2.1.min.js", "js/loader.js", "js/script.js"],
+    "js": ["js/jquery-3.2.1.min.js", "js/script.js"],
     "all_frames": true
   }
 ]

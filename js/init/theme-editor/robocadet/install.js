@@ -340,16 +340,6 @@ function GetCurrentFileName()
   return value;
 }
 
-function updateUndoButton()
-{
-  return;
-  var file = document.querySelector('.theme-asset-name strong').textContent;
-  if (file_history[file] != undefined)
-    document.querySelector('.cadet_undo').style.display = 'inline';
-  else
-    document.querySelector('.cadet_undo').style.display = 'none';
-}
-
 // file cache is used to store assets locally incase another item in batch needs the same file. (must be global so that other injections can access data inserted from old ones)
 var file_cache = {};
 function injectCoppyItem()
@@ -374,7 +364,7 @@ function injectCoppyItem()
     //for (f in this.item.file_hooks_link)
     //{
     var contine_files_hooks = function() {
-      if (files_hooks_index >= this.item.file_hooks_link.length)
+      if (files_hooks_index >= Object.keys(this.item.file_hooks_link).length)
       {
         chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: false});
         return;

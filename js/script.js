@@ -1,35 +1,13 @@
 
 // This file is used for global stuff as it is loaded everywhere
 
-//////////////////
-// SCANNER DATA //
-//////////////////
-
-
-//////////////////////
-// SCANNER DATA END //
-//////////////////////
-
 
 var clicked = false;
 
 $( document ).ready(function() {
   console.log('ready');
+  chrome.runtime.sendMessage({command: "init"});
 
-  // chrome.runtime.onMessage.addListener(
-  //   function(request, sender, sendResponse) {
-  //     console.log(sender.tab ?
-  //                 "from a content script:" + sender.tab.url :
-  //                 "from the extension");
-  //   });
-
-  chrome.runtime.sendMessage({command: "init"}, function(response) {
-    //console.log(response.url);
-  });
-
-////////////
-//end of ready
-/////////////
 });
 
 function fillBAB()
@@ -88,19 +66,6 @@ function injectScript(func, param)
 
   (document.head||document.documentElement).appendChild(script);
 //  script.remove();
-}
-
-function parseValueFromXML(data)
-{
-  if (data == undefined)
-    return '';
-
-  var value = '';
-  var code = '';
-  var parser = new DOMParser();
-  value = parser.parseFromString(data, 'text/xml');
-  code = value.getElementsByTagName('value')[0].childNodes[0].nodeValue;
-  return code;
 }
 
 //we need to get the name of store from the URL and then set URL to *name*.myshopify.com/admin/products.json
@@ -177,26 +142,6 @@ function setRecurringProdSelector(data, title, var_id)
   }
 }
 
-function SelectCodeMirror()
-{
-  var line = $(".CodeMirror-code div .CodeMirror-linenumber").last().text();
-  var i = 0;
-  var scrollPos;
-  while (i < 5555)
-  {
-    i += 100;
-    scrollPos = $('.CodeMirror-scroll').scrollTop();
-  $('.CodeMirror-scroll').animate({
-       scrollTop: i
-   }, 0);
-   SelectText('.CodeMirror-code');
-   if ($('.CodeMirror-scroll').scrollTop() == scrollPos)
-   {
-    break;
-  }
-  }
-}
-
 function SelectText(element) {
     var doc = document
         , text = doc.querySelector(element)
@@ -221,14 +166,6 @@ function escapeRegExp(str) {
 
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-}
-
-function addObserver(element, callback)
-{
-  var element = document.querySelector(element);
-    var observer = new MutationObserver(callback);
-    var config = {childList: true, subtree: true};
-    observer.observe(element, config);
 }
 
 function readTextFile(file, callback)
