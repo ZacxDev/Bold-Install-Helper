@@ -3,6 +3,16 @@ var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-d
 var cart_log = {};
 var file_history = {};
 
+$(document).ready(function() {
+  $(document).on('auxclick', '.template-editor-tab', function(e) {
+    if (e.which == 2)
+    {
+      e.preventDefault();
+      $(this).find('.template-editor-close-tab').click();
+    }
+  });
+});
+
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
