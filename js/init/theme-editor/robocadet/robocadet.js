@@ -16,7 +16,7 @@ $(document).ready(function() {
     $('.cadet_peek').prependTo('.theme-asset-actions');
 
     // inject stylesheet for robocadet
-    var cadetstyle = $('<link rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/robocadet.css') + '">');
+    var cadetstyle = $('<link rel="stylesheet" class="cadet_stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/cadet_spooky.css') + '">');
     $('head').append(cadetstyle);
 
     // inject install.js
@@ -321,6 +321,13 @@ function loadCadetListeners()
     {
       chrome.runtime.sendMessage({command: "newcoppytab", name: obj.name, data: obj.tab});
     }
+  });
+
+  $(document).on('change', '.cadet_theme_select', function() {
+    $('.cadet_stylesheet').remove();
+    var next = $(this).find(':selected').attr('name');
+    var cadetstyle = $('<link rel="stylesheet" class="cadet_stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/cadet_' + next + '.css') + '">');
+    $('head').append(cadetstyle);
   });
 
 }

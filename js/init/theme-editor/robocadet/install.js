@@ -376,7 +376,6 @@ function injectCoppyItem()
     var contine_files_hooks = function() {
       if (files_hooks_index >= this.item.file_hooks_link.length)
       {
-        console.log('saying injection failed - ' + asset)
         chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: false});
         return;
       }
@@ -413,7 +412,6 @@ function injectCoppyItem()
             }
           }
         }
-        console.log('done searching ' + asset)
 
         // if no hooks were found, insertMap will be empty
         if (!$.isEmptyObject(insertMap))

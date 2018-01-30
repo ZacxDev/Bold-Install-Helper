@@ -1,0 +1,430 @@
+
+.cadet_modal {
+  width: 450px;
+  height: 200px;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 2%;
+  top: 50%;
+  left: 40%;
+  position: absolute;
+  z-index: 1000;
+  overflow: hidden;
+  color: white;
+}
+
+label {
+  display: inline;
+  color: white;
+}
+
+
+.cadet_left {
+  float: left;
+  width: 30%;
+  height: 100%;
+  border-style: ridge;
+  border-color: #cccccc;
+  border-width: 0;
+  border-right-width: 1px;
+  overflow: auto;
+}
+
+.cadet_right {
+  float: right;
+  width: 69%;
+  text-align: center;
+}
+
+.cadet_right p {
+  font-weight: 600;
+  font-size: large;
+  display: inline;
+  width: 100%;
+  color: darkred;
+  font-weight: 700;
+}
+
+.cadet_close {
+  display: inline;
+  float: right;
+  margin-right: 4%;
+  color: darkred;
+  font-weight: 400;
+}
+
+.cadet_close:hover {
+  color: darkred;
+}
+
+.cadet_spacer {
+  width: 100%;
+  height: 10%;
+}
+
+.cadet_menu {
+  width: 100%;
+  height: 100%;
+  transform-origin: bottom;
+  transform: scale(1,0);
+  transition: all .3s ease-out;
+  text-align: center;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.cadet_action {
+  color: white;
+}
+
+.cadet_action:hover {
+  color: white;
+}
+
+.cadet_ro_spacer {
+  width: 30%;
+}
+
+.cadet_apps_tools {
+  text-align: right;
+  width: 95%;
+}
+
+.cadet_apps_tools a {
+  margin-right: 4%;
+  color: white;
+}
+
+div.cadet_menu {
+  border-style: solid;
+  border-width: 0;
+  border-top-width: 1px;
+  border-color: red;
+}
+
+div.cadet_mainstage {
+  width: 98%;
+  height: 10em;
+  margin-top: 2%;
+}
+
+div.cadet_report_content {
+  border-width: 0;
+  border-top-width: 1px;
+  border-color: red;
+  border-style: solid;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.cadet_report_wrap ul {
+  list-style-type: none;
+}
+
+.cadet_report_wrap {
+  font-size: 12px;
+  color: green;
+}
+
+span.cadet_report_false {
+  color: red;
+  font-size: 12px;
+}
+
+.cadet_selected {
+  border-color: red;
+  color: red;
+}
+
+.cadet_menu_toggle {
+  color: white;
+}
+
+a.cadet_menu_toggle:hover {
+  color: #f2f2f2;
+
+}
+
+.cadet_modal select {
+  background: none;
+  color: white;
+  border-color: red;
+}
+
+.cadet_modal select:focus {
+  border-color: red;
+}
+
+.cadet_modal select option{
+  background-color: rgba(0,0,0,0.8);
+  color: red;
+}
+
+
+input.cadet-btn {
+  height: auto;
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background: none;
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  width: 100%;
+  font-size: 12px;
+  color: lightgray;
+}
+
+.cadet-btn:focus {
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-color: rgba(255,0,0,0.4);
+  color: red;
+}
+
+.cadet-btn:hover {
+  color: red;
+  transition : all 750ms ease-out;
+}
+
+.cadet_expandable {
+  transition: all .2s ease-in-out;
+  transform-origin: top;
+  transform: scale(1,0);
+}
+
+.cadet_expand {
+  width: 100%;
+  color: white;
+  background: none;
+  border-width: 0px;
+  border-bottom-width: 1px;
+  border-bottom-color: red;
+  padding: 10px 0 10px 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease-out;
+}
+.cadet_expand:focus {
+  outline: none;
+}
+
+.cadet_expand:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.cadet_expand_selected {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.cadet_peek {
+  width: 32px;
+}
+
+.cadet_peek img {
+  border-radius: 5%;
+}
+
+.cadet_snip_view {
+  width: 16px;
+  display: inline;
+  cursor: help;
+}
+
+.snip_title_js {
+  color: white;
+  padding-bottom: 2%;
+  font-size: 16px;
+}
+
+.snip_content_js {
+  font-size: 12px;
+  height: 70%;
+  background-color: rgba(0,0,0,0);
+  color: red;
+  border-color: rgba(255,0,0,0.2);
+}
+
+input[name*="coppy"] {
+  width: 50%;
+  height: 15%;
+  background-color: rgba(0, 0, 0, 0);
+  color: rgba(255, 0, 0, 0.6);
+}
+
+.cadet_mainstage input:focus, .coppy_item_content:focus {
+  border-color: rgba(255, 0, 0, 0.2);
+}
+
+.cadet_mainstage input {
+  padding: 0;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-top: 2%;
+  width: 30%;
+  font-size: 16px;
+  background-color: transparent;
+  transition: border .5s ease-out;
+}
+
+.cadet_mainstage input:hover {
+  border-color: rgba(255, 0, 0, 0.4);
+}
+
+.cadet_new_coppy {
+  overflow-y: auto;
+}
+
+.coppy_item_wrap {
+  padding:  1%;
+  padding-right:  5%;
+  padding-left: 5%;
+  display: inline-block;
+  width: auto;
+  margin-right:  3%;
+  margin-top: 2%;
+  max-width: 120px;
+  max-height:  20px;
+  white-space:  nowrap;
+  overflow:  hidden;
+}
+
+.cadet_coppy_wrap {
+  overflow-x: hidden;
+}
+
+.coppy_item_wrap img {
+  max-width: 16px;
+  display: inline;
+}
+
+.coppy_item_content {
+  font-size: 12px;
+  height: auto;
+  min-height: 80px;
+  background-color: rgba(0,0,0,0);
+  color: red;
+  border-color: rgba(255,0,0,0.2);
+  width: 80%;
+  white-space:  nowrap;
+}
+
+img.cadet_coppy_tool {
+  max-width: 22px;
+  display: inline;
+  float:  left;
+  margin-left: 4px;
+  cursor:  pointer;
+  transition: transform .5s ease-in-out;
+}
+
+.coppy_gear:hover {
+  transform: rotate(180deg);
+}
+
+.coppy_item_advanced input[type="text"] {
+  width: 80%;
+  font-size: 14px;
+}
+
+.coppy_item_advanced p {
+  font-size: 10px;
+  line-height: 1;
+  display:  inline-block;
+  color: #a6a6a6;
+}
+ .coppy_item_advanced input[type="checkbox"] {
+   display: inline;
+   width:  12px;
+ }
+
+ .coppy_item_advanced label {
+   display: block;
+ }
+
+ .coppy_execute_confirm p {
+   font-size: 12px;
+   color: gray;
+ }
+
+ .loading {
+   max-width: 56px;
+   margin: 0 auto;
+   margin-top: 15%;
+ }
+
+ .coppy_bulk_list_wrap img {
+   display: inline;
+   margin-right: 5px;
+   max-width: 15px;
+   cursor:  pointer;
+ }
+
+ .coppy_bulk_tab {
+   cursor: pointer;
+ }
+
+ .coppy_bulk_list_wrap input[type="checkbox"] {
+   display: inline;
+   width: auto;
+ }
+
+ div.coppy_bulk_tab {
+   display: inline;
+ }
+
+ .coppy_bulk_item {
+   margin-left: 5%;
+ }
+
+ .coppy_bulk_item span {
+   padding-left: 1%;
+ }
+
+ .coppy_bulk_item_wrap {
+   height: 0;
+   transition: all .25s ease-out;
+   transform: scale(1,0);
+   transform-origin: top;
+   border-width: 0;
+   border-bottom-width: 1px;
+   border-style: solid;
+   border-color: gray;
+ }
+
+ input[type='button'] {
+   color: white;
+ }
+
+ .execute_list_item {
+   display: block;
+ }
+
+.coppy_batch_done p {
+  font-size: 12px;
+  color: gray;
+}
+
+.coppy_batch_done input {
+  font-size: 12px;
+  display:  inline-block;
+}
+
+.coppy_batch_done img {
+  display: inline;
+  padding-right: 1%;
+  vertical-align: middle;
+  width: 16px;
+  height: auto;
+}
+
+.cadet_menu span {
+  color: rgba(255, 0, 0, 0.5);
+  font-size: 12px;
+}
+
+.cadet_menu select {
+  border-color: red;
+  margin: 0 auto;
+  margin:  0 auto;
+  display:  block;
+}
