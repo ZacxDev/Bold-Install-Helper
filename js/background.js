@@ -119,6 +119,18 @@ function(request, sender, sendResponse) {
       });
     });
   }
+  else if (request.command == "settheme")
+  {
+    setTheme(request.theme);
+  }
+  else if (request.command == "gettheme")
+  {
+    getTheme(function(t) {
+      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {command: "returntheme", theme: t});
+      });
+    });
+  }
   else if (request.command == "init")
     {
       url = sender.tab.url;
@@ -345,5 +357,25 @@ function updateCoppyItem(request, callback)
     }, function() {
       callback();
     });
+  });
+}
+
+function setTheme(theme)
+{
+  chrome.storage.local.set({
+    theme: theme
+  });
+}
+
+function getTheme(callback)
+{
+  chrome.storage.local.get({
+    theme: ""
+  }, function(t) {
+    if (t.theme == "")
+      callback('spooky');
+    else {
+      callback(t.theme);
+    }
   });
 }

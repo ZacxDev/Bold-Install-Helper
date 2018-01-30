@@ -15,9 +15,10 @@ $(document).ready(function() {
     $('.cadet_peek img').attr('src', src);
     $('.cadet_peek').prependTo('.theme-asset-actions');
 
-    // inject stylesheet for robocadet
-    var cadetstyle = $('<link rel="stylesheet" class="cadet_stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/cadet_spooky.css') + '">');
-    $('head').append(cadetstyle);
+    chrome.extension.sendMessage({command: "gettheme"});
+    // inject stylesheet
+    var globalstyle = $('<link rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/global.css') + '">');
+    $('head').append(globalstyle);
 
     // inject install.js
     var installjs = $('<script src="' + chrome.extension.getURL('js/init/theme-editor/robocadet/install.js') + '"></script>');
@@ -303,10 +304,9 @@ function loadCadetListeners()
   });
 
   $(document).on('change', '.cadet_theme_select', function() {
-    $('.cadet_stylesheet').remove();
     var next = $(this).find(':selected').attr('name');
-    var cadetstyle = $('<link rel="stylesheet" class="cadet_stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/cadet_' + next + '.css') + '">');
-    $('head').append(cadetstyle);
+    updateTheme(next);
+    chrome.extension.sendMessage({command: "settheme", theme: next});
   });
 
 }
@@ -542,6 +542,9 @@ function loadCoppyListeners()
     {
       delete request.command;
       $('.coppy_export_dump').text(JSON.stringify(request));
+    } else if (request.command == "returntheme")
+    {
+      updateTheme(request.theme);
     }
   });
 }
@@ -668,4 +671,12 @@ function undoLastCoppyBatch()
   injectScript(function() {
     undoLastCoppy();
   });
+}
+
+function updateTheme(t)
+{
+  $('.cadet_stylesheet').remove();
+  $('.cadet_theme_select').val($('option[name="' + t + '"]').val());
+  var stylelink = $('<link rel="stylesheet" class="cadet_stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/ib_' + t + '.css') + '">');
+  $('head').append(stylelink);
 }

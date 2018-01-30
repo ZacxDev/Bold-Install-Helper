@@ -215,14 +215,6 @@ input.cadet-btn {
   background-color: rgba(255, 0, 0, 0.1);
 }
 
-.cadet_peek {
-  width: 32px;
-}
-
-.cadet_peek img {
-  border-radius: 5%;
-}
-
 .cadet_snip_view {
   width: 16px;
   display: inline;
