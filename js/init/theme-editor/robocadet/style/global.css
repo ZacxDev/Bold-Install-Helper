@@ -6,3 +6,17 @@
 .cadet_peek img {
   border-radius: 5%;
 }
+
+.cadet_apps_tools {
+  position: absolute;
+  width: 70%;
+  top: 85%;
+  text-align: right;
+}
+
+.coppy_hooks_advanced_options {
+  transition: max-height 1s ease-out;
+  overflow: hidden;
+  max-height: 0;
+  transform-origin: top;
+}

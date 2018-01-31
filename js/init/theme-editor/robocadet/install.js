@@ -357,7 +357,7 @@ function injectCoppyItem()
   var data = $('.coppy_dump').text();
   this.item = JSON.parse(data);
   var per_file_hooks = this.item.file_hooks_link != undefined;
-  console.log('[Install Bot] Starting injection..');
+  console.log(this.item + '[Install Bot] Starting injection..');
   var key, name;
   if (per_file_hooks)
   {

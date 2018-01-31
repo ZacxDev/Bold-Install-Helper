@@ -165,6 +165,7 @@ function loadCadetListeners()
     hooks = hooks.split(',');
     var command = "newcoppyitem";
     var oldname = "";
+    var file_options = {};
 
     if ($(this).hasClass('coppy_update_item'))
     {
@@ -183,11 +184,13 @@ function loadCadetListeners()
       for (f in files)
       {
         files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
+        file_options[files[f]] = getOptionsObject($('[data-file="' + files[f] + '"]').siblings('.coppy_hooks_advanced_options'));
       }
     } else {
       for (f in files)
       {
         files_hooks[files[f]] = hooks;
+        file_options[files[f]] = getOptionsObject($('[name="coppy_item_hooks"]').siblings('.coppy_hooks_advanced_options'));
       }
     }
 
@@ -197,7 +200,7 @@ function loadCadetListeners()
     }
 
     chrome.runtime.sendMessage({command: command, oldname: oldname, parenttab: parenttab, name: name, data:
-    {description: "Desccc", content: content, file_hooks_link: files_hooks}});
+    {description: "Desccc", content: content, file_hooks_link: files_hooks, file_options: file_options}});
   });
 
   $(document).on('click', '.coppy_item', function() {
@@ -308,6 +311,18 @@ function loadCadetListeners()
     updateTheme(next);
     chrome.extension.sendMessage({command: "settheme", theme: next});
   });
+
+  $(document).on('click', '.expand_hook_options:not(.coppy_hooks_expanded)', function() {
+    //$('.coppy_hooks_advanced_options').css('transform', 'scale(1,1)');
+    $(this).next('.coppy_hooks_advanced_options').css('max-height', '500px');
+    $(this).addClass('coppy_hooks_expanded');
+  });
+
+  $(document).on('click', '.coppy_hooks_expanded', function() {
+    $(this).removeClass('coppy_hooks_expanded');
+  //  $('.coppy_hooks_advanced_options').css('transform', 'scale(1,0)');
+    $(this).next('.coppy_hooks_advanced_options').css('max-height', '0');
+  })
 
 }
 
@@ -597,24 +612,24 @@ function updatePerFileHooks()
     if ($this.prop('checked') == true)
     {
       var files = $('[name="coppy_item_files"]').val().split(',');
-      var ele = $('[name="coppy_item_hooks"]');
+      var ele = $('.coppy_item_hooks_wrap');
       ele.remove();
       $('.file_hook_span').remove();
       // create a new hooks input for each file and set it's data-file attr to that file
       for (f in files)
       {
         ele = ele.first().clone();
-        ele.val('');
-        ele.attr('data-file', files[f]);
+        ele.find('[name="coppy_item_hooks"]').val('');
+        ele.find('[name="coppy_item_hooks"]').attr('data-file', files[f]);
         $('<span class="file_hook_span">' + files[f] + '</span>').insertBefore('[name="coppy_item_advaced_done"]');
         ele.insertBefore('[name="coppy_item_advaced_done"]');
       }
     } else {
       // remove the extra hooks inputs, except the first one, and remove it's data-file attr
-      var ele = $($('[name="coppy_item_hooks"]')[0]);
-      $('[name="coppy_item_hooks"]').remove();
+      var ele = $($('.coppy_item_hooks_wrap')[0]);
+      $('.coppy_item_hooks_wrap').remove();
       $('.file_hook_span').remove();
-      ele.removeAttr('data-file');
+      ele.find('[name="coppy_item_hooks"]').removeAttr('data-file');
       ele.insertBefore('[name="coppy_item_advaced_done"]');
     }
 }
@@ -679,4 +694,13 @@ function updateTheme(t)
   $('.cadet_theme_select').val($('option[name="' + t + '"]').val());
   var stylelink = $('<link rel="stylesheet" class="cadet_stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/ib_' + t + '.css') + '">');
   $('head').append(stylelink);
+}
+
+function getOptionsObject(ele)
+{
+  var obj = {};
+  $(ele).find('input').each(function() {
+    obj[$(this).attr('id')] = $(this).prop('checked');
+  });
+  return obj;
 }

@@ -1,18 +1,48 @@
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+         rel = "stylesheet">
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
 <script>  $( function() {
-    $( ".cadet_modal" ).draggable({
-scroll: false,
-containment: 'window',
-start: function(event, ui) {
-   ui.position.top -= $(window).scrollTop();
-},
-drag: function(event, ui) {
-  ui.position.top -= $(window).scrollTop();
-}
+  $( ".cadet_modal" ).draggable({
+    scroll: false,
+    containment: 'window',
+    start: function(event, ui) {
+       ui.position.top -= $(window).scrollTop();
+    },
+    drag: function(event, ui) {
+      ui.position.top -= $(window).scrollTop();
+    }
+  });
+  $( ".cadet_modal" ).css('position', 'absolute')
+  } );
+  $(window).load(function() {
+    $( function() {
+      setTimeout(function() {
+        $('.cadet_modal').resizable({
+            aspectRatio: true
+        });
+      }, 500);
+  });
+});
+$(document).on('click', '.cadet_peek', function() {
+  if (typeof $().resizable != "function")
+  {
+    var s = document.createElement('script');
+    s.src = 'https://code.jquery.com/ui/1.10.4/jquery-ui.js';
+    document.body.appendChild(s);
+    //$.getScript('https://code.jquery.com/ui/1.10.4/jquery-ui.js');
+  }
+    $( function() {
+      setTimeout(function() {
+        $('.cadet_modal').resizable({
+            aspectRatio: true
+        });
+      }, 500);
     });
-    $( ".cadet_modal" ).css('position', 'absolute')
-  } );</script>
-<div class="cadet_modal ui-widget-content" style="display:none;">
+})
+</script>
+<div class="cadet_modal ui-resizable" style="display:none;">
  <div class="cadet_left">
    <button class="cadet_expand" data-expands="cadet_apps">Options</button>
    <div class="cadet_apps cadet_expandable" style="display: none;">
@@ -165,30 +195,33 @@ drag: function(event, ui) {
      <h3>Files:</h3>
      <p>Please type files in key/name format such as: templates/theme.liquid</p>
      <input type="text" name="coppy_item_files" placeholder="layout/theme.liquid,templates/product.liquid" />
+     <label>
+       <input type="checkbox" id="per_file_hooks" />Per file hooks
+     </label>
      <h3>Hooks:</h3>
      <p>The code will be inserted under the first of these hooks that is found, can be partial, will be inserted on a new line, spaces are ignored. ex. content_for_header will insert code under {% content_for_header %}, buildCart(){ under buildCart() {</p>
-     <input type="text" name="coppy_item_hooks" placeholder="content_for_header,buildCart(){" />
-     <input type="button" class="cadet_menu_toggle" name="coppy_item_advaced_done" value="Done" data-opens="cadet_new_coppy" />
-     <div class="coppy_item_advanced_options">
-       <label>
-         <input type="checkbox" id="per_file_hooks" />Per file hooks
-       </label>
-       <label>
-         <input type="checkbox" disabled="disabled" />Try to insert at end of function
-       </label>
-       <label>
-         <input type="checkbox" disabled="disabled" />Insert on new line
-       </label>
-       <label>
-         <input type="checkbox" disabled="disabled" />Insert under all instances of hook
-       </label>
-       <label>
-         <input type="checkbox" disabled="disabled" />Replace Hook
-       </label>
-       <label>
-         <input type="checkbox" disabled="disabled" />Insert under all instances of all hooks
-       </label>
+     <div class="coppy_item_hooks_wrap">
+       <input type="text" name="coppy_item_hooks" placeholder="content_for_header,buildCart(){" />
+       <a class="expand_hook_options">Options..</a>
+       <div class="coppy_hooks_advanced_options">
+         <label>
+           <input type="checkbox" id="insert_above" />Insert Above Hook
+         </label>
+         <label>
+           <input type="checkbox" id="insert_at_end_of_function" disabled="disabled" />Try to insert at end of function
+         </label>
+         <label>
+           <input type="checkbox" id="insert_on_newline" disabled="disabled" />Insert on new line
+         </label>
+         <label>
+           <input type="checkbox" id="use_all_hooks" disabled="disabled" />Use all found hooks
+         </label>
+         <label>
+           <input type="checkbox" id="replace_hook" disabled="disabled" />Replace Hook
+         </label>
+       </div>
      </div>
+     <input type="button" class="cadet_menu_toggle" name="coppy_item_advaced_done" value="Done" data-opens="cadet_new_coppy" />
    </div>
 
    <div class="cadet_new_coppy cadet_menu" style="display:none;">
