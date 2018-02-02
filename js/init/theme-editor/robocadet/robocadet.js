@@ -19,6 +19,12 @@ $(document).ready(function() {
     // inject stylesheet
     var globalstyle = $('<link rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('js/init/theme-editor/robocadet/style/global.css') + '">');
     $('head').append(globalstyle);
+    var jqueryui = $('<link rel="stylesheet" type="text/css" href="' + chrome.extension.getURL('style/jquery-ui.css') + '">');
+    $('head').append(jqueryui);
+
+    var style = document.createElement('style');
+    style.textContent = ".ui-resizable-handle.ui-resizable-se.ui-icon.ui-icon-gripsmall-diagonal-se {background-image:url(" + chrome.extension.getURL('resources/resize.png') + ");}"
+    document.head.appendChild(style);
 
     // inject install.js
     var installjs = $('<script src="' + chrome.extension.getURL('js/init/theme-editor/robocadet/install.js') + '"></script>');
@@ -176,20 +182,27 @@ function loadCadetListeners()
     }
 
     // if they selected per file hooks, match each set of hooks to their file
-    var files_hooks = {};
+    var files_hooks = [];
     var per_file_hooks = $('#per_file_hooks').prop('checked');
     // if per file hooks, set each file their specific hooks, other wise give each file the same ones
     if (per_file_hooks)
     {
+      var pair;
       for (f in files)
       {
-        files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
+        //files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
+        pair = {};
+        pair[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
+        files_hooks.push(pair);
         file_options[files[f]] = getOptionsObject($('[data-file="' + files[f] + '"]').siblings('.coppy_hooks_advanced_options'));
       }
     } else {
       for (f in files)
       {
-        files_hooks[files[f]] = hooks;
+        //files_hooks[files[f]] = hooks;
+        pair = {};
+        pair[files[f]] = hooks;
+        files_hooks.push(pair);
         file_options[files[f]] = getOptionsObject($('[name="coppy_item_hooks"]').siblings('.coppy_hooks_advanced_options'));
       }
     }
@@ -269,7 +282,7 @@ function loadCadetListeners()
     chrome.extension.sendMessage({command: "deletecoppydata", items: items, tabs: tabs});
   });
 
-  $(document).on('click', "[data-opens='coppy_item_edit']", function() {
+  $(document).on('click', "img[data-opens='coppy_item_edit']", function() {
     var item = $(this).siblings('.coppy_item_check').data('item');
     var parent = $(this).siblings('.coppy_item_check').data('parent');
 

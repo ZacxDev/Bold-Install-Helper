@@ -370,16 +370,18 @@ function injectCoppyItem()
     var finished_all_iteration = false;
     var files_hooks_index = 0;
     var f;
+    var f_options;
 
     //for (f in this.item.file_hooks_link)
     //{
     var contine_files_hooks = function() {
-      if (files_hooks_index >= Object.keys(this.item.file_hooks_link).length)
+      if (files_hooks_index >= this.item.file_hooks_link.length)
       {
         chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: false});
         return;
       }
-      f = Object.keys(this.item.file_hooks_link)[files_hooks_index];
+      f = Object.keys(this.item.file_hooks_link[files_hooks_index])[0];
+      f_options = this.item.file_options[f];
       if (done_injection)
       {
         return;
@@ -393,7 +395,7 @@ function injectCoppyItem()
         file_cache[asset] = data;
 
         data = data.split('\n');
-        var hooks = this.item.file_hooks_link[asset];
+        var hooks = this.item.file_hooks_link[files_hooks_index][asset];
         if (hooks == undefined)
         {
           return;
@@ -420,7 +422,7 @@ function injectCoppyItem()
           var using_hook = Object.keys(insertMap)[0];
           for (a in insertMap)
           {
-            if (this.item.file_hooks_link[asset].indexOf(a) < this.item.file_hooks_link[asset].indexOf(using_hook))
+            if (hooks.indexOf(a) < hooks.indexOf(using_hook))
             {
               using_hook = a;
             }
@@ -443,7 +445,7 @@ function injectCoppyItem()
               chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: true});
               // if option is set to only insert in one file
               done_injection = true;
-              callback();
+              //callback();
           });
       }
     } else {

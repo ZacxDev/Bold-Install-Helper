@@ -1,7 +1,7 @@
-<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
-         rel = "stylesheet">
-      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
-      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script
+ src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+ integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+ crossorigin="anonymous"></script>
 
 <script>  $( function() {
   $( ".cadet_modal" ).draggable({
@@ -16,7 +16,7 @@
   });
   $( ".cadet_modal" ).css('position', 'absolute')
   } );
-  $(window).load(function() {
+  $(window).on('load', function() {
     $( function() {
       setTimeout(function() {
         $('.cadet_modal').resizable({
@@ -25,22 +25,6 @@
       }, 500);
   });
 });
-$(document).on('click', '.cadet_peek', function() {
-  if (typeof $().resizable != "function")
-  {
-    var s = document.createElement('script');
-    s.src = 'https://code.jquery.com/ui/1.10.4/jquery-ui.js';
-    document.body.appendChild(s);
-    //$.getScript('https://code.jquery.com/ui/1.10.4/jquery-ui.js');
-  }
-    $( function() {
-      setTimeout(function() {
-        $('.cadet_modal').resizable({
-            aspectRatio: true
-        });
-      }, 500);
-    });
-})
 </script>
 <div class="cadet_modal ui-resizable" style="display:none;">
  <div class="cadet_left">
@@ -208,10 +192,7 @@ $(document).on('click', '.cadet_peek', function() {
            <input type="checkbox" id="insert_above" />Insert Above Hook
          </label>
          <label>
-           <input type="checkbox" id="insert_at_end_of_function" disabled="disabled" />Try to insert at end of function
-         </label>
-         <label>
-           <input type="checkbox" id="insert_on_newline" disabled="disabled" />Insert on new line
+           <input type="checkbox" id="enclosing_element_as_hook" disabled="disabled" />Use enclosing element as hook
          </label>
          <label>
            <input type="checkbox" id="use_all_hooks" disabled="disabled" />Use all found hooks
