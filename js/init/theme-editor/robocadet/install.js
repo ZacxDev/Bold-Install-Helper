@@ -528,11 +528,20 @@ function undoLastCoppy()
 
 function getEndOfParentElement(lines, line) {
   var i = line;
-  if (lines[i].indexOf('<') == -1)
+  var skipNext = false;
+  while (lines[i].indexOf('<') !== -1 || skipNext)
   {
+    if (lines[i].indexOf('<') !== -1 && skipNext)
+    {
+      skipNext = false;
+      continue;
+    }
+    if (lines[i].indexOf('</') !== -1)
+    {
+      skipNext = true;
+    }
     i -= 1;
-    return getEndOfParentElement(lines, i);
-  } else {
+  }
     var end = 0;
     if (lines[i].indexOf('>') != -1)
     {
@@ -555,5 +564,4 @@ function getEndOfParentElement(lines, line) {
         return n;
       }
     }
-  }
 }
