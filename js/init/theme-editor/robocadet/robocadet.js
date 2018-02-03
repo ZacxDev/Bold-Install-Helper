@@ -540,6 +540,13 @@ function loadCoppyListeners()
         file = Object.keys(item.file_hooks_link[f])[0];
         $('[data-file="' + file + '"]').val(item.file_hooks_link[f][file].join(','));
       }
+      for (f in item.file_options)
+      {
+        for (o in item.file_options[f])
+        {
+          $('.coppy_hooks_advanced_options[data-file="' + f +'"]').find('#' + o).prop('checked', item.file_options[f][o]);
+        }
+      }
     } else if (request.command == "populateexecutetab")
     {
       $('.execute_list_wrap').empty();
@@ -641,6 +648,7 @@ function updatePerFileHooks()
         ele = ele.first().clone();
         ele.find('[name="coppy_item_hooks"]').val('');
         ele.find('[name="coppy_item_hooks"]').attr('data-file', files[f]);
+        ele.find('.coppy_hooks_advanced_options').attr('data-file', files[f]);
         $('<span class="file_hook_span">' + files[f] + '</span>').insertBefore('[name="coppy_item_advaced_done"]');
         ele.insertBefore('[name="coppy_item_advaced_done"]');
       }
