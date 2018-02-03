@@ -428,8 +428,28 @@ function injectCoppyItem()
             }
           }
 
-          // insert the coppy item content under the preferred hook
-          data.splice(insertMap[using_hook] + 1, 0, this.item.content);
+          // this is how many lines after/before the line containing the hook we will inject the code
+          var insertOffset = 1;
+          var overrideIndex;
+
+          if (f_options.insert_above)
+          {
+            insertOffset = 0;
+          }
+          if (f_options.enclosing_element_as_hook)
+          {
+            // +1 since that will put it on the next line
+            overrideIndex = getEndOfParentElement(data, insertMap[using_hook]) + 1;
+          }
+
+          if (overrideIndex != undefined)
+          {
+            // insert at end of parent element
+            data.splice(overrideIndex, 0, this.item.content);
+          } else {
+            // insert the coppy item content under the preferred hook
+            data.splice(insertMap[using_hook] + insertOffset, 0, this.item.content);
+          }
           data = data.join('\n');
           //reset insertMap to prevent the next file from using the same hooks
           insertMap = {};
@@ -504,4 +524,36 @@ function undoLastCoppy()
     });
   }
   console.log('[Install Bot] Injection reversal complete!');
+}
+
+function getEndOfParentElement(lines, line) {
+  var i = line;
+  if (lines[i].indexOf('<') == -1)
+  {
+    i -= 1;
+    return getEndOfParentElement(lines, i);
+  } else {
+    var end = 0;
+    if (lines[i].indexOf('>') != -1)
+    {
+      if (lines[i].indexOf(' ') != -1 && lines[i].indexOf(' ') < lines[i].indexOf('>'))
+      {
+        end = lines[i].indexOf(' ');
+      } else {
+        end = lines[i].indexOf('>')
+      }
+    } else if (lines[i].indexOf(' ') != -1) {
+      end = lines[i].indexOf(' ');
+    } else {
+      end = lines[i].length;
+    }
+    var ele = lines[i].substring(lines[i].indexOf('<') + 1, end);
+    for (var n = i; n < lines.length; n++)
+    {
+      if (lines[n].indexOf('</' + ele) != -1)
+      {
+        return n;
+      }
+    }
+  }
 }

@@ -521,17 +521,24 @@ function loadCoppyListeners()
     {
       var menu = $('.coppy_item_edit');
       var advmenu = $('.coppy_item_advanced');
+      var files = [];
       var item = request.item;
       menu.find('[name="coppy_item_name_edit"]').val(request.name);
       menu.find('[name="coppy_item_name_edit"]').attr('data-oldname', request.name);
       menu.find('.coppy_item_content_edit').text(item.content);
-      advmenu.find('[name="coppy_item_files"]').val(Object.keys(item.file_hooks_link).join(','));
+      for (f in item.file_hooks_link)
+      {
+        files.push(Object.keys(item.file_hooks_link[f])[0]);
+      }
+      advmenu.find('[name="coppy_item_files"]').val(files.join(','));
       advmenu.find('[name="coppy_item_advaced_done"]').attr('data-opens', 'coppy_item_edit');
       $('#per_file_hooks').prop('checked', true);
       updatePerFileHooks();
+      var file;
       for (f in item.file_hooks_link)
       {
-        $('[data-file="' + f + '"]').val(item.file_hooks_link[f]);
+        file = Object.keys(item.file_hooks_link[f])[0];
+        $('[data-file="' + file + '"]').val(item.file_hooks_link[f][file].join(','));
       }
     } else if (request.command == "populateexecutetab")
     {
