@@ -375,13 +375,13 @@ function injectCoppyItem()
     //for (f in this.item.file_hooks_link)
     //{
     var contine_files_hooks = function() {
-      if (files_hooks_index >= this.item.file_hooks_link.length)
+      if (files_hooks_index >= Object.keys(this.item.file_obj).length)
       {
         chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: false});
         return;
       }
-      f = Object.keys(this.item.file_hooks_link[files_hooks_index])[0];
-      f_options = this.item.file_options[f];
+      f = this.item.file_obj[files_hooks_index].file;
+      f_options = this.item.file_obj[files_hooks_index].options;
       if (done_injection)
       {
         return;
@@ -395,7 +395,7 @@ function injectCoppyItem()
         file_cache[asset] = data;
 
         data = data.split('\n');
-        var hooks = this.item.file_hooks_link[files_hooks_index][asset];
+        var hooks = this.item.file_obj[files_hooks_index].hooks;
         if (hooks == undefined)
         {
           return;
@@ -439,7 +439,7 @@ function injectCoppyItem()
           if (f_options.enclosing_element_as_hook)
           {
             // +1 since that will put it on the next line
-            overrideIndex = getEndOfParentElement(data, insertMap[using_hook]) + 1;
+            overrideIndex = getEndOfParentElement(data, insertMap[using_hook], using_hook) + 1;
           }
 
           if (overrideIndex != undefined)
@@ -526,22 +526,36 @@ function undoLastCoppy()
   console.log('[Install Bot] Injection reversal complete!');
 }
 
-function getEndOfParentElement(lines, line) {
+function getEndOfParentElement(data, line, hook) {
   var i = line;
+  var lines = data.slice(0);
   var skipNext = false;
-  while (lines[i].indexOf('<') !== -1 || skipNext)
+  for (i; i < lines.length; i--)
   {
-    if (lines[i].indexOf('<') !== -1 && skipNext)
-    {
-      skipNext = false;
-      continue;
-    }
     if (lines[i].indexOf('</') !== -1)
     {
-      skipNext = true;
+      if (i == line)
+      {
+        if (lines[i].indexOf('</') < lines[i].indexOf(hook))
+        {
+          skipNext = true;
+        }
+      } else {
+        skipNext = true;
+      }
     }
-    i -= 1;
+    if (lines[i].indexOf('<') !== -1)
+    {
+      if (skipNext)
+      {
+        skipNext = false;
+        continue;
+      } else {
+        break;
+      }
+    }
   }
+    skipNext = false;
     var end = 0;
     if (lines[i].indexOf('>') != -1)
     {
@@ -557,11 +571,43 @@ function getEndOfParentElement(lines, line) {
       end = lines[i].length;
     }
     var ele = lines[i].substring(lines[i].indexOf('<') + 1, end);
+    var matchOn, matchIndex = 0, foundOpen = false;
     for (var n = i; n < lines.length; n++)
     {
+      //remove the end tag from this line so we dont keep finding the same one
+      if (n === matchOn)
+      {
+        lines[n] = lines[n].substring(matchIndex, lines[n].length);
+      }
+      // if the line is an open tag and it's not the same one we start on
+      if (lines[n].indexOf('<' + ele) != -1)
+      {
+        if (!foundOpen)
+        {
+          //once we find the opening tag, we need to check the same line again
+          foundOpen = true;
+          n--;
+        } else {
+          skipNext = true;
+          matchOn = n;
+        }
+      }
       if (lines[n].indexOf('</' + ele) != -1)
       {
-        return n;
+        if (skipNext)
+        {
+          skipNext = false;
+          matchIndex = lines[n].indexOf('</' + ele) + ("</" + ele).length;
+          //if we found the end on this line, check it again
+          if (n === matchOn)
+          {
+            n--;
+          }
+          continue;
+        } else
+        {
+          return n;
+        }
       }
     }
 }

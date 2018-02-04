@@ -171,7 +171,6 @@ function loadCadetListeners()
     hooks = hooks.split(',');
     var command = "newcoppyitem";
     var oldname = "";
-    var file_options = {};
 
     if ($(this).hasClass('coppy_update_item'))
     {
@@ -181,30 +180,19 @@ function loadCadetListeners()
       oldname = $('input[name="coppy_item_name_edit"]').data('oldname');
     }
 
-    // if they selected per file hooks, match each set of hooks to their file
-    var files_hooks = [];
     var per_file_hooks = $('#per_file_hooks').prop('checked');
-    // if per file hooks, set each file their specific hooks, other wise give each file the same ones
-    if (per_file_hooks)
+    var item_file_obj = {};
+
+    for (var i = 0; i < files.length; i++)
     {
-      var pair;
-      for (f in files)
-      {
-        //files_hooks[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
-        pair = {};
-        pair[files[f]] = $('[data-file="' + files[f] + '"]').val().split(',');
-        files_hooks.push(pair);
-        file_options[files[f]] = getOptionsObject($('[data-file="' + files[f] + '"]').siblings('.coppy_hooks_advanced_options'));
-      }
-    } else {
-      for (f in files)
-      {
-        //files_hooks[files[f]] = hooks;
-        pair = {};
-        pair[files[f]] = hooks;
-        files_hooks.push(pair);
-        file_options[files[f]] = getOptionsObject($('[name="coppy_item_hooks"]').siblings('.coppy_hooks_advanced_options'));
-      }
+      var hooksEle = $('[name="coppy_item_hooks"][data-id="' + i + '"]');
+      var optionsEle = $('.coppy_hooks_advanced_options[data-id="' + i + '"]');
+
+      item_file_obj[i] = {};
+      var hookSetObj = item_file_obj[i];
+      hookSetObj.options = getOptionsObject(optionsEle);
+      hookSetObj.hooks = hooksEle.val().split(',');
+      hookSetObj.file = hooksEle.data('file');
     }
 
     if ($(this).data('parent') != undefined)
@@ -213,7 +201,7 @@ function loadCadetListeners()
     }
 
     chrome.runtime.sendMessage({command: command, oldname: oldname, parenttab: parenttab, name: name, data:
-    {description: "Desccc", content: content, file_hooks_link: files_hooks, file_options: file_options}});
+    {description: "Desccc", content: content, file_obj: item_file_obj, rawfiles: files}});
   });
 
   $(document).on('click', '.coppy_item', function() {
@@ -365,11 +353,12 @@ function toggleMenu(tar, button)
   } else {
     $('.cadet_title').text('Install Helper');
   }
-  // Hide app selector, will be shown if button is snippets
-  // if (!$(tar).hasClass('cadet_snippets_menu'))
-  //   $('.cadet_menu_app_select').hide();
-  // else
-  //   $('.cadet_menu_app_select').show();
+
+  if ($(tar).hasClass('cadet_coppy_menu'))
+  {
+    beginUpdateCoppyMenu();
+  }
+
   updateToolbar();
 }
 
@@ -521,32 +510,37 @@ function loadCoppyListeners()
     {
       var menu = $('.coppy_item_edit');
       var advmenu = $('.coppy_item_advanced');
-      var files = [];
       var item = request.item;
+      var files = item.rawfiles;
       menu.find('[name="coppy_item_name_edit"]').val(request.name);
       menu.find('[name="coppy_item_name_edit"]').attr('data-oldname', request.name);
-      menu.find('.coppy_item_content_edit').text(item.content);
-      for (f in item.file_hooks_link)
-      {
-        files.push(Object.keys(item.file_hooks_link[f])[0]);
-      }
+      menu.find('.coppy_item_content_edit').text(item.content);debugger
+
       advmenu.find('[name="coppy_item_files"]').val(files.join(','));
       advmenu.find('[name="coppy_item_advaced_done"]').attr('data-opens', 'coppy_item_edit');
       $('#per_file_hooks').prop('checked', true);
       updatePerFileHooks();
-      var file;
-      for (f in item.file_hooks_link)
+      for (var i = 0; i < files.length; i++)
       {
-        file = Object.keys(item.file_hooks_link[f])[0];
-        $('[data-file="' + file + '"]').val(item.file_hooks_link[f][file].join(','));
-      }
-      for (f in item.file_options)
-      {
-        for (o in item.file_options[f])
+        $('[name="coppy_item_hooks"][data-id="' + i + '"]').val(item.file_obj[i].hooks.join(','));
+        for (o in item.file_obj[i].options)
         {
-          $('.coppy_hooks_advanced_options[data-file="' + f +'"]').find('#' + o).prop('checked', item.file_options[f][o]);
+          $('.coppy_hooks_advanced_options[data-id="' + i + '"] #' + o).prop('checked', item.file_obj[i].options[o]);
         }
       }
+      // var file;
+      // for (f in item.file_hooks_link)
+      // {
+      //   file = Object.keys(item.file_hooks_link[f])[0];
+      //   $('[data-file="' + file + '"]').val(item.file_hooks_link[f][file].join(','));
+      // }
+      // for (f in item.file_options)
+      // {
+      //   for (o in item.file_options[f])
+      //   {
+      //     $('.coppy_hooks_advanced_options[data-file="' + f +'"]').find('#' + o).prop('checked', item.file_options[f][o]);
+      //   }
+      // }
     } else if (request.command == "populateexecutetab")
     {
       $('.execute_list_wrap').empty();
@@ -599,7 +593,12 @@ function populateCoppy()
 function beginUpdateCoppyMenu()
 {
   var tabname = $('.cadet_coppy_tab_select').val();
-  chrome.runtime.sendMessage({command: "getcoppytab", tab: tabname});
+  if (tabname !== null)
+  {
+    chrome.runtime.sendMessage({command: "getcoppytab", tab: tabname});
+  } else {
+    $('.cadet_coppy_wrap').empty();
+  }
 }
 
 function updateCoppyMenu(request)
@@ -643,14 +642,18 @@ function updatePerFileHooks()
       ele.remove();
       $('.file_hook_span').remove();
       // create a new hooks input for each file and set it's data-file attr to that file
+      var id = 0;
       for (f in files)
       {
         ele = ele.first().clone();
         ele.find('[name="coppy_item_hooks"]').val('');
         ele.find('[name="coppy_item_hooks"]').attr('data-file', files[f]);
+        ele.find('[name="coppy_item_hooks"]').attr('data-id', id);
         ele.find('.coppy_hooks_advanced_options').attr('data-file', files[f]);
+        ele.find('.coppy_hooks_advanced_options').attr('data-id', id);
         $('<span class="file_hook_span">' + files[f] + '</span>').insertBefore('[name="coppy_item_advaced_done"]');
         ele.insertBefore('[name="coppy_item_advaced_done"]');
+        id++;
       }
     } else {
       // remove the extra hooks inputs, except the first one, and remove it's data-file attr
