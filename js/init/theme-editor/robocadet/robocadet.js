@@ -514,7 +514,7 @@ function loadCoppyListeners()
       var files = item.rawfiles;
       menu.find('[name="coppy_item_name_edit"]').val(request.name);
       menu.find('[name="coppy_item_name_edit"]').attr('data-oldname', request.name);
-      menu.find('.coppy_item_content_edit').text(item.content);debugger
+      menu.find('.coppy_item_content_edit').text(item.content);
 
       advmenu.find('[name="coppy_item_files"]').val(files.join(','));
       advmenu.find('[name="coppy_item_advaced_done"]').attr('data-opens', 'coppy_item_edit');
@@ -528,19 +528,6 @@ function loadCoppyListeners()
           $('.coppy_hooks_advanced_options[data-id="' + i + '"] #' + o).prop('checked', item.file_obj[i].options[o]);
         }
       }
-      // var file;
-      // for (f in item.file_hooks_link)
-      // {
-      //   file = Object.keys(item.file_hooks_link[f])[0];
-      //   $('[data-file="' + file + '"]').val(item.file_hooks_link[f][file].join(','));
-      // }
-      // for (f in item.file_options)
-      // {
-      //   for (o in item.file_options[f])
-      //   {
-      //     $('.coppy_hooks_advanced_options[data-file="' + f +'"]').find('#' + o).prop('checked', item.file_options[f][o]);
-      //   }
-      // }
     } else if (request.command == "populateexecutetab")
     {
       $('.execute_list_wrap').empty();
@@ -660,7 +647,11 @@ function updatePerFileHooks()
       var ele = $($('.coppy_item_hooks_wrap')[0]);
       $('.coppy_item_hooks_wrap').remove();
       $('.file_hook_span').remove();
-      ele.find('[name="coppy_item_hooks"]').removeAttr('data-file');
+      var f = $('[name="coppy_item_files"]').val().split(',')[0];
+      ele.find('[name="coppy_item_hooks"]').attr('data-file', f);
+      ele.find('[name="coppy_item_hooks"]').attr('data-id', '0');
+      ele.find('.coppy_hooks_advanced_options').attr('data-file', f);
+      ele.find('.coppy_hooks_advanced_options').attr('data-id', '0');
       ele.insertBefore('[name="coppy_item_advaced_done"]');
     }
 }

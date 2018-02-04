@@ -359,8 +359,6 @@ function injectCoppyItem()
   var per_file_hooks = this.item.file_hooks_link != undefined;
   console.log(this.item + '[Install Bot] Starting injection..');
   var key, name;
-  if (per_file_hooks)
-  {
     var line = "";
     var insertMap = {};
     var asset;
@@ -489,7 +487,7 @@ function injectCoppyItem()
     //}
   }
     contine_files_hooks();
-  }
+
   $('.coppy_dump').remove();
 }
 
@@ -530,7 +528,7 @@ function getEndOfParentElement(data, line, hook) {
   var i = line;
   var lines = data.slice(0);
   var skipNext = false;
-  for (i; i < lines.length; i--)
+  for (i; i > -1; i--)
   {
     if (lines[i].indexOf('</') !== -1)
     {
@@ -557,6 +555,11 @@ function getEndOfParentElement(data, line, hook) {
   }
     skipNext = false;
     var end = 0;
+    // if there is no enclosing element, return the line we were given
+    if (i == -1)
+    {
+      return line;
+    }
     if (lines[i].indexOf('>') != -1)
     {
       if (lines[i].indexOf(' ') != -1 && lines[i].indexOf(' ') < lines[i].indexOf('>'))
