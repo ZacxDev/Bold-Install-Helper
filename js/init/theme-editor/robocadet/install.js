@@ -439,6 +439,15 @@ function injectCoppyItem()
             // +1 since that will put it on the next line
             overrideIndex = getEndOfParentElement(data, insertMap[using_hook], using_hook) + 1;
           }
+          if (f_options.start_of_function)
+          {
+            overrideIndex = getFunctionDeclarationIndex(data, using_hook) + 1;
+          }
+          if (f_options.end_of_function)
+          {
+            var start = getFunctionDeclarationIndex(data, using_hook);
+            overrideIndex = getFunctionEndIndex(data, start) + 1;
+          }
 
           if (overrideIndex != undefined)
           {
@@ -613,4 +622,75 @@ function getEndOfParentElement(data, line, hook) {
         }
       }
     }
+}
+
+function getFunctionDeclarationIndex(lines, name)
+{
+  // the chars thhat can be between function keyword and it's name
+  var name_before_function_seperators = [':', '='];
+  var func_index = -1, name_index = -1, line = "";
+  for (var i = 0; i < lines.length; i++)
+  {
+    func_index = lines[i].indexOf('function');
+    name_index = lines[i].indexOf(name);
+    if (func_index !== -1 && name_index !== -1)
+    {
+      if (func_index < name_index)
+      {
+        line = lines[i];
+        line = replaceAll(line, ' ', '');
+        if (line.indexOf('function' + name) !== -1)
+        {
+          return i;
+        }
+      } else if (name_index < func_index)
+      {
+        line = lines[i];
+        line = replaceAll(line, ' ', '');
+        if (line.indexOf(name + ':function') !== -1 || line.indexOf(name + '=function') !== -1)
+        {
+          return i;
+        }
+      }
+    }
+  }
+}
+
+function getFunctionEndIndex(lines, startIndex) {
+  var foundOpen = false, skipNext = false;
+  var matchIndex = -1, matchLine = -1;
+  var line;
+  for (var i = startIndex; i < lines.length; i++)
+  {
+    line = lines[i];
+    if (i === matchLine)
+    {
+      line = line.substring(matchIndex + 1, line.length);
+    }
+    if (line.indexOf('{') != -1)
+    {
+      if (!foundOpen)
+      {
+        foundOpen = true;
+        matchIndex = line.indexOf('{');
+        matchLine = i;
+        i--;
+        continue;
+      }
+      skipNext = true;
+    }
+    if (line.indexOf('}') != -1)
+    {
+      if (skipNext)
+      {
+        skipNext = false;
+        matchIndex = line.indexOf('}');
+        matchLine = i;
+        i--;
+        continue;
+      }
+      return i;
+    }
+  }
+
 }

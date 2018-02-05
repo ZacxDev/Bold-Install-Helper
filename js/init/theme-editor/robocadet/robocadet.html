@@ -183,9 +183,9 @@
        <input type="checkbox" id="per_file_hooks" />Per file hooks
      </label>
      <h3>Hooks:</h3>
-     <p>The code will be inserted under the first of these hooks that is found, can be partial, will be inserted on a new line, spaces are ignored. ex. content_for_header will insert code under {% content_for_header %}, buildCart(){ under buildCart() {</p>
+     <p>The code will be inserted under the first of these hooks that is found, can be partial, will be inserted on a new line, spaces are ignored. ex. content_for_header will insert code under {% content_for_header %}</p>
      <div class="coppy_item_hooks_wrap">
-       <input type="text" name="coppy_item_hooks" placeholder="content_for_header,buildCart(){" />
+       <input type="text" name="coppy_item_hooks" placeholder="content_for_header,buildCart" />
        <a class="expand_hook_options">Options..</a>
        <div class="coppy_hooks_advanced_options">
          <label>
@@ -193,6 +193,12 @@
          </label>
          <label>
            <input type="checkbox" id="enclosing_element_as_hook" />Use enclosing element as hook
+         </label>
+         <label>
+           <input type="checkbox" id="end_of_function" />Insert at end of function
+         </label>
+         <label>
+           <input type="checkbox" id="start_of_function" />Insert at start of function
          </label>
          <label>
            <input type="checkbox" id="use_all_hooks" disabled="disabled" />Use all found hooks
