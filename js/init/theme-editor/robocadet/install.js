@@ -441,11 +441,22 @@ function injectCoppyItem()
           }
           if (f_options.start_of_function)
           {
-            overrideIndex = getFunctionDeclarationIndex(data, using_hook) + 1;
+            var start = getFunctionDeclarationIndex(data, using_hook);
+            if (start === -1)
+            {
+              callback();
+              return;
+            }
+            overrideIndex = start + 1;
           }
           if (f_options.end_of_function)
           {
             var start = getFunctionDeclarationIndex(data, using_hook);
+            if (start === -1)
+            {
+              callback();
+              return;
+            }
             overrideIndex = getFunctionEndIndex(data, start) + 1;
           }
 
@@ -654,6 +665,7 @@ function getFunctionDeclarationIndex(lines, name)
       }
     }
   }
+  return -1;
 }
 
 function getFunctionEndIndex(lines, startIndex) {

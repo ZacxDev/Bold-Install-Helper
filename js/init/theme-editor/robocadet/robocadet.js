@@ -183,6 +183,7 @@ function loadCadetListeners()
     var per_file_hooks = $('#per_file_hooks').prop('checked');
     var item_file_obj = {};
 
+
     for (var i = 0; i < files.length; i++)
     {
       var hooksEle = $('[name="coppy_item_hooks"][data-id="' + i + '"]');
@@ -303,7 +304,7 @@ function loadCadetListeners()
     var obj = JSON.parse($('.coppy_import_dump').val());
     if (obj.tab != undefined)
     {
-      chrome.runtime.sendMessage({command: "newcoppytab", name: obj.name, data: obj.tab});
+      chrome.runtime.sendMessage({command: "newcoppytab", name: obj.tab.name, data: obj.tab.items});
     }
   });
 
@@ -450,7 +451,9 @@ function loadCoppyListeners()
       $('.cadet_coppy_tab_select').empty();
       for (e in request.coppy.coppyjr)
       {
-        var o = $('<option>' + e + "</option>")
+        var o = $('<option></option>');
+        o.text(request.coppy.coppyjr[e].name);
+        o.attr('data-id', e);
         o.appendTo('.cadet_coppy_tab_select');
       }
 
@@ -461,7 +464,9 @@ function loadCoppyListeners()
       }
     } else if (request.command == "newtabcallback")
     {
-      var o = $('<option>' + request.name + "</option>")
+      var o = $('<option></option>');
+      o.text(request.tab.name);
+      o.attr('data-id', request.id);
       o.appendTo('.cadet_coppy_tab_select');
       updateCoppyMenu(request);
     }
@@ -492,10 +497,10 @@ function loadCoppyListeners()
       for (tab in request.coppy.coppyjr)
       {
         row = $(trow);
-        row.find('span')[0].textContent = tab;
+        row.find('span')[0].textContent = request.coppy.coppyjr[tab].name;
         row.find('img').attr('src', chrome.extension.getURL('resources/dropdown-up.png'));
         row.find('.coppy_tab_check').attr('data-tab', tab);
-        for (i in request.coppy.coppyjr[tab])
+        for (i in request.coppy.coppyjr[tab].items)
         {
           item = $(titem)
           item.find('span').text(i);
@@ -531,28 +536,31 @@ function loadCoppyListeners()
     } else if (request.command == "populateexecutetab")
     {
       $('.execute_list_wrap').empty();
-      for (var f in request.tab)
+      for (var f in request.tab.items)
       {
         $('<span class="execute_list_item">' + f + '</span>').appendTo('.execute_list_wrap')
       }
     } else if (request.command == "injectcoppybatch")
     {
-        COPPY_BATCH.queue = Object.keys(request.tab);
+        COPPY_BATCH.queue = Object.keys(request.tab.items);
         COPPY_BATCH.backup = {};
         COPPY_BATCH.report = {};
         COPPY_BATCH.index = 0;
         COPPY_BATCH.max = COPPY_BATCH.queue.length;
         COPPY_BATCH.tab = request.tab;
-        executeCoppyItem(request.tab[COPPY_BATCH.queue[0]]);
+        executeCoppyItem(request.tab.items[COPPY_BATCH.queue[0]]);
 
      }else if (request.command == 'continue_coppy_batch')
      {
-       COPPY_BATCH.backup[request.lastasset] = request.assetbackup;
+       if (COPPY_BATCH.backup[request.lastasset] == undefined)
+       {
+         COPPY_BATCH.backup[request.lastasset] = request.assetbackup;
+       }
        COPPY_BATCH.report[COPPY_BATCH.queue[COPPY_BATCH.index]] = request.inserted;
        if (COPPY_BATCH.index + 1 < COPPY_BATCH.max)
        {
          COPPY_BATCH.index++;
-        executeCoppyItem(COPPY_BATCH.tab[COPPY_BATCH.queue[COPPY_BATCH.index]]);
+        executeCoppyItem(COPPY_BATCH.tab.items[COPPY_BATCH.queue[COPPY_BATCH.index]]);
       }
       else {
         //done batch callback here
@@ -579,10 +587,10 @@ function populateCoppy()
 
 function beginUpdateCoppyMenu()
 {
-  var tabname = $('.cadet_coppy_tab_select').val();
-  if (tabname !== null)
+  var tabid = $('.cadet_coppy_tab_select option:selected').data('id');
+  if (tabid !== null)
   {
-    chrome.runtime.sendMessage({command: "getcoppytab", tab: tabname});
+    chrome.runtime.sendMessage({command: "getcoppytab", tab: tabid});
   } else {
     $('.cadet_coppy_wrap').empty();
   }
@@ -590,7 +598,7 @@ function beginUpdateCoppyMenu()
 
 function updateCoppyMenu(request)
 {
-  var tab = request.tab;
+  var tab = request.tab.items;
   $('.cadet_coppy_wrap').empty();
   var item = '<div class="coppy_item_wrap"><img/><a class="cadet_action coppy_item"></a></div>';
   var max = 0;

@@ -37,11 +37,11 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "newcoppytab")
   {
-    createCoppyTab(request, function(tab)
+    createCoppyTab(request, function(tab, id)
     {
     //  getCoppyData(function(data) {
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {command: "newtabcallback", tab: tab, name: request.name});
+          chrome.tabs.sendMessage(tabs[0].id, {command: "newtabcallback", tab: tab, id: id});
         });
       //});
     });
@@ -234,12 +234,15 @@ function createCoppyTab(tab, callback)
     // set map to current tabs map
     var obj = items.coppyjr;
     // add new tab to map
-    obj[tab.name] = tab.data != undefined ? tab.data : {};
+    var id = Object.keys(obj).length + 1;
+    obj[id] = {};
+    obj[id].items = tab.data != undefined ? tab.data : {};
+    obj[id].name = tab.name;
     // update tabs map
     chrome.storage.local.set({
       coppyjr: obj
     }, function() {
-      callback(obj[name]);
+      callback(obj[id], id);
     });
   });
 }
@@ -253,7 +256,7 @@ function createCoppyItem(request, callback)
     // Get the item's parent tab object and insert the new item
     var parent = obj[request.parenttab];
     request.data.index = Object.keys(obj[request.parenttab]).length + 1;
-    parent[request.name] = request.data;
+    parent.items[request.name] = request.data;
     // update the parent tab in the coppyjr object
     obj[request.parenttab] = parent;
     // update the coppyjr object in storage
@@ -296,7 +299,7 @@ function getCoppyItem(name, parenttab, callback)
     coppyjr : {}
   }, function(items) {
     var tab = items.coppyjr[parenttab];
-    callback(tab[name]);
+    callback(tab.items[name]);
   });
 }
 
@@ -310,7 +313,7 @@ function deleteCoppyItems(items, callback)
     for (i in items)
     {
       tab = items[i];
-      delete obj[tab][i];
+      delete obj[tab].items[i];
     }
     chrome.storage.local.set({
       coppyjr: obj
