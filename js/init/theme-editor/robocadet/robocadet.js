@@ -1,5 +1,6 @@
 var OPEN_COPPY_TAB;
 var COPPY_BATCH = {};
+var RELOAD_HANDLED = false;
 
 $(document).ready(function() {
 
@@ -139,8 +140,19 @@ function loadCadetListeners()
     }
   });
 
-  window.onbeforeunload = function() {
-      saveOpenTabs();
+  window.onbeforeunload = function(e) {
+      if (!RELOAD_HANDLED)
+      {
+        e.preventDefault();
+        saveOpenTabs();
+        injectScript(function() {
+          $('.template-editor-close-tab').click();
+        });
+        setTimeout(function() {
+          location.reload();
+        }, 200);
+        RELOAD_HANDLED = true;
+      }
   }
 
   $(document).on('click', '.cadet_new_coppy_tab input[name="create"]', function() {
@@ -401,6 +413,9 @@ function updateToolbar()
   } else if (menu.hasClass('coppy_bulk_edit'))
   {
     $('.cadet_coppy_bulk_tool').show();
+  } else if (menu.hasClass('cadet_files_menu'))
+  {
+    $('.cadet_files_tool').show();
   }
 }
 

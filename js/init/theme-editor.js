@@ -55,12 +55,27 @@ function openSavedTabs()
   chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.command == "settabs"){
-        for (var i = 0; i < request.tabs.length; i++)
+      if (request.tabs.length <= 0)
+      {
+        return;
+      }
+      var tar = document.querySelector('strong[data-bind="currentTab.basename"]');
+      var i = 1;
+      var observer = new MutationObserver(function() {
+        injectScript(function(s) {
+            $('[data-asset-key="' + s + '"]').click();
+        }, [request.tabs[i]]);
+        i++;
+        if (i >= request.tabs.length)
         {
-          injectScript(function(s) {
-              $('[data-asset-key="' + s + '"]').click();
-          }, [request.tabs[i]]);
+          observer.disconnect();
         }
+      });
+      observer.observe(tar, {childList: true});
+      //click the first asset to start the mutation observer
+      injectScript(function(s) {
+          $('[data-asset-key="' + s + '"]').click();
+      }, [request.tabs[0]]);
     }
   });
 

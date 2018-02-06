@@ -252,6 +252,13 @@
      <img class="loading" />
    </div>
 
+   <div class="cadet_new_file cadet_menu" style="display:none;">
+     <h3>Name:</h3>
+     <input type="text"/>
+     <h3>Content</h3>
+     <input type="text" name="cadet_file_content"/>
+   </div>
+
    <div class="coppy_confirm_delete cadet_menu" style="display:none;">
      <h2>Are You Sure?</h2>
      <input type="button" name="confim_delete" class="cadet_menu_toggle" data-opens="cadet_coppy_menu" value="Yes" />
@@ -320,6 +327,7 @@
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_confirm_delete" style="display:none;">Delete..</a>
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_export" style="display:none;">Export..</a>
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_import" style="display:none;">Import..</a>
+    <a class="cadet_menu_toggle cadet_files_tool" data-opens="cadet_new_file" style="display:none;">+New File..</a>
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy" style="display:none;">+New</a>
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy_tab" style="display:none;">+New Tab</a>
     <a class="cadet_menu_toggle coppy_item_tool" data-opens="coppy_item_advanced" style="display:none;">Advanced</a>
