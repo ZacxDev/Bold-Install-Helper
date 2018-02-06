@@ -418,7 +418,15 @@ function getEndOfParentElement(data, line, hook) {
         skipNext = false;
         continue;
       } else {
-        break;
+        if (i == line)
+        {
+          if (lines[i].indexOf('<') <lines[i].indexOf(hook))
+          {
+            break;
+          }
+        } else {
+          break;
+        }
       }
     }
   }
@@ -429,6 +437,7 @@ function getEndOfParentElement(data, line, hook) {
     {
       return line;
     }
+    lines[i] = lines[i].trim();
     if (lines[i].indexOf('>') != -1)
     {
       if (lines[i].indexOf(' ') != -1 && lines[i].indexOf(' ') < lines[i].indexOf('>'))
@@ -458,7 +467,10 @@ function getEndOfParentElement(data, line, hook) {
         {
           //once we find the opening tag, we need to check the same line again
           foundOpen = true;
+          matchIndex = lines[n].indexOf('</' + ele) + ("</" + ele).length;
+          matchOn = n;
           n--;
+          continue;
         } else {
           skipNext = true;
           matchOn = n;

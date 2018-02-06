@@ -140,6 +140,10 @@ function loadCadetListeners()
     }
   });
 
+  $(document.body).on('click', '[href]:not([data-asset-key])', function() {
+    RELOAD_HANDLED = true;
+  });
+
   window.onbeforeunload = function(e) {
       if (!RELOAD_HANDLED)
       {
