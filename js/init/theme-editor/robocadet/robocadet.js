@@ -342,6 +342,10 @@ function loadCadetListeners()
     $(this).next('.coppy_hooks_advanced_options').css('max-height', '0');
   })
 
+  $(document).on('click', "[data-opens='coppy_item_edit']", function() {
+    OPEN_COPPY_TAB = $(this).siblings('[data-parent]').data('parent');
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -400,6 +404,7 @@ function updateToolbar()
   $('.cadet_coppy_tool').hide();
   $('.coppy_item_tool').hide();
   $('.coppy_advanced_tool').hide();
+  $('.cadet_files_tool').hide();
   $('.cadet_coppy_bulk_tool').hide();
 
   if (menu.hasClass('cadet_snippets_menu'))
@@ -420,6 +425,12 @@ function updateToolbar()
   } else if (menu.hasClass('cadet_files_menu'))
   {
     $('.cadet_files_tool').show();
+  }
+
+  if (!menu.hasClass('coppy_item_advanced'))
+  {
+    $('[name="coppy_item_advaced_done"]').attr('data-opens', 'cadet_new_coppy');
+    $('.cadet_menu_toggle.coppy_advanced_tool').attr('data-opens', 'cadet_new_coppy');
   }
 }
 
@@ -538,10 +549,12 @@ function loadCoppyListeners()
       var files = item.rawfiles;
       menu.find('[name="coppy_item_name_edit"]').val(request.name);
       menu.find('[name="coppy_item_name_edit"]').attr('data-oldname', request.name);
+      menu.find('[name="coppy_item_name_edit"]').attr('data-parent', request.name);
       menu.find('.coppy_item_content_edit').text(item.content);
 
       advmenu.find('[name="coppy_item_files"]').val(files.join(','));
       advmenu.find('[name="coppy_item_advaced_done"]').attr('data-opens', 'coppy_item_edit');
+      $('.cadet_menu_toggle.coppy_advanced_tool').attr('data-opens', 'coppy_item_edit');
       $('#per_file_hooks').prop('checked', true);
       updatePerFileHooks();
       for (var i = 0; i < files.length; i++)
@@ -617,6 +630,11 @@ function beginUpdateCoppyMenu()
 
 function updateCoppyMenu(request)
 {
+  if (request.tab == undefined)
+  {
+    $('.cadet_coppy_wrap').empty();
+    return;
+  }
   var tab = request.tab.items;
   $('.cadet_coppy_wrap').empty();
   var item = '<div class="coppy_item_wrap"><img/><a class="cadet_action coppy_item"></a></div>';
@@ -642,7 +660,7 @@ function updateCoppyMenu(request)
     $('[data-index="' + i + '"]').prependTo('.cadet_coppy_wrap');
   }
 
-  OPEN_COPPY_TAB = request.name;
+  OPEN_COPPY_TAB = request.name != undefined ? request.name : request.id;
 }
 
 function updatePerFileHooks()
