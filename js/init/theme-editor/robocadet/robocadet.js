@@ -70,6 +70,19 @@ function loadCadetListeners()
   $(document).on('click', '.cadet_peek', function() {
     $('.cadet_modal').show();
     $('.cadet_peek').hide();
+    if ($('.cadet_stylesheet').length == 0)
+    {
+      var next = $('.cadet_theme_select').find(':selected').attr('name');
+      updateTheme(next);
+    }
+    if ($('.ui-resizable-handle').length == 0)
+    {
+      injectScript(function() {
+          $('.cadet_modal').resizable({
+              aspectRatio: true
+          });
+      });
+    }
   });
   $(document).on('click', '.cadet_expand', function() {
     hideDropdown($('.cadet_expand_selected'));
@@ -91,7 +104,7 @@ function loadCadetListeners()
   });
 
   $(document).on('click', '.cadet_menu_toggle', function() {
-    var tar = $(this).data('opens');
+    var tar = this.dataset['opens'];
     toggleMenu($('.' + tar));
   });
 
@@ -212,9 +225,9 @@ function loadCadetListeners()
       hookSetObj.file = hooksEle.data('file');
     }
 
-    if ($(this).data('parent') != undefined)
+    if ($('[name="coppy_item_name_edit"]').data('parent') != undefined)
     {
-      parenttab = $(this).data('parent');
+      parenttab = $('[name="coppy_item_name_edit"]').data('parent');
     }
 
     chrome.runtime.sendMessage({command: command, oldname: oldname, parenttab: parenttab, name: name, data:
@@ -344,6 +357,14 @@ function loadCadetListeners()
 
   $(document).on('click', "[data-opens='coppy_item_edit']", function() {
     OPEN_COPPY_TAB = $(this).siblings('[data-parent]').data('parent');
+  });
+
+  $('.cadet_coppy_tool[data-opens="cadet_new_coppy"]').on('click', function(e) {
+    if (OPEN_COPPY_TAB == undefined)
+    {
+     e.stopPropagation();
+      e.preventDefault();
+    }
   });
 
 }
@@ -491,6 +512,9 @@ function loadCoppyListeners()
       if (Object.keys(request.coppy.coppyjr)[0] != undefined)
       {
         chrome.runtime.sendMessage({command: "getcoppytab", tab: Object.keys(request.coppy.coppyjr)[0]});
+      } else {
+        OPEN_COPPY_TAB = undefined;
+        $('.cadet_coppy_wrap').empty();
       }
     } else if (request.command == "newtabcallback")
     {
@@ -549,7 +573,7 @@ function loadCoppyListeners()
       var files = item.rawfiles;
       menu.find('[name="coppy_item_name_edit"]').val(request.name);
       menu.find('[name="coppy_item_name_edit"]').attr('data-oldname', request.name);
-      menu.find('[name="coppy_item_name_edit"]').attr('data-parent', request.name);
+      menu.find('[name="coppy_item_name_edit"]').attr('data-parent', request.parent);
       menu.find('.coppy_item_content_edit').text(item.content);
 
       advmenu.find('[name="coppy_item_files"]').val(files.join(','));
@@ -588,7 +612,9 @@ function loadCoppyListeners()
        {
          COPPY_BATCH.backup[request.lastasset] = request.assetbackup;
        }
-       COPPY_BATCH.report[COPPY_BATCH.queue[COPPY_BATCH.index]] = request.inserted;
+       COPPY_BATCH.report[COPPY_BATCH.queue[COPPY_BATCH.index]] = {};
+       COPPY_BATCH.report[COPPY_BATCH.queue[COPPY_BATCH.index]].inserted = request.response.inserted;
+       COPPY_BATCH.report[COPPY_BATCH.queue[COPPY_BATCH.index]].message = request.response.message;
        if (COPPY_BATCH.index + 1 < COPPY_BATCH.max)
        {
          COPPY_BATCH.index++;
@@ -729,8 +755,8 @@ function doneCoppyBatchCallback()
   {
     asset = COPPY_BATCH.queue[f];
     $item = $(item);
-    $item.find('span').text(asset);
-    if (COPPY_BATCH.report[asset])
+    $item.find('span').text(asset + " - " + COPPY_BATCH.report[asset].message);
+    if (COPPY_BATCH.report[asset].inserted)
     {
       $item.find('img').attr('src', chrome.extension.getURL('resources/checkmark_green.png'));
     } else {

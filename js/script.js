@@ -185,3 +185,12 @@ function readTextFile(file, callback)
     }
     rawFile.send(null);
 }
+
+function getIndexsOf(str, x)
+{
+  var indices = [];
+  for(var i=0; i<str.length;i++) {
+      if (str[i] === x) indices.push(i);
+  }
+  return indices;
+}

@@ -92,7 +92,7 @@ function(request, sender, sendResponse) {
         {
           command = request.response;
         }
-        chrome.tabs.sendMessage(tabs[0].id, {command: command, item: data, name: request.name});
+        chrome.tabs.sendMessage(tabs[0].id, {command: command, item: data, name: request.name, parent: request.parenttab});
       });
     });
   }
@@ -350,8 +350,8 @@ function updateCoppyItem(request, callback)
     // Get the item's parent tab object and insert the new item
     var parent = obj[request.parenttab];
     request.data.index = Object.keys(obj[request.parenttab]).length + 1;
-    delete parent[request.oldname];
-    parent[request.name] = request.data;
+    delete parent.items[request.oldname];
+    parent.items[request.name] = request.data;
     // update the parent tab in the coppyjr object
     obj[request.parenttab] = parent;
     // update the coppyjr object in storage

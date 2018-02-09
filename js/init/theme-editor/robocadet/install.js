@@ -206,7 +206,7 @@ function injectCoppyItem()
   var data = $('.coppy_dump').text();
   this.item = JSON.parse(data);
   var per_file_hooks = this.item.file_hooks_link != undefined;
-  console.log(this.item + '[Install Bot] Starting injection..');
+  console.log('[Install Bot] Starting injection..');
   var key, name;
     var line = "";
     var insertMap = {};
@@ -218,13 +218,19 @@ function injectCoppyItem()
     var files_hooks_index = 0;
     var f;
     var f_options;
+    var response = {};
 
     //for (f in this.item.file_hooks_link)
     //{
     var contine_files_hooks = function() {
       if (files_hooks_index >= Object.keys(this.item.file_obj).length)
       {
-        chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: false});
+        response.inserted = false;
+        if (response.message == undefined)
+        {
+          response.message = "No hook found";
+        }
+        chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, response: response});
         return;
       }
       f = this.item.file_obj[files_hooks_index].file;
@@ -240,6 +246,7 @@ function injectCoppyItem()
         console.log("[Install Bot] Starting " + key + "/" + name + " injection..");
         asset = key + '\/' + name;
         file_cache[asset] = data;
+        var content = this.item.content.split('\n');
 
         data = data.split('\n');
         var hooks = this.item.file_obj[files_hooks_index].hooks;
@@ -251,6 +258,18 @@ function injectCoppyItem()
         for (var i = 0; i < data.length; i++)
         {
           line = data[i];
+          //look for content already in file.
+          for (var c = 0; c < content.length; c++)
+          {
+            if (line.indexOf(content[c]) != -1)
+            {
+              // trying to determine if it's a unique hook or just something genaric
+              if (content[c].indexOf('include') !== -1 || content[c].indexOf('class') !== -1)
+              {
+                content.splice(c, 1);
+              }
+            }
+          }
           //look for hooks in the file
           for (var h = 0; h < hooks.length; h++)
           {
@@ -262,8 +281,8 @@ function injectCoppyItem()
           }
         }
 
-        // if no hooks were found, insertMap will be empty
-        if (!$.isEmptyObject(insertMap))
+        // if no hooks were found, insertMap will be empty, or if all the content is already in the file
+        if (!$.isEmptyObject(insertMap) && content.length !== 0)
         {
           // iterate insertMap to see which hook is closest to start of array
           var using_hook = Object.keys(insertMap)[0];
@@ -312,10 +331,10 @@ function injectCoppyItem()
           if (overrideIndex != undefined)
           {
             // insert at end of parent element
-            data.splice(overrideIndex, 0, this.item.content);
+            data.splice(overrideIndex, 0, content.join('\n'));
           } else {
             // insert the coppy item content under the preferred hook
-            data.splice(insertMap[using_hook] + insertOffset, 0, this.item.content);
+            data.splice(insertMap[using_hook] + insertOffset, 0, content.join('\n'));
           }
           data = data.join('\n');
           //reset insertMap to prevent the next file from using the same hooks
@@ -328,14 +347,20 @@ function injectCoppyItem()
             // push updated file
             pushFile(key, name, data, function(){
               console.log("[Install Bot] Done injecting " + key + "/" + name);
+              response.message = "Success";
+              response.inserted = true;
               // send message to background script to start next injection
-              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, inserted: true});
+              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, response: response});
               // if option is set to only insert in one file
               done_injection = true;
               //callback();
           });
       }
     } else {
+      if (content.length === 0)
+      {
+        response.message = "Content already in file";
+      }
       callback();
     }
   }
@@ -403,9 +428,30 @@ function getEndOfParentElement(data, line, hook) {
     {
       if (i == line)
       {
-        if (lines[i].indexOf('</') < lines[i].indexOf(hook))
-        {
-          skipNext = true;
+         if (lines[i].indexOf('</') < lines[i].indexOf(hook))
+         {
+          // find all indexs of '<', then find the one closest to '</', if there are more the one '<', cut the string out and recheck the line, else skip next
+          var str = lines[i];
+          var closest = 0;
+          var inx = 0;
+          for(var n=0; n<str.length;n++) {
+              if (str[n] === '<')
+              {
+                inx++;
+                if (n < lines[i].indexOf('</') && n > closest)
+                {
+                  closest = n;
+                }
+              }
+          }
+          if (inx > 1)
+          {
+            lines[i] = lines[i].substring(0, closest) + lines[i].substring(lines[i].indexOf('</') + 2, lines[i].length);
+            i++;
+            continue;
+          } else {
+            skipNext = true;
+          }
         }
       } else {
         skipNext = true;
@@ -452,13 +498,31 @@ function getEndOfParentElement(data, line, hook) {
       end = lines[i].length;
     }
     var ele = lines[i].substring(lines[i].indexOf('<') + 1, end);
+    lines = data.slice(0);
     var matchOn, matchIndex = 0, foundOpen = false;
     for (var n = i; n < lines.length; n++)
     {
       //remove the end tag from this line so we dont keep finding the same one
       if (n === matchOn)
       {
-        lines[n] = lines[n].substring(matchIndex, lines[n].length);
+        // var str = lines[n];
+        // var inx = 0;
+        // for(var j=0; j<str.length;j++) {
+        //     if (str[j] === '/')
+        //     {
+        //       inx++;
+        //       if (j < lines[n].indexOf('</' + ele) && j > closest)
+        //       {
+        //         closest = j;
+        //       }
+        //     }
+        // }
+        // if (inx > 1)
+        // {
+        //   lines[n] = lines[n].substring(0, closest - 1) + lines[n].substring(lines[n].indexOf('</' + ele) + ('</' + ele).length, lines[n].length);
+        // } else {
+          lines[n] = lines[n].substring(matchIndex, lines[n].length);
+        //}
       }
       // if the line is an open tag and it's not the same one we start on
       if (lines[n].indexOf('<' + ele) != -1)
@@ -472,7 +536,10 @@ function getEndOfParentElement(data, line, hook) {
           n--;
           continue;
         } else {
-          skipNext = true;
+        //  if (lines[n].indexOf('<' + ele) > lines[n].indexOf(hook))
+        //  {
+            skipNext = true;
+          //}
           matchOn = n;
         }
       }
