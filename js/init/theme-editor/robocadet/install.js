@@ -39,7 +39,7 @@ function isNested(list, start) {
   return -1;
 }
 
-function getFile(key, name, callback)
+function getFile(key, name, callback, fail)
 {
   var id = $('.action-bar__top-links a').attr('href');
   id = id.substring(id.indexOf("s/") + 2, id.indexOf("/editor"));
@@ -48,7 +48,8 @@ function getFile(key, name, callback)
   $.get(id + '/assets.json?asset[key]=' + key + '/' + name + '&theme_id=' + id, function(data) {
     file_history[key + "\/" + name] = data.asset.value;
     callback(key, name, data.asset.value);
-  });
+  })
+  .fail(fail);
 }
 
 function pushAsset(asset, data, callback)
@@ -371,7 +372,10 @@ function injectCoppyItem()
         files_hooks_index++;
         contine_files_hooks();
       });
-        });
+    }, function() {
+      files_hooks_index++;
+      contine_files_hooks();
+    });
     } else {
       search_and_push_asset(key, name, file_cache[key + '\/' + name], function() {
         files_hooks_index++;
@@ -531,7 +535,7 @@ function getEndOfParentElement(data, line, hook) {
         {
           //once we find the opening tag, we need to check the same line again
           foundOpen = true;
-          matchIndex = lines[n].indexOf('</' + ele) + ("</" + ele).length;
+          matchIndex = lines[n].indexOf('<' + ele) + ("<" + ele).length;
           matchOn = n;
           n--;
           continue;

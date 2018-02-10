@@ -20,3 +20,20 @@
   max-height: 0;
   transform-origin: top;
 }
+
+.cadet_modal h3 {
+  color: gray;
+}
+
+.cadet_modal textarea {
+  background-color: transparent;
+  border: 1px #cccccc solid;
+}
+
+.cadet_modal input[type="text"] {
+  border: 1px #cccccc solid;
+}
+
+.cadet_menu {
+  padding-bottom: 1%;
+}
