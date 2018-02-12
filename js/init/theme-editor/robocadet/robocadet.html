@@ -245,6 +245,13 @@
 
    <div class="cadet_new_file cadet_menu" style="display:none;">
      <h3>Name:</h3>
+     <select name="cadet_file_type">
+       <option>sections</option>
+       <option>templates</option>
+       <option>snippets</option>
+       <option>assets</option>
+     </select>
+     <p>/</p>
      <input type="text" name="cadet_file_name"/>
      <h3>Content</h3>
      <textarea name="cadet_file_content"/></textarea>
@@ -265,6 +272,17 @@
      <h2>Are You Sure?</h2>
      <input type="button" name="confim_files_delete" class="cadet_menu_toggle" data-opens="cadet_files_menu" value="Yes" />
      <input type="button" class="cadet_menu_toggle" data-opens="cadet_files_bulk_edit" value="No" />
+   </div>
+
+   <div class="cadet_files_upload cadet_menu" style="display:none;">
+     <h3>You are about to upload the folowing files:</h3>
+     <div class="cadet_files_confirm_list"></div>
+     <input type="button" name="cadet_files_confirm_upload" class="cadet_menu_toggle" data-opens="cadet_coppy_loading" value="Upload" />
+   </div>
+
+   <div class="cadet_upload_done cadet_menu" style="display:none;">
+     <h3>The following files were uploaded:</h3>
+     <div class="cadet_files_uploaded_list"></div>
    </div>
 
    <div class="coppy_confirm_delete cadet_menu" style="display:none;">
@@ -331,6 +349,7 @@
        <option data-app="mc">Multi Currency</option>
      </select>
      <img class="coppy_gear cadet_files_tool cadet_menu_toggle" data-opens="cadet_files_bulk_edit" style="display:none;" />
+     <img class="cadet_files_tool coppy_execute_all cadet_menu_toggle" data-opens="cadet_files_upload" style="display:none;" />
     <img class="coppy_gear cadet_coppy_tool cadet_menu_toggle" data-opens="coppy_bulk_edit" style="display:none;" />
     <img class="coppy_execute_all cadet_coppy_tool cadet_menu_toggle" data-opens="coppy_execute_confirm" style="display:none;" />
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_confirm_delete" style="display:none;">Delete..</a>

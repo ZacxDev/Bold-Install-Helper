@@ -2,6 +2,7 @@ var cartFiles = ['cart.liquid', 'cart-template.liquid', 'header.liquid', 'cart-d
 // cartInclude, forItemInclude, boldDesc, itemPrice, cartTotalPrice, itemLinePrice, showPaypal
 var cart_log = {};
 var file_history = {};
+var EXTENSION_ID = "clgokdfdcmjdmpooehnjkjdlhinkocgc";
 
 $(document).ready(function() {
   $(document).on('auxclick', '.template-editor-tab', function(e) {
@@ -37,6 +38,13 @@ function isNested(list, start) {
       }
   }
   return -1;
+}
+
+function getAsset(asset, success, fail)
+{
+  key = asset.substring(0, asset.indexOf('/'));
+  name = asset.substring(asset.indexOf('/') + 1);
+  getFile(key, name, success, fail);
 }
 
 function getFile(key, name, callback, fail)
@@ -231,7 +239,7 @@ function injectCoppyItem()
         {
           response.message = "No hook found";
         }
-        chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, response: response});
+        chrome.runtime.sendMessage(EXTENSION_ID, {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, response: response});
         return;
       }
       f = this.item.file_obj[files_hooks_index].file;
@@ -351,7 +359,7 @@ function injectCoppyItem()
               response.message = "Success";
               response.inserted = true;
               // send message to background script to start next injection
-              chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, response: response});
+              chrome.runtime.sendMessage(EXTENSION_ID, {command: 'continue_coppy_batch', lastasset: asset, assetbackup: databackup, response: response});
               // if option is set to only insert in one file
               done_injection = true;
               //callback();
@@ -403,7 +411,7 @@ function updateCodeMirror(key, name, data)
 function undoLastInstallBotAction()
 {
   console.log('[Install Bot] Begining injection reversal');
-  chrome.runtime.sendMessage('clgokdfdcmjdmpooehnjkjdlhinkocgc', {command: 'undo_last_coppy_batch'});
+  chrome.runtime.sendMessage(EXTENSION_ID, {command: 'undo_last_coppy_batch'});
 }
 
 // this function pushes the old file data to undo the coppy batch

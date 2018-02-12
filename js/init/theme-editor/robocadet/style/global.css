@@ -50,9 +50,27 @@
   font-size: 16px;
 }
 
-.coppy_bulk_tab img {
+.coppy_bulk_tab img, .coppy_bulk_item img {
   display: inline;
   margin-right: 5px;
   max-width: 15px;
   cursor:  pointer;
+}
+
+.cadet_menu select[name="cadet_file_type"] {
+  display: inline-block;
+}
+
+.cadet_menu input[name="cadet_file_name"] {
+  display: inline-block;
+      margin: 0;
+}
+
+div.cadet_new_file p {
+  color: white;
+  font-weight: 400;
+}
+
+.cadet_files_confirm_list span {
+  display: block;
 }

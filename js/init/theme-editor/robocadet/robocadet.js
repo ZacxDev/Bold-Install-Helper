@@ -1,6 +1,8 @@
 var OPEN_COPPY_TAB;
 var COPPY_BATCH = {};
 var RELOAD_HANDLED = false;
+var CADET_UPLOAD_BATCH = {};
+var EXTENSION_ID = "clgokdfdcmjdmpooehnjkjdlhinkocgc";
 
 $(document).ready(function() {
 
@@ -390,7 +392,7 @@ function loadCadetListeners()
   });
 
   $('[name="cadet_file_create"]').on('click', function() {
-    var name = $('[name="cadet_file_name"]').val();
+    var name = $('[name="cadet_file_type"]').val() + '/' + $('[name="cadet_file_name"]').val();
     var content = $('[name="cadet_file_content"]').val();
     var parent_id = $('.cadet_files_tab_select').find(':selected').data('id');
     chrome.extension.sendMessage({command: "newfileitem", name: name, content: content, parent: parent_id});
@@ -420,8 +422,19 @@ function loadCadetListeners()
     chrome.extension.sendMessage({command: "deletefilesdata", items: items, groups: groups});
   });
 
-  $('.cadet_file_trigger').on('click', function() {
-    
+  $(document).on('click', '.cadet_file_trigger', function() {
+    var id = $(this).data('id');
+    var gid = $(this).data('group-id');
+    chrome.extension.sendMessage({command: 'getfileitem', id: id, group_id: gid, response: "returnfilesitem_forinjection"})
+  });
+
+  $('[data-opens="cadet_files_upload"]').on('click', function() {
+    var id = $('.cadet_files_tab_select').find(':selected').data('id');
+    chrome.extension.sendMessage({command: "getfilegroup", response: "returnfilegroup_populate_confirm_upload", id:id})
+  });
+
+  $('[name="cadet_files_confirm_upload"]').on('click', function() {
+    uploadFilesItem(CADET_UPLOAD_BATCH.queue[Object.keys(CADET_UPLOAD_BATCH.queue)[0]]);
   });
 
 }
@@ -709,6 +722,31 @@ function loadCoppyListeners()
     } else if (request.command == "updatecurrentgroup")
     {
       updateCurrentGroup(request.group);
+    } else if (request.command == "returnfilesitem_forinjection")
+    {
+      uploadFilesItem(request.item);
+    } else if (request.command == "returnfilegroup_populate_confirm_upload")
+    {
+      CADET_UPLOAD_BATCH = {};
+      CADET_UPLOAD_BATCH.queue = request.group.items;
+      CADET_UPLOAD_BATCH.index = 0;
+      CADET_UPLOAD_BATCH.report = {};
+      $('.cadet_files_confirm_list').empty();
+      var s = "<span></span>";
+      for (i in request.group.items)
+      {
+        $(s).text(request.group.items[i].name).appendTo('.cadet_files_confirm_list');
+      }
+    } else if (request.command == "continue_files_batch")
+    {
+      CADET_UPLOAD_BATCH.report[CADET_UPLOAD_BATCH.queue[Object.keys(CADET_UPLOAD_BATCH.queue)[CADET_UPLOAD_BATCH.index]].name] = request.success;
+      CADET_UPLOAD_BATCH.index += 1;
+      if (CADET_UPLOAD_BATCH.index < Object.keys(CADET_UPLOAD_BATCH.queue).length)
+      {
+        uploadFilesItem(CADET_UPLOAD_BATCH.queue[Object.keys(CADET_UPLOAD_BATCH.queue)[CADET_UPLOAD_BATCH.index]]);
+      } else {
+        doneFilesBatch();
+      }
     }
   });
 }
@@ -932,4 +970,43 @@ function updateCurrentGroup(group)
     file.find('a').attr('data-id', f);
     file.appendTo('.cadet_files_menu');
   }
+}
+
+function uploadFilesItem(item)
+{
+  $('.cadet_file_item_dump').remove();
+  $('<xmp class="cadet_file_item_dump"></xmp>').text(JSON.stringify(item)).appendTo(document.body);
+  injectScript(function() {
+    var dump = $('.cadet_file_item_dump').text();
+    this.cadet_item = JSON.parse(dump);
+    getAsset(this.cadet_item.name, function() {
+      // the asset already exists
+      chrome.runtime.sendMessage(EXTENSION_ID, {command:'continue_files_batch', success: false});
+    }, () => {
+      pushAsset(this.cadet_item.name, this.cadet_item.content, function() {
+        chrome.runtime.sendMessage(EXTENSION_ID, {command:'continue_files_batch', success: true});
+      });
+    })
+  });
+}
+
+function doneFilesBatch()
+{
+  $('.cadet_files_uploaded_list').empty();
+  var s = "<div><img/><span></span></div>";
+  for (i in CADET_UPLOAD_BATCH.queue)
+  {
+    var $s = $(s);
+    $s.find('span').text(CADET_UPLOAD_BATCH.queue[i].name);
+    if (CADET_UPLOAD_BATCH.report[CADET_UPLOAD_BATCH.queue[i].name])
+    {
+      $s.find('img').attr('src', chrome.extension.getURL('resources/checkmark_green.png'));
+    } else {
+      $s.find('img').attr('src', chrome.extension.getURL('resources/failed.png'));
+      $s.find('span').append(' - File already exists')
+    }
+    $s.appendTo('.cadet_files_uploaded_list');
+  }
+
+  toggleMenu('.cadet_upload_done');
 }

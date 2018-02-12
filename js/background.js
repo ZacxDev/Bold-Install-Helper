@@ -129,8 +129,13 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "getfilegroup")
   {
+    var response = "updatecurrentgroup";
+    if (request.response != undefined)
+    {
+      response = request.response;
+    }
     getFileGroup(request, function(group) {
-      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: 'updatecurrentgroup', group: group})
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: response, group: group})
     });
   }
   else if (request.command == "newfileitem")
@@ -138,6 +143,17 @@ function(request, sender, sendResponse) {
     newFileItem(request, function(data) {
       chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: 'updatecurrentgroup', group: data});
     })
+  }
+  else if (request.command == "getfileitem")
+  {
+    var response = "returnfileitem";
+    if (request.response != undefined)
+    {
+      response = request.response;
+    }
+    getFileItem(request, function(data) {
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: response, item: data})
+    });
   }
   else if (request.command == "deletefilesdata")
   {
@@ -177,14 +193,13 @@ chrome.runtime.onMessageExternal.addListener(
 function(request, sender, sendResponse) {
   if (request.command == "continue_coppy_batch")
   {
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
       // forward request map to content script
-      chrome.tabs.sendMessage(tabs[0].id, request);
-    });
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, request);
   } else if (request.command == "undo_last_coppy_batch") {
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, request);
-    });
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, request);
+  } else if (request.command == "continue_files_batch")
+  {
+    chrome.tabs.sendMessage(ACTIVE_TAB.id, request);
   }
 });
 
@@ -445,6 +460,16 @@ function getFileGroup(req, callback)
     var obj = data.ib_files;
     callback(obj[req.id]);
   })
+}
+
+function getFileItem(req, callback)
+{
+  chrome.storage.local.get({
+    ib_files: {}
+  }, function(data) {
+    var obj = data.ib_files;
+    callback(obj[req.group_id].items[req.id]);
+  });
 }
 
 function deleteFilesData(req, callback)
