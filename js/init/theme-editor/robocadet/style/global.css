@@ -28,12 +28,31 @@
 .cadet_modal textarea {
   background-color: transparent;
   border: 1px #cccccc solid;
+  color: #999;
 }
 
 .cadet_modal input[type="text"] {
   border: 1px #cccccc solid;
+  color: #cccccccc;
 }
 
 .cadet_menu {
   padding-bottom: 1%;
+}
+
+.bulk_files_list_wrap input[type="checkbox"] {
+  width: auto;
+  display: inline-block;
+  margin-right: 1%;
+}
+
+.bulk_files_list_wrap span {
+  font-size: 16px;
+}
+
+.coppy_bulk_tab img {
+  display: inline;
+  margin-right: 5px;
+  max-width: 15px;
+  cursor:  pointer;
 }

@@ -1,5 +1,6 @@
 
 var url;
+var ACTIVE_TAB;
 
 chrome.runtime.onMessage.addListener(
 function(request, sender, sendResponse) {
@@ -11,39 +12,29 @@ function(request, sender, sendResponse) {
     chrome.storage.local.get({selected_app: ""}, function(items) {
 
       // send app string back to tab
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {app: items.selected_app});
-      });
+        chrome.tabs.sendMessage(ACTIVE_TAB.id, {app: items.selected_app});
     });
   }
   else if (request.command == "savethemetabs")
   {
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-    saveThemeEditorTabs(request.tabs, tabs[0].url);
-    });
+      saveThemeEditorTabs(request.tabs, ACTIVE_TAB.url);
   }
   else if (request.command == "getthemetabs")
   {
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function(tabs) {
       getThemeEditorTabs(function(items) {
-        var store = "tabs_" + tabs[0].url.substring(0, tabs[0].url.indexOf('?') != -1 ? tabs[0].url.indexOf('?') : tabs[0].url.length);
+        var store = "tabs_" + ACTIVE_TAB.url.substring(0, ACTIVE_TAB.url.indexOf('?') != -1 ? ACTIVE_TAB.url.indexOf('?') : ACTIVE_TAB.url.length);
         if (items.cadet[store] != undefined)
         {
           var tablist = items.cadet[store];
-          chrome.tabs.sendMessage(tabs[0].id, {command: "settabs", tabs: tablist}, function() {});
+          chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: "settabs", tabs: tablist}, function() {});
         }
-      }, tabs[0].url);
-    });
+      }, ACTIVE_TAB.url);
   }
   else if (request.command == "newcoppytab")
   {
     createCoppyTab(request, function(tab, id)
     {
-    //  getCoppyData(function(data) {
-        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {command: "newtabcallback", tab: tab, id: id});
-        });
-      //});
+          chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: "newtabcallback", tab: tab, id: id});
     });
   }
   else if (request.command == "newcoppyitem")
@@ -51,9 +42,7 @@ function(request, sender, sendResponse) {
     createCoppyItem(request, function()
     {
       getCoppyData(function(data) {
-        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
-        });
+        chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: "setcoppy", coppy: data});
       });
     });
   }
@@ -65,9 +54,7 @@ function(request, sender, sendResponse) {
       command = request.response;
     }
     getCoppyData(function(data) {
-      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: command, coppy: data});
-      });
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: command, coppy: data});
     });
   }
   else if (request.command == "getcoppytab")
@@ -78,22 +65,18 @@ function(request, sender, sendResponse) {
       command = request.response;
     }
     getCoppyTab(request.tab, function(data) {
-      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: command, tab: data, name: request.tab});
-      });
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: command, tab: data, name: request.tab});
     });
   }
   else if (request.command == "getcoppyitem")
   {
     getCoppyItem(request.name, request.parenttab, function(data) {
-      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
         var command = 'returncoppyitem';
         if (request.response != undefined)
         {
           command = request.response;
         }
-        chrome.tabs.sendMessage(tabs[0].id, {command: command, item: data, name: request.name, parent: request.parenttab});
-      });
+        chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: command, item: data, name: request.name, parent: request.parenttab});
     });
   }
   else if (request.command == "deletecoppydata")
@@ -101,9 +84,7 @@ function(request, sender, sendResponse) {
     deleteCoppyItems(request.items, function() {
       deleteCoppyTabs(request.tabs, function() {
         getCoppyData(function(data) {
-          chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {command: 'setcoppy', coppy: data});
-          });
+            chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: 'setcoppy', coppy: data});
         });
       });
     });
@@ -113,9 +94,7 @@ function(request, sender, sendResponse) {
     updateCoppyItem(request, function()
     {
       getCoppyData(function(data) {
-        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {command: "setcoppy", coppy: data});
-        });
+        chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: "setcoppy", coppy: data});
       });
     });
   }
@@ -126,14 +105,48 @@ function(request, sender, sendResponse) {
   else if (request.command == "gettheme")
   {
     getTheme(function(t) {
-      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {command: "returntheme", theme: t});
-      });
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: "returntheme", theme: t});
     });
+  }
+  else if (request.command == "newfilegroup")
+  {
+    newFileGroup(request, function(data) {
+      getFileGroups(function(data) {
+        chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: "updatefilegroups", data: data});
+      })
+    });
+  }
+  else if (request.command == "getfilegroups")
+  {
+    var response = 'updatefilegroups';
+    if (request.response != undefined)
+    {
+      response = request.response;
+    }
+    getFileGroups(function(data) {
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: response, data: data});
+    });
+  }
+  else if (request.command == "getfilegroup")
+  {
+    getFileGroup(request, function(group) {
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: 'updatecurrentgroup', group: group})
+    });
+  }
+  else if (request.command == "newfileitem")
+  {
+    newFileItem(request, function(data) {
+      chrome.tabs.sendMessage(ACTIVE_TAB.id, {command: 'updatecurrentgroup', group: data});
+    })
+  }
+  else if (request.command == "deletefilesdata")
+  {
+    deleteFilesData(request);
   }
   else if (request.command == "init")
     {
       url = sender.tab.url;
+      ACTIVE_TAB = sender.tab;
 
       //don't run on extention pages
       if (url.indexOf("chrome-extension") != -1)
@@ -196,10 +209,6 @@ function loadCollaboratorAccounts(tab) {
   chrome.tabs.executeScript(tab.id, {file: "js/init/collabAccounts.js"}, function() {
   });
 }
-
-$(document).ready(function() {
-
-});
 
 function saveThemeEditorTabs(tabs, store)
 {
@@ -380,5 +389,86 @@ function getTheme(callback)
     else {
       callback(t.theme);
     }
+  });
+}
+
+function getFileGroups(callback)
+{
+  chrome.storage.local.get({
+    ib_files: {}
+  }, callback);
+}
+
+function newFileGroup(req, callback)
+{
+  chrome.storage.local.get({
+    ib_files: {}
+  }, function(data) {
+    var obj = data.ib_files;
+    var id = Object.keys(obj).length + 1;
+    obj[id] = {};
+    obj[id].name = req.name;
+    obj[id].items = {};
+    obj[id].id = id;
+    chrome.storage.local.set({
+      ib_files: obj
+    }, function()
+    {
+      callback(obj);
+    });
+  });
+}
+
+function newFileItem(req, callback)
+{
+  chrome.storage.local.get({
+    ib_files: {}
+  }, function(data) {
+    var obj = data.ib_files;
+    var items = obj[req.parent].items;
+    var id = Object.keys(items).length + 1;
+    items[id] = {}
+    items[id].name = req.name;
+    items[id].content = req.content;
+    obj[req.parent].items = items;
+    chrome.storage.local.set({ib_files: obj}, function() {
+      callback(obj[req.parent]);
+    });
+  });
+}
+
+function getFileGroup(req, callback)
+{
+  chrome.storage.local.get({
+    ib_files: {}
+  }, function(data) {
+    var obj = data.ib_files;
+    callback(obj[req.id]);
+  })
+}
+
+function deleteFilesData(req, callback)
+{
+  chrome.storage.local.get({
+    ib_files: {}
+  }, function(data) {
+    var obj = data.ib_files;
+    for (g in req.groups)
+    {
+      delete obj[req.groups[g]];
+    }
+    for (i in req.items)
+    {
+      if (req.groups.indexOf(i) == -1)
+      {
+        for (d in req.items[i])
+        {
+          delete obj[i].items[req.items[d]];
+        }
+      }
+    }
+    chrome.storage.local.set({
+      ib_files: obj
+    });
   });
 }

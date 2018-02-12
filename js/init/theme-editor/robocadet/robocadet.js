@@ -112,13 +112,13 @@ function loadCadetListeners()
     uploadAndIncludeFile('/snippets/bold-custom.txt', 'assets', 'bold-custom.css', '{{ "bold-custom.css" | asset_url | stylesheet_tag }}', 'bold-custom.css');
   });
 
-  $(document).on('click', '.files_jsboldhelpers', function() {
-    uploadAndIncludeFile('/snippets/bold-helper-functions.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
-  });
-
-  $(document).on('click', '.files_jsboldhelpers', function() {
-    uploadAndIncludeFile('/snippets/bold-helper-functions-ro.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
-  });
+  // $(document).on('click', '.files_jsboldhelpers', function() {
+  //   uploadAndIncludeFile('/snippets/bold-helper-functions.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
+  // });
+  //
+  // $(document).on('click', '.files_jsboldhelpers', function() {
+  //   uploadAndIncludeFile('/snippets/bold-helper-functions-ro.txt', 'assets', 'bold-helper-functions.js.liquid', '{{ "bold-helper-functions.js" | asset_url | script_tag }}', 'bold-helper-functions');
+  // });
 
   $(document).on('click', '.cadet_snip', function() {
     var $this = $(this);
@@ -287,7 +287,7 @@ function loadCadetListeners()
     }
   });
 
-  $(document).on('click', '[name="confim_delete"]', function() {
+  $(document).on('click', '[name="confirm_delete"]', function() {
 
     var items = {};
     $('.coppy_item_check:checked').each(function() {
@@ -367,6 +367,63 @@ function loadCadetListeners()
     }
   });
 
+  $('a.cadet_menu_toggle.cadet_files_tool[data-opens="cadet_new_file"]').on('click', function(e) {
+    var id = $('.cadet_files_tab_select').find(':selected').data('id');
+    if (id == undefined)
+    {
+      e.stopPropagation();
+       e.preventDefault();
+    }
+  });
+
+  $('[name="cadet_file_group_create"]').on('click', function() {
+    var name = $('[name="cadet_file_group_name"]').val();
+    chrome.extension.sendMessage({command: "newfilegroup", name: name});
+  });
+
+  $('[data-opens="cadet_files_menu"]').on('click', function() {
+    chrome.extension.sendMessage({command: 'getfilegroups'});
+  });
+
+  $('[data-opens="cadet_files_bulk_edit"]').on('click', function() {
+    chrome.extension.sendMessage({command: 'getfilegroups', response: 'returnfilesbulkedit'});
+  });
+
+  $('[name="cadet_file_create"]').on('click', function() {
+    var name = $('[name="cadet_file_name"]').val();
+    var content = $('[name="cadet_file_content"]').val();
+    var parent_id = $('.cadet_files_tab_select').find(':selected').data('id');
+    chrome.extension.sendMessage({command: "newfileitem", name: name, content: content, parent: parent_id});
+  });
+
+  $('.cadet_files_tab_select').on('change', function() {
+    var id = $(this).find(':selected').data('id');
+    if (id)
+      chrome.extension.sendMessage({command: 'getfilegroup', id: id});
+  });
+
+  $('[name="confim_files_delete"]').on('click', function() {
+
+    var items = {};
+    $('.cadet_file_item:checked').each(function() {
+      var gid = $(this).data('group-id');
+      if (items[gid] == undefined)
+      {
+        items[gid] = [];
+      }
+      items[gid].push($(this).data('id'))
+    });
+    var groups = [];
+    $('.cadet_file_group:checked').each(function() {
+      groups.push($(this).data('group-id'));
+    });
+    chrome.extension.sendMessage({command: "deletefilesdata", items: items, groups: groups});
+  });
+
+  $('.cadet_file_trigger').on('click', function() {
+    
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -426,6 +483,7 @@ function updateToolbar()
   $('.coppy_item_tool').hide();
   $('.coppy_advanced_tool').hide();
   $('.cadet_files_tool').hide();
+  $('.cadet_files_bulk_tool').hide();
   $('.cadet_coppy_bulk_tool').hide();
 
   if (menu.hasClass('cadet_snippets_menu'))
@@ -446,6 +504,9 @@ function updateToolbar()
   } else if (menu.hasClass('cadet_files_menu'))
   {
     $('.cadet_files_tool').show();
+  } else if (menu.hasClass('cadet_files_bulk_edit'))
+  {
+    $('.cadet_files_bulk_tool').show();
   }
 
   if (!menu.hasClass('coppy_item_advanced'))
@@ -634,6 +695,20 @@ function loadCoppyListeners()
     } else if (request.command == "returntheme")
     {
       updateTheme(request.theme);
+    } else if (request.command == "updatefilegroups")
+    {
+      updateFilesDropdown(request.data);
+      var id = $('.cadet_files_tab_select').find(':selected').data('id');
+      if (id != undefined)
+      {
+        chrome.extension.sendMessage({command: 'getfilegroup', id: id});
+      }
+    } else if (request.command == "returnfilesbulkedit")
+    {
+      updateFilesBulkMenu(request.data);
+    } else if (request.command == "updatecurrentgroup")
+    {
+      updateCurrentGroup(request.group);
     }
   });
 }
@@ -796,4 +871,65 @@ function getOptionsObject(ele)
     obj[$(this).attr('id')] = $(this).prop('checked');
   });
   return obj;
+}
+
+function updateFilesDropdown(data)
+{
+  if (data == undefined)
+  {
+    return;
+  }
+  $('.cadet_files_tab_select').empty();
+  var o = "<option></option>";
+  var op;
+  for (i in data.ib_files)
+  {
+    op = $(o);
+    op.text(data.ib_files[i].name);
+    op.attr('data-id', i);
+    op.appendTo('.cadet_files_tab_select');
+  }
+}
+
+function updateFilesBulkMenu(data)
+{
+  $('.bulk_files_list_wrap').empty();
+  var t = "<div><input class='cadet_file_group' type='checkbox'/><div class='coppy_bulk_tab'><span></span><img/></div><div class='coppy_bulk_item_wrap'></div></div>";
+  var fi = "<div><input class='cadet_file_item' type='checkbox'/><span></span></div>"
+  var file;
+  var tab;
+  for (i in data.ib_files)
+  {
+    tab = $(t);
+    tab.find('span').text(data.ib_files[i].name);
+    tab.find('input').attr('data-group-id', i);
+    tab.find('img').attr('src', chrome.extension.getURL('resources/dropdown-up.png'));
+    for (f in data.ib_files[i].items)
+    {
+      file = $(fi);
+      file.find('span').text(data.ib_files[i].items[f].name);
+      file.find('input').attr('data-group-id', i);
+      file.find('input').attr('data-id', f);
+      file.appendTo(tab.find('.coppy_bulk_item_wrap'));
+    }
+    tab.appendTo('.bulk_files_list_wrap');
+  }
+}
+
+function updateCurrentGroup(group)
+{
+  $('.cadet_files_menu').empty();
+  if (group == undefined)
+  {
+    return;
+  }
+  var fi = "<div><a class='cadet_file_trigger'></a></div>";
+  for (f in group.items)
+  {
+    file = $(fi);
+    file.find('a').text(group.items[f].name);
+    file.find('a').attr('data-group-id', group.id);
+    file.find('a').attr('data-id', f);
+    file.appendTo('.cadet_files_menu');
+  }
 }

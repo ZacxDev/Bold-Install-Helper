@@ -66,16 +66,7 @@
    </div>
 
    <div class="cadet_files_menu cadet_menu" style="display:none;">
-     <table>
-       <tr>
-         <td>
-           <a class="files_css cadet_action">Bold-CSS</a>
-         </td>
-         <td>
-           <a class="files_jsboldhelpers cadet_action">Bold Helper Functions</a>
-         </td>
-       </tr>
-     </table>
+
    </div>
 
    <div class="cadet_view_snip_menu_js cadet_menu" style="display:none;">
@@ -257,12 +248,28 @@
      <input type="text" name="cadet_file_name"/>
      <h3>Content</h3>
      <textarea name="cadet_file_content"/></textarea>
-     <input type="button" name="cadet_file_create" value="Create"/>
+     <input type="button" name="cadet_file_create" class="cadet_menu_toggle" data-opens="cadet_files_menu" value="Create"/>
+   </div>
+
+   <div class="cadet_new_file_group cadet_menu" style="display:none;">
+     <h3>Name:</h3>
+     <input type="text" name="cadet_file_group_name"/>
+     <input type="button" name="cadet_file_group_create" class="cadet_menu_toggle" data-opens="cadet_files_menu" value="Create"/>
+   </div>
+
+   <div class="cadet_files_bulk_edit cadet_menu" style="display:none;">
+     <div class="bulk_files_list_wrap"></div>
+   </div>
+
+   <div class="cadet_files_confirm_delete cadet_menu" style="display:none;">
+     <h2>Are You Sure?</h2>
+     <input type="button" name="confim_files_delete" class="cadet_menu_toggle" data-opens="cadet_files_menu" value="Yes" />
+     <input type="button" class="cadet_menu_toggle" data-opens="cadet_files_bulk_edit" value="No" />
    </div>
 
    <div class="coppy_confirm_delete cadet_menu" style="display:none;">
      <h2>Are You Sure?</h2>
-     <input type="button" name="confim_delete" class="cadet_menu_toggle" data-opens="cadet_coppy_menu" value="Yes" />
+     <input type="button" name="confirm_delete" class="cadet_menu_toggle" data-opens="cadet_coppy_menu" value="Yes" />
      <input type="button" class="cadet_menu_toggle" data-opens="coppy_bulk_edit" value="No" />
    </div>
 
@@ -323,12 +330,16 @@
        <option data-app="cp">Customer Pricing</option>
        <option data-app="mc">Multi Currency</option>
      </select>
+     <img class="coppy_gear cadet_files_tool cadet_menu_toggle" data-opens="cadet_files_bulk_edit" style="display:none;" />
     <img class="coppy_gear cadet_coppy_tool cadet_menu_toggle" data-opens="coppy_bulk_edit" style="display:none;" />
     <img class="coppy_execute_all cadet_coppy_tool cadet_menu_toggle" data-opens="coppy_execute_confirm" style="display:none;" />
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_confirm_delete" style="display:none;">Delete..</a>
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_export" style="display:none;">Export..</a>
     <a class="cadet_menu_toggle cadet_coppy_bulk_tool" data-opens="coppy_import" style="display:none;">Import..</a>
-    <a class="cadet_menu_toggle cadet_files_tool" data-opens="cadet_new_file" style="display:none;">+New File..</a>
+    <a class="cadet_menu_toggle cadet_files_bulk_tool" data-opens="cadet_files_confirm_delete" style="display:none;">Delete..</a>
+    <a class="cadet_menu_toggle cadet_files_tool" data-opens="cadet_new_file" style="display:none;">+File..</a>
+    <a class="cadet_menu_toggle cadet_files_tool" data-opens="cadet_new_file_group" style="display:none;">+Group..</a>
+    <select class="cadet_files_tool cadet_files_tab_select" style="display:none;"></select>
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy" style="display:none;">+New</a>
     <a class="cadet_menu_toggle cadet_coppy_tool" data-opens="cadet_new_coppy_tab" style="display:none;">+New Tab</a>
     <a class="cadet_menu_toggle coppy_item_tool" data-opens="coppy_item_advanced" style="display:none;">Advanced</a>

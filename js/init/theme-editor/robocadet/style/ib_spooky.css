@@ -298,7 +298,7 @@ input[name*="coppy"] {
   white-space:  nowrap;
 }
 
-img.cadet_coppy_tool {
+img.coppy_gear, img.cadet_coppy_tool {
   max-width: 22px;
   display: inline;
   float:  left;
@@ -340,13 +340,6 @@ img.cadet_coppy_tool {
    max-width: 56px;
    margin: 0 auto;
    margin-top: 15%;
- }
-
- .coppy_bulk_list_wrap img {
-   display: inline;
-   margin-right: 5px;
-   max-width: 15px;
-   cursor:  pointer;
  }
 
  .coppy_bulk_tab {
