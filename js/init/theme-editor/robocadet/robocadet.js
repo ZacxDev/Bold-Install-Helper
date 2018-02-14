@@ -392,10 +392,31 @@ function loadCadetListeners()
   });
 
   $('[name="cadet_file_create"]').on('click', function() {
-    var name = $('[name="cadet_file_type"]').val() + '/' + $('[name="cadet_file_name"]').val();
+    var full_name = $('[name="cadet_file_name"]').val();
+    var name = full_name.indexOf('.liquid') != -1 ? full_name.substring(0, full_name.lastIndexOf('.')) : full_name;
+    var asset = $('[name="cadet_file_type"]').val() + '/' + full_name;
     var content = $('[name="cadet_file_content"]').val();
     var parent_id = $('.cadet_files_tab_select').find(':selected').data('id');
-    chrome.extension.sendMessage({command: "newfileitem", name: name, content: content, parent: parent_id});
+    var include = document.querySelector('#include_in_theme').checked;
+    var liquid_include = "";
+    var asset_tag = "stylesheet";
+    if (full_name.indexOf('.js') != -1)
+    {
+      asset_tag = "script";
+    }
+    if (include)
+    {
+      switch($('[name="cadet_file_type"]').val()) {
+        case "snippets": liquid_include = "{%- include '" + name + "' -%}";
+              break;
+        case "sections": liquid_include = "{%- section '" + name + "' -%}";
+              break;
+        case "assets": liquid_include = "{{ '" + name + "' | asset_url | " + asset_tag + "_tag }}"
+              break;
+        default: break;
+      }
+    }
+    chrome.extension.sendMessage({command: "newfileitem", name: asset, content: content, parent: parent_id, include_in_theme: include, liquid_include: liquid_include});
   });
 
   $('.cadet_files_tab_select').on('change', function() {
@@ -739,6 +760,16 @@ function loadCoppyListeners()
       }
     } else if (request.command == "continue_files_batch")
     {
+      if (CADET_UPLOAD_BATCH.queue == undefined)
+      {
+        var ele = $('.cadet_file_trigger[data-id="' + request.id + '"]');
+        var text = ele.text();
+        ele.text('Uploaded!');
+        setTimeout(function() {
+          ele.text(text);
+        }, 500);
+        return;
+      }
       CADET_UPLOAD_BATCH.report[CADET_UPLOAD_BATCH.queue[Object.keys(CADET_UPLOAD_BATCH.queue)[CADET_UPLOAD_BATCH.index]].name] = request.success;
       CADET_UPLOAD_BATCH.index += 1;
       if (CADET_UPLOAD_BATCH.index < Object.keys(CADET_UPLOAD_BATCH.queue).length)
@@ -975,7 +1006,7 @@ function updateCurrentGroup(group)
 function uploadFilesItem(item)
 {
   $('.cadet_file_item_dump').remove();
-  $('<xmp class="cadet_file_item_dump"></xmp>').text(JSON.stringify(item)).appendTo(document.body);
+  $('<xmp class="cadet_file_item_dump" style="display:none;"></xmp>').text(JSON.stringify(item)).appendTo(document.body);
   injectScript(function() {
     var dump = $('.cadet_file_item_dump').text();
     this.cadet_item = JSON.parse(dump);
@@ -983,8 +1014,29 @@ function uploadFilesItem(item)
       // the asset already exists
       chrome.runtime.sendMessage(EXTENSION_ID, {command:'continue_files_batch', success: false});
     }, () => {
-      pushAsset(this.cadet_item.name, this.cadet_item.content, function() {
-        chrome.runtime.sendMessage(EXTENSION_ID, {command:'continue_files_batch', success: true});
+      pushAsset(this.cadet_item.name, this.cadet_item.content, (key, name) => {
+        if (this.cadet_item.include_in_theme)
+        {
+          getAsset('layout/theme.liquid', (key, name, data) => {
+            data = data.split('\n');
+            for (var n = 0; n < data.length; n++)
+            {
+              var line = data[n];
+              if (line.indexOf('content_for_header') != -1 && line.indexOf('}}') != -1)
+              {
+                data[n] = data[n] + '\n' + this.cadet_item.liquid_include;
+                break;
+              }
+            }
+            data = data.join('\n');
+            updateCodeMirror(key, name, data);
+            pushAsset('layout/theme.liquid', data, (key, name) => {
+              chrome.runtime.sendMessage(EXTENSION_ID, {command:'continue_files_batch', success: true, id: this.cadet_item.id});
+            });
+          });
+        } else {
+          chrome.runtime.sendMessage(EXTENSION_ID, {command:'continue_files_batch', success: true, id: this.cadet_item.id});
+        }
       });
     })
   });

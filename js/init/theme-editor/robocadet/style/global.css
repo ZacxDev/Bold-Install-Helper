@@ -74,3 +74,8 @@ div.cadet_new_file p {
 .cadet_files_confirm_list span {
   display: block;
 }
+
+label input[type="checkbox"] {
+  display: inline;
+  width: auto;
+}

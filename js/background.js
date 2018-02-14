@@ -445,6 +445,9 @@ function newFileItem(req, callback)
     items[id] = {}
     items[id].name = req.name;
     items[id].content = req.content;
+    items[id].include_in_theme = req.include_in_theme;
+    items[id].liquid_include = req.liquid_include;
+    items[id].id = id;
     obj[req.parent].items = items;
     chrome.storage.local.set({ib_files: obj}, function() {
       callback(obj[req.parent]);
