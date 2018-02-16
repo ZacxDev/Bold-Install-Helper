@@ -644,5 +644,61 @@ function getFunctionEndIndex(lines, startIndex) {
       return i;
     }
   }
+}
 
+function createProduct(title, type, tags)
+{
+  title += " (" + type + ")";
+  if (typeof tags === "undefined")
+  {
+    tags = [];
+  }
+  var meta = {
+    "metafield": {
+      "namespace": "inventory",
+      "key": "ShappifySale",
+      "value": "true",
+      "value_type": "string"
+    }
+  }
+  if (type == "Hidden")
+  {
+    tags.push('DISCOUNT_HIDDEN_PRODUCT');
+  }
+  var img = {
+    "image": {
+      "position" : 1,
+      "src": "https://11tcma2eyqgmz6zyt1x6na8n-wpengine.netdna-ssl.com/wp-content/uploads/2017/03/Partner-Release-Template_feature.png"
+    }
+  }
+  var data = {
+  "product": {
+    "title": title,
+    "body_html": "This is a test product used to test the functionality of Bold apps and should not be purchased.",
+    "published_scope": "web",
+    "tags": tags
+  }
+}
+  $.ajax({
+    type: 'POST',
+    url: window.location.origin + '/admin/products.json',
+    data: data,
+    success: function(data) {
+      if (type == "Discounted")
+      {
+        $.ajax({
+          type: 'POST',
+          url: window.location.origin + '/admin/products/' + data.product.id + '/images.json',
+          data: img,
+          success: function(data) {
+            $.ajax({
+              type: 'POST',
+              url: window.location.origin + '/admin/products/' + data.image.product_id + '/metafields.json',
+              data: meta
+            })
+          }
+        });
+      }
+    }
+  })
 }

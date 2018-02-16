@@ -458,6 +458,14 @@ function loadCadetListeners()
     uploadFilesItem(CADET_UPLOAD_BATCH.queue[Object.keys(CADET_UPLOAD_BATCH.queue)[0]]);
   });
 
+  $('.cadet_prod_create').on('click', function() {
+    var name = $('[name="cadet_prod_name"]').val();
+    var type = $('[name="cadet_prod_type"]').val();
+    injectScript(function(name, type) {
+      createProduct(name, type);
+    }, [name, type]);
+  });
+
 }
 
 function refreshCadetModal(ele)

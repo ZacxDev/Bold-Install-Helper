@@ -36,9 +36,9 @@
   <button class="cadet_expand" data-expands="cadet_files">Utility</button>
   <div class="cadet_files cadet_expandable" style="display: none;">
     <input type="button" class="cadet-btn" data-opens="cadet_files_menu" value="Files" />
-    <input type="button" class="cadet-btn" data-opens="cadet_snippets_menu" data-title="Snippets" value="Snippets" />
+    <input type="button" class="cadet-btn" data-opens="cadet_prod_menu" value="Products" />
     <input type="button" class="cadet-btn" data-opens="cadet_coppy_menu" data-title="Install Bot" value="Install Bot" />
-    <input type="button" class="cadet-btn" data-opens="cadet_tabz_menu" value="Tabz" />
+    <input type="button" class="cadet-btn" data-opens="cadet_snippets_menu" data-title="Snippets" value="Snippets" />
  </div>
  <button class="cadet_expand" data-expands="cadet_docs">Documentation</button>
   <div class="cadet_docs cadet_expandable" style="display: none;">
@@ -310,6 +310,21 @@
      <h3>Paste JSON:</h3>
      <textarea class="coppy_import_dump"></textarea>
      <input type="button" class="cadet_menu_toggle cadet_functions coppy_trigger_import" data-opens="cadet_visable" value="Import" />
+   </div>
+
+   <div class="cadet_prod_menu cadet_menu" style="display:none;">
+     <h3>Create Test Products</h3>
+     <input type="text" name="cadet_prod_name" value="#Bold Test Product"/>
+     <select name="cadet_prod_type">
+       <option>Normal</option>
+       <option>Discounted</option>
+       <option>Hidden</option>
+     </select>
+     <input type="button" class="cadet_menu_toggle cadet_prod_create" data-opens="cadet_product_success" value="Create" />
+   </div>
+
+   <div class="cadet_product_success cadet_menu" style="display:none;">
+     <h3>Product Created!</h3>
    </div>
 
    <div class="cadet_docs_ro_menu cadet_menu" style="display:none;">

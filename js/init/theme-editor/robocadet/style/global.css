@@ -79,3 +79,7 @@ label input[type="checkbox"] {
   display: inline;
   width: auto;
 }
+
+.cadet_prod_menu select[name="cadet_prod_type"] {
+  margin-top: 2%;
+}
