@@ -40,7 +40,7 @@
   padding-bottom: 1%;
 }
 
-.bulk_files_list_wrap input[type="checkbox"] {
+.bulk_files_list_wrap input[type="checkbox"], .detected_ib_prod_wrap input[type="checkbox"] {
   width: auto;
   display: inline-block;
   margin-right: 1%;
@@ -82,4 +82,9 @@ label input[type="checkbox"] {
 
 .cadet_prod_menu select[name="cadet_prod_type"] {
   margin-top: 2%;
+}
+
+input[type="text"][name="cadet_prod_name"] {
+  width: 80%;
+  text-align: center;
 }

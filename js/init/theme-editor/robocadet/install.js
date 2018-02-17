@@ -648,7 +648,10 @@ function getFunctionEndIndex(lines, startIndex) {
 
 function createProduct(title, type, tags)
 {
-  title += " (" + type + ")";
+  if (type !== "Normal")
+  {
+    title += " (" + type + ")";
+  }
   if (typeof tags === "undefined")
   {
     tags = [];
@@ -657,6 +660,14 @@ function createProduct(title, type, tags)
     "metafield": {
       "namespace": "inventory",
       "key": "ShappifySale",
+      "value": "true",
+      "value_type": "string"
+    }
+  }
+  var ib_meta = {
+    "metafield": {
+      "namespace": "inventory",
+      "key": "BoldTest",
       "value": "true",
       "value_type": "string"
     }
@@ -676,7 +687,8 @@ function createProduct(title, type, tags)
     "title": title,
     "body_html": "This is a test product used to test the functionality of Bold apps and should not be purchased.",
     "published_scope": "web",
-    "tags": tags
+    "tags": tags,
+    "vendor": "BOLDAPPS"
   }
 }
   $.ajax({
@@ -684,8 +696,25 @@ function createProduct(title, type, tags)
     url: window.location.origin + '/admin/products.json',
     data: data,
     success: function(data) {
-      if (type == "Discounted")
-      {
+      var variant_id = data.product.variants[0].id;
+      var variant = {
+          "variant": {
+            "position": "1",
+            "option1": "Red",
+            "price": "500000.00"
+          }
+        }
+        $.ajax({
+          type: 'POST',
+          url: window.location.origin + '/admin/products/' + data.product.id + '/variants.json',
+          data: variant,
+          success: function(data) {
+            $.ajax({
+              type: 'DELETE',
+              url: window.location.origin + '/admin/products/' + data.variant.product_id + '/variants/' + variant_id+ '.json'
+              })
+          }
+        });
         $.ajax({
           type: 'POST',
           url: window.location.origin + '/admin/products/' + data.product.id + '/images.json',
@@ -694,11 +723,34 @@ function createProduct(title, type, tags)
             $.ajax({
               type: 'POST',
               url: window.location.origin + '/admin/products/' + data.image.product_id + '/metafields.json',
-              data: meta
-            })
+              data: ib_meta
+            });
+            if (type == "Discounted")
+            {
+              $.ajax({
+                type: 'POST',
+                url: window.location.origin + '/admin/products/' + data.image.product_id + '/metafields.json',
+                data: meta
+              });
+            }
           }
         });
-      }
     }
   })
+}
+
+function updateIBProductList()
+{
+  $.get(window.location.origin + '/admin/products.json?vendor=BOLDAPPS', function(data) {
+    $('.detected_ib_prod_wrap').empty();
+    var item = "<div><label for='ib_prod_input'><input id='ib_prod_input' type='checkbox'/><span></span></label></div>";
+    var $item;
+    for (var i = 0; i < data.products.length; i++)
+    {
+      $item = $(item);
+      $item.find('span').text(data.products[i].title);
+      $item.find('input').attr('data-product-id', data.products[i].id);
+      $item.appendTo('.detected_ib_prod_wrap');
+    }
+  });
 }

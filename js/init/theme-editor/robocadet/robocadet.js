@@ -466,6 +466,24 @@ function loadCadetListeners()
     }, [name, type]);
   });
 
+  $('[data-opens="cadet_prod_menu"]').on('click', function() {
+    injectScript(function() {
+      updateIBProductList();
+    });
+  });
+
+  $('.cadet_delete_prod').on('click', function() {
+    injectScript(function() {
+      $('#ib_prod_input:checked').each(function() {
+        $.ajax({
+          type: "DELETE",
+          url: window.location.origin + "/admin/products/" + $(this).data('product-id') + ".json"
+        });
+        $(this).parent().hide();
+      });
+    });
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -526,6 +544,7 @@ function updateToolbar()
   $('.coppy_advanced_tool').hide();
   $('.cadet_files_tool').hide();
   $('.cadet_files_bulk_tool').hide();
+  $('.cadet_prod_tool').hide();
   $('.cadet_coppy_bulk_tool').hide();
 
   if (menu.hasClass('cadet_snippets_menu'))
@@ -549,6 +568,9 @@ function updateToolbar()
   } else if (menu.hasClass('cadet_files_bulk_edit'))
   {
     $('.cadet_files_bulk_tool').show();
+  } else if (menu.hasClass('cadet_prod_menu'))
+  {
+    $('.cadet_prod_tool').show();
   }
 
   if (!menu.hasClass('coppy_item_advanced'))
