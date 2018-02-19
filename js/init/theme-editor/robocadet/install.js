@@ -664,17 +664,18 @@ function createProduct(title, type, tags)
       "value_type": "string"
     }
   }
-  var ib_meta = {
-    "metafield": {
-      "namespace": "inventory",
-      "key": "BoldTest",
-      "value": "true",
-      "value_type": "string"
-    }
-  }
+
   if (type == "Hidden")
   {
     tags.push('DISCOUNT_HIDDEN_PRODUCT');
+    meta = {
+      "metafield": {
+        "namespace": "inventory",
+        "key": "ShappifyHidden",
+        "value": "true",
+        "value_type": "string"
+      }
+    }
   }
   var img = {
     "image": {
@@ -720,12 +721,7 @@ function createProduct(title, type, tags)
           url: window.location.origin + '/admin/products/' + data.product.id + '/images.json',
           data: img,
           success: function(data) {
-            $.ajax({
-              type: 'POST',
-              url: window.location.origin + '/admin/products/' + data.image.product_id + '/metafields.json',
-              data: ib_meta
-            });
-            if (type == "Discounted")
+            if (type == "Discounted" || type == "Hidden")
             {
               $.ajax({
                 type: 'POST',
