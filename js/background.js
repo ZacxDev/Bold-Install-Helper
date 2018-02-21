@@ -161,30 +161,7 @@ function(request, sender, sendResponse) {
   }
   else if (request.command == "init")
     {
-      url = sender.tab.url;
-      ACTIVE_TAB = sender.tab;
-
-      //don't run on extention pages
-      if (url.indexOf("chrome-extension") != -1)
-      {
-        return;
-      }
-        switch(true) {
-          case (url.indexOf('myshopify.com/admin/auth/recover') != -1):
-            loadRecoverButtons(sender.tab);
-            break;
-          case (url.indexOf("recurring_settings/product_recurring") != -1  || url.indexOf('subscription_box_settings/box_settings/') != -1):
-            loadROWidget(sender.tab);
-            break;
-          case (url.indexOf('myshopify.com/admin/themes/') != -1):
-            loadThemeEditor(sender.tab);
-            break;
-          case (url.indexOf('/managed_stores/new') != -1):
-            loadCollaboratorAccounts(sender.tab);
-            break;
-          default:
-            break;
-        }
+      initialize(request, sender, sendResponse);
     }
 });
 
@@ -200,8 +177,39 @@ function(request, sender, sendResponse) {
   } else if (request.command == "continue_files_batch")
   {
     chrome.tabs.sendMessage(ACTIVE_TAB.id, request);
+  } else if (request.command == "re_init")
+  {
+    initialize(request, sender, sendResponse);
   }
 });
+
+function initialize(request, sender, sendResponse)
+{
+  url = sender.tab.url;
+  ACTIVE_TAB = sender.tab;
+
+  //don't run on extention pages
+  if (url.indexOf("chrome-extension") != -1)
+  {
+    return;
+  }
+    switch(true) {
+      case (url.indexOf('myshopify.com/admin/auth/recover') != -1):
+        loadRecoverButtons(sender.tab);
+        break;
+      case (url.indexOf("recurring_settings/product_recurring") != -1  || url.indexOf('subscription_box_settings/box_settings/') != -1):
+        loadROWidget(sender.tab);
+        break;
+      case (url.indexOf('myshopify.com/admin/themes/') != -1):
+        loadThemeEditor(sender.tab);
+        break;
+      case (url.indexOf('/managed_stores/new') != -1):
+        loadCollaboratorAccounts(sender.tab);
+        break;
+      default:
+        break;
+    }
+}
 
 function loadRecoverButtons(tab) {
   chrome.tabs.executeScript(tab.id, {file: "js/init/recoverbuttons.js"}, function() {

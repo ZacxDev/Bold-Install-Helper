@@ -484,6 +484,10 @@ function loadCadetListeners()
     });
   });
 
+  $('.cadet_cancel_tab_load').on('click', function() {
+    CANCEL_TABS_REOPEN = true;
+  });
+
 }
 
 function refreshCadetModal(ele)
@@ -797,6 +801,11 @@ function loadCoppyListeners()
         ele.text('Uploaded!');
         setTimeout(function() {
           ele.text(text);
+          injectScript(function() {
+            window.Page.refresh({}, function() {
+              chrome.runtime.sendMessage(EXTENSION_ID, {command: 're_init'});
+            });
+          });
         }, 500);
         return;
       }
@@ -1091,4 +1100,11 @@ function doneFilesBatch()
   }
 
   toggleMenu('.cadet_upload_done');
+  injectScript(function() {
+    setTimeout(function() {
+      window.Page.refresh({}, function() {
+        chrome.runtime.sendMessage(EXTENSION_ID, {command: 're_init'});
+      });
+    }, 500);
+  });
 }

@@ -1,3 +1,4 @@
+var CANCEL_TABS_REOPEN = false;
 
 $(document).ready(function() {
 
@@ -52,6 +53,14 @@ function saveOpenTabs()
 
 function openSavedTabs()
 {
+  var stop = document.createElement('input');
+  stop.setAttribute('type', 'button')
+  stop.setAttribute('value', 'Cancel Tab Load')
+  stop.classList = "btn button cadet_cancel_tab_load";
+  stop.style.color = "black";
+  var actions = document.querySelector('.ui-title-bar__actions-group .ui-title-bar__actions');
+  actions.insertBefore(stop, actions.childNodes[0]);
+
   chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.command == "settabs"){
@@ -62,12 +71,19 @@ function openSavedTabs()
       var tar = document.querySelector('strong[data-bind="currentTab.basename"]');
       var i = 1;
       var observer = new MutationObserver(function() {
+        if (CANCEL_TABS_REOPEN)
+        {
+          $('.cadet_cancel_tab_load').hide();
+          observer.disconnect();
+          return;
+        }
         injectScript(function(s) {
             $('[data-asset-key="' + s + '"]').click();
         }, [request.tabs[i]]);
         i++;
         if (i >= request.tabs.length)
         {
+          $('.cadet_cancel_tab_load').hide();
           observer.disconnect();
         }
       });

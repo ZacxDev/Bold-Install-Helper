@@ -656,19 +656,33 @@ function createProduct(title, type, tags)
   {
     tags = [];
   }
-  var meta = {
-    "metafield": {
-      "namespace": "inventory",
-      "key": "ShappifySale",
-      "value": "true",
-      "value_type": "string"
+  var meta_list = [];
+  if (type == "Discounted")
+  {
+    var meta = {
+      "metafield": {
+        "namespace": "inventory",
+        "key": "ShappifySale",
+        "value": "true",
+        "value_type": "string"
+      }
     }
+    meta_list.push(meta);
+    var meta_clock = {
+      "metafield": {
+        "namespace": "inventory",
+        "key": "ShappifySaleEndDate",
+        "value": "2020-03-08 00:00:00",
+        "value_type": "string"
+      }
+    }
+    meta_list.push(meta_clock);
   }
 
   if (type == "Hidden")
   {
     tags.push('DISCOUNT_HIDDEN_PRODUCT');
-    meta = {
+    var meta = {
       "metafield": {
         "namespace": "inventory",
         "key": "ShappifyHidden",
@@ -676,6 +690,7 @@ function createProduct(title, type, tags)
         "value_type": "string"
       }
     }
+    meta_list.push(meta);
   }
   var img = {
     "image": {
@@ -723,11 +738,14 @@ function createProduct(title, type, tags)
           success: function(data) {
             if (type == "Discounted" || type == "Hidden")
             {
-              $.ajax({
-                type: 'POST',
-                url: window.location.origin + '/admin/products/' + data.image.product_id + '/metafields.json',
-                data: meta
-              });
+              for (var n = 0; n < meta_list.length; n++)
+              {
+                $.ajax({
+                  type: 'POST',
+                  url: window.location.origin + '/admin/products/' + data.image.product_id + '/metafields.json',
+                  data: meta_list[n]
+                });
+              }
             }
           }
         });
