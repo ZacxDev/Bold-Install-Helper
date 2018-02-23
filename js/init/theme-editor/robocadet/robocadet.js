@@ -45,8 +45,9 @@ $(document).ready(function() {
     $('.coppy_execute_all').attr('src', chrome.extension.getURL('resources/runallcoppy.png'));
     $('.loading').attr('src', chrome.extension.getURL('resources/loading.gif'));
 
-    loadCoppyListeners();
+    loadMessageListeners();
     populateCoppy();
+    populateFiles();
   });
 });
 
@@ -383,7 +384,7 @@ function loadCadetListeners()
     chrome.extension.sendMessage({command: "newfilegroup", name: name});
   });
 
-  $('[data-opens="cadet_files_menu"]').on('click', function() {
+  $(document).on('click', '[data-opens="cadet_files_menu"]', function() {
     chrome.extension.sendMessage({command: 'getfilegroups'});
   });
 
@@ -623,7 +624,7 @@ function getSnippet(app, snipname, callback)
   });
 }
 
-function loadCoppyListeners()
+function loadMessageListeners()
 {
   chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -1107,4 +1108,9 @@ function doneFilesBatch()
       });
     }, 500);
   });
+}
+
+function populateFiles()
+{
+  chrome.extension.sendMessage({command: 'getfilegroups'});
 }
